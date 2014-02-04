@@ -10,6 +10,7 @@
   "license": "BSD-2-Clause",
   "dependencies": {
     "logfmt": "~0.20.0",
-    "express": "~3.4.8"
+    "express": ">= 3.4.8",
+    "express3-handlebars": ">= 0.5.0"
   }
 }
