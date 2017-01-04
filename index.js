@@ -1,14 +1,14 @@
 var express = require( 'express' ),
 	exphbs = require( 'express3-handlebars' ),
 	logfmt = require( 'logfmt' ),
+	pg = require( 'pg' ),
 	url = require('url'),
 	
 	BASE10 = "0123456789",
 	BASE62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
 	
-	pg_conn = "tcp://eaglstun:@localhost/earls_urls",
-	
 	app = express();
+
 
 app.use( express.bodyParser() );
 app.use( logfmt.requestLogger() );
@@ -18,6 +18,10 @@ app.engine( 'handlebars', exphbs({
 }) );
 app.set( 'view engine', 'handlebars' );
 
+// @TODO better envs
+if( !process.env.DATABASE_URL )
+	process.env.DATABASE_URL = "postgres://eeaglstun@localhost/earls_urls";
+
 app.get( '/', function(req, res){
 	res.render('home');
 } );
@@ -25,25 +29,17 @@ app.get( '/', function(req, res){
 app.post( '/shorten', function(req, res){
 	var base = require( 'base' ),
 		db_id = 0,
-		long_url = req.body.url,
-		pg = require('pg');
+		long_url = req.body.url;
 		
 	var formatted_url = url.format( url.parse(long_url) );
 	console.log( 'formatted_url', formatted_url );
-	
-	pg.connect( pg_conn, function(err, client){
-		var query = client.query( 'SELECT * FROM urls WHERE url = $1 LIMIT 1', [formatted_url], function( err, result ){
-			console.log( result.rows[0].id );
+
+	pg.connect( process.env.DATABASE_URL, function(err, client, done){
+		var timestamp = new Date().getTime();
+		var query = client.query( 'INSERT INTO earls_urls (`url`, `timestamp` ) VALUES( $1, $1 )', [formatted_url, timestamp], function( err, result ){
+			console.log( 'shorten', arguments );
 		} );
 	} );
-
-	// res = select * from urls where url = long_url limit 1
-	// if res
-	//	db_id = res.id
-	// else
-	//	timestamp = 12345
-	//	db_id = insert into urls(url,timestamp) values long_url,timestamp
-	//	
 	
 	short = base( db_id, BASE10, BASE62 );
 	
@@ -58,15 +54,19 @@ app.get( '/:id', function(req, res){
 		id = req.route.params.id;
 	
 	db_id = base( id, BASE62, BASE10 );
-	console.log( db_id );
 	
-	url = 'http://google.com';
-	
-	// select url from urls where id = db_id
-	// if db_id
-		res.redirect( url ); 
-	// else
-	//	res.render( 'error' );
+	pg.connect( process.env.DATABASE_URL, function(err, client, done){
+		var query = client.query( 'SELECT * FROM earls_urls WHERE id = $1 LIMIT 1', [db_id], function( err, result ){
+
+			console.log( 'id', arguments );
+
+			if( result.rows[0].id ){
+				res.redirect( result.rows[0].url ); 
+			} else {
+				res.render( 'error' );
+			}
+		} );
+	} );
 } );
 
 var port = Number( process.env.PORT || 5000 );
