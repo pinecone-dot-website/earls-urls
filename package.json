@@ -17,5 +17,6 @@
     "gulp-sass": "^3.0.0",
     "logfmt": "~0.20.0",
     "pg": ">= 0.6.15"
-  }
+  },
+  "postinstall": "./node_modules/bower/bin/bower install"
 }
