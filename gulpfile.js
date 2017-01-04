@@ -19,4 +19,4 @@ gulp.task('fonts', function() {
     .pipe(gulp.dest(config.publicDir + '/fonts'));
 });
 
-gulp.task('default', ['css', 'fonts']);
+gulp.task( 'default', ['css', 'fonts'] );
