@@ -26,10 +26,21 @@ app.get( '/', function(req, res){
 
 app.post( '/shorten', function(req, res){
 	var db_id = 0,
-		long_url = req.body.url;
-		
-	var formatted_url = url.format( url.parse(long_url) );
-	console.log( 'formatted_url', formatted_url );
+		input_url = req.body.url;
+
+	var parsed_url = url.parse( input_url );
+
+	if( !parsed_url.protocol )
+		parsed_url.protocol = 'http:';
+
+	if( !parsed_url.hostname ){
+		parsed_url.hostname = parsed_url.pathname;
+
+		parsed_url.path = '/';
+		parsed_url.pathname = '';
+	}
+
+	var formatted_url = url.format( parsed_url );
 
 	/*
 	pg.connect( process.env.DATABASE_URL, function(err, client, done){
@@ -39,12 +50,13 @@ app.post( '/shorten', function(req, res){
 		} );
 	} );
 	*/
-	
+
 	short = base_x.convert( db_id, base_x.BASE10, base_x.BASE62 );
 	
 	res.render( 'shorten',{
 		short: short,
-		long_url: long_url	
+		formatted_url: formatted_url,
+		input_url: input_url
 	} );
 } );
 
