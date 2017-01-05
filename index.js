@@ -1,12 +1,11 @@
 var base_x = require( '@eaglstun/base-x' ),
+	earl = require( './models/earl' ),
 	express = require( 'express' ),
 	exphbs = require( 'express3-handlebars' ),
 	logfmt = require( 'logfmt' ),
-	pg = require( 'pg' ),
 	url = require('url'),
 	
 	app = express();
-
 
 app.use( express.bodyParser() );
 app.use( express.static('public') );
@@ -26,10 +25,9 @@ app.get( '/', function(req, res){
 } );
 
 app.post( '/shorten', function(req, res){
-	var db_id = 0,
-		input_url = req.body.url;
-
-	var parsed_url = url.parse( input_url );
+	
+	var input_url = req.body.url,
+		parsed_url = url.parse( input_url );
 
 	if( !parsed_url.protocol )
 		parsed_url.protocol = 'http:';
@@ -43,21 +41,18 @@ app.post( '/shorten', function(req, res){
 
 	var formatted_url = url.format( parsed_url );
 
-	/*
-	pg.connect( process.env.DATABASE_URL, function(err, client, done){
-		var timestamp = new Date().getTime();
-		var query = client.query( 'INSERT INTO earls_urls (`url`, `timestamp` ) VALUES( $1, $1 )', [formatted_url, timestamp], function( err, result ){
-			console.log( 'shorten', arguments );
-		} );
-	} );
-	*/
+	earl.insert( formatted_url, function(id){
+		if( id ){
+			var earl = base_x.convert( id, base_x.BASE10, base_x.BASE62 );
 
-	short = base_x.convert( db_id, base_x.BASE10, base_x.BASE62 );
-	
-	res.render( 'shorten',{
-		short: short,
-		formatted_url: formatted_url,
-		input_url: input_url
+			res.render( 'shorten', {
+				short_url: req.protocol + '://' + req.get('Host') + "/" + earl,
+				formatted_url: formatted_url,
+				input_url: input_url
+			} );
+		} else {
+			res.render( 'error', {} );
+		}
 	} );
 } );
 
