@@ -9,7 +9,7 @@ var base_x = require( '@eaglstun/base-x' ),
 
 
 app.use( express.bodyParser() );
-app.use( express.static('public') );
+
 app.use( logfmt.requestLogger() );
 
 app.engine( 'handlebars', exphbs({
