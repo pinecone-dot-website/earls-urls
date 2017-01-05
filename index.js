@@ -66,10 +66,20 @@ app.get( '/:short', function(req, res){
 		if( url ){
 			res.redirect( url ); 
 		} else {
-			res.render( 'error' );
+			res.render( 'error', {
+				db_id: db_id
+			} );
 		}
 	} );
 } );
+
+app.get('*', function(req, res){
+	res.status( 404 );
+
+	res.render( '404', {
+				
+	} );
+});
 
 var port = Number( process.env.PORT || 5000 );
 app.listen( port, function(){
