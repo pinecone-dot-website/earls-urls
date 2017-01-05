@@ -18,5 +18,7 @@
     "logfmt": "~0.20.0",
     "pg": ">= 0.6.15"
   },
-  "postinstall": "./node_modules/bower/bin/bower install"
+  "scripts": {
+    "postinstall": "bower install && grunt build"
+  }
 }
