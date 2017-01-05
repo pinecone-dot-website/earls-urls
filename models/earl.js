@@ -12,7 +12,7 @@ var earl = new function(){
 	this.get = function( id, callback ){
 		pg.connect( process.env.DATABASE_URL, function(err, client, done){
 			var query = client.query( 'SELECT * FROM urls WHERE id = $1 LIMIT 1', [id], function( err, result ){
-				if( !result.rowCount ){
+				if( !result || !result.rowCount ){
 					callback( '' );
 				}
 			} );
