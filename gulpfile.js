@@ -6,17 +6,22 @@ var config = {
     publicDir: './public',
 };
 
-gulp.task('css', function() {
+gulp.task( 'css', function() {
     return gulp.src('./css/app.scss')
-    .pipe(sass({
-        includePaths: [config.bootstrapDir + '/assets/stylesheets'],
-    }))
-    .pipe(gulp.dest(config.publicDir + '/css'));
-});
+    	.pipe(sass({
+	        includePaths: [config.bootstrapDir + '/assets/stylesheets'],
+	    }))
+	    .pipe(gulp.dest(config.publicDir + '/css'));
+} );
 
-gulp.task('fonts', function() {
+gulp.task( 'fonts', function() {
     return gulp.src(config.bootstrapDir + '/assets/fonts/**/*')
-    .pipe(gulp.dest(config.publicDir + '/fonts'));
-});
+    	.pipe(gulp.dest(config.publicDir + '/fonts'));
+} );
 
-gulp.task( 'default', ['css', 'fonts'] );
+gulp.task( 'js', function(){
+	return gulp.src( './bower_components/jquery/dist/jquery.js' )
+		.pipe(gulp.dest(config.publicDir + '/js'));
+} );
+
+gulp.task( 'default', ['css', 'fonts', 'js'] );
