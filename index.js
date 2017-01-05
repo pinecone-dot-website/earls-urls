@@ -43,7 +43,7 @@ app.post( '/shorten', function(req, res){
 
 	earl.insert( formatted_url, function(id){
 		if( id ){
-			var earl = base_x.convert( id, base_x.BASE10, base_x.BASE62 );
+			var earl = base_x.convert( id, base_x.BASE10, base_x.BASE75 );
 
 			res.render( 'shorten', {
 				short_url: req.protocol + '://' + req.get('Host') + "/" + earl,
@@ -59,7 +59,12 @@ app.post( '/shorten', function(req, res){
 app.get( '/:short', function(req, res){
 	var short = req.route.params.short;
 	
-	db_id = base_x.convert( short, base_x.BASE62, base_x.BASE10 );
+	if( short.length > 20 ){
+		res.render( 'error' );
+		return;
+	}
+
+	db_id = base_x.convert( short, base_x.BASE75, base_x.BASE10 );
 	console.log( 'db_id', db_id );
 
 	earl.get( db_id, function(url){
