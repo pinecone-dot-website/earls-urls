@@ -66,7 +66,7 @@ app.get( '/:short', function(req, res){
 		if( url ){
 			res.redirect( url ); 
 		} else {
-			es.render( 'error' );
+			res.render( 'error' );
 		}
 	} );
 } );

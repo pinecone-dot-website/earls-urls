@@ -11,11 +11,15 @@ var earl = new function(){
 	*/
 	this.get = function( id, callback ){
 		pg.connect( process.env.DATABASE_URL, function(err, client, done){
-			var query = client.query( 'SELECT * FROM urls WHERE id = $1 LIMIT 1', [id] );
+			var query = client.query( 'SELECT * FROM urls WHERE id = $1 LIMIT 1', [id], function( err, result ){
+				if( !result.rowCount ){
+					callback( '' );
+				}
+			} );
 
-			query.on( "row", function (row, result) {
+			query.on( "row", function(row, result){
 				callback( row.url );
-			});
+			} );
 		} );
 	}
 
@@ -30,9 +34,9 @@ var earl = new function(){
 				
 			} );
 
-			query.on( "row", function (row, result) {
+			query.on( "row", function(row, result){
 			    callback( row.id );
-			});
+			} );
 		} );
 	}
 }
