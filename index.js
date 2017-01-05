@@ -62,24 +62,12 @@ app.get( '/:short', function(req, res){
 	db_id = base_x.convert( short, base_x.BASE62, base_x.BASE10 );
 	console.log( 'db_id', db_id );
 
-	/*
-	pg.connect( process.env.DATABASE_URL, function(err, client, done){
-		var query = client.query( 'SELECT * FROM earls_urls WHERE id = $1 LIMIT 1', [db_id], function( err, result ){
-
-			console.log( 'id', arguments );
-
-			if( result.rows[0].id ){
-				res.redirect( result.rows[0].url ); 
-			} else {
-				res.render( 'error' );
-			}
-		} );
-	} );
-	*/
-
-	res.render( 'redirect',{
-		short: short,
-		db_id: db_id	
+	earl.get( db_id, function(url){
+		if( url ){
+			res.redirect( url ); 
+		} else {
+			es.render( 'error' );
+		}
 	} );
 } );
 
