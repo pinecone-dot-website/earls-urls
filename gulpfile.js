@@ -15,6 +15,9 @@ gulp.task( 'css', function() {
 } );
 
 gulp.task( 'fonts', function() {
+    gulp.src('./css/fonts/**/*')
+        .pipe(gulp.dest(config.publicDir + '/fonts'));
+
     return gulp.src(config.bootstrapDir + '/assets/fonts/**/*')
     	.pipe(gulp.dest(config.publicDir + '/fonts'));
 } );

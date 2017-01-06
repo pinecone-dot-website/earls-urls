@@ -1,9 +1,7 @@
-var base_x = require( '@eaglstun/base-x' ),
-	earl = require( './models/earl' ),
+var earl = require( './models/earl' ),
 	express = require( 'express' ),
 	exphbs = require( 'express3-handlebars' ),
 	logfmt = require( 'logfmt' ),
-	url = require('url'),
 	
 	app = express();
 
@@ -20,35 +18,22 @@ app.set( 'view engine', 'handlebars' );
 if( !process.env.DATABASE_URL )
 	process.env.DATABASE_URL = "postgres://eeaglstun@localhost/earls_urls";
 
+// home page
 app.get( '/', function(req, res){
 	res.render('home');
 } );
 
+// post to shorten
 app.post( '/shorten', function(req, res){
-	
-	var input_url = req.body.url,
-		parsed_url = url.parse( input_url );
-
-	if( !parsed_url.protocol )
-		parsed_url.protocol = 'http:';
-
-	if( !parsed_url.hostname ){
-		parsed_url.hostname = parsed_url.pathname;
-
-		parsed_url.path = '/';
-		parsed_url.pathname = '';
-	}
-
-	var formatted_url = url.format( parsed_url );
+	var input_url = req.body.url;
+	var formatted_url = earl.format( input_url );
 
 	earl.insert( formatted_url, function(id){
 		if( id ){
-			var earl = base_x.convert( id, base_x.BASE10, base_x.BASE75 );
-
 			res.render( 'shorten', {
-				short_url: req.protocol + '://' + req.get('Host') + "/" + earl,
 				formatted_url: formatted_url,
-				input_url: input_url
+				input_url: input_url,
+				short_url: earl.get_shortlink( id, req )
 			} );
 		} else {
 			res.render( 'error', {} );
@@ -56,6 +41,27 @@ app.post( '/shorten', function(req, res){
 	} );
 } );
 
+// api post
+app.post( '/api', function(req, res){
+	var input_url = req.query.url;
+	var formatted_url = earl.format( input_url );
+
+	earl.insert( formatted_url, function(id){
+		if( id ){
+			res.json( {
+				formatted_url: formatted_url,
+				input_url: input_url,
+				short_url: earl.get_shortlink( id, req ),
+
+				success: true
+			} );
+		} else {
+			res.json( {success: false} );
+		}
+	} );
+} );
+
+// get shortlink and redirect
 app.get( '/:short', function(req, res){
 	var short = req.route.params.short;
 	
@@ -64,20 +70,18 @@ app.get( '/:short', function(req, res){
 		return;
 	}
 
-	db_id = base_x.convert( short, base_x.BASE75, base_x.BASE10 );
-	console.log( 'db_id', db_id );
-
-	earl.get( db_id, function(url){
+	earl.get_by_shortid( short, function(url){
 		if( url ){
 			res.redirect( url ); 
 		} else {
 			res.render( 'error', {
-				db_id: db_id
+				
 			} );
 		}
 	} );
 } );
 
+// 404 all others
 app.get('*', function(req, res){
 	res.status( 404 );
 
