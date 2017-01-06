@@ -44,6 +44,9 @@ var earl = new function(){
 	*	@return int
 	*/
 	this.insert = function( formatted_url, callback ){
+		if( !formatted_url )
+			callback( false );
+
 		pg.connect( process.env.DATABASE_URL, function(err, client, done){
 			var query = client.query( 'INSERT INTO urls ( "url", "timestamp" ) VALUES( $1, now() ) RETURNING id', [formatted_url], function( err, result ){
 				
@@ -58,9 +61,12 @@ var earl = new function(){
 	/**
 	*	helper function to ensure proper url 
 	*	@param string
-	*	@return string
+	*	@return string | false
 	*/
 	this.format = function( input_url ){
+		if( !input_url.length )
+			return false;
+
 		var parsed_url = url.parse( input_url );
 
 		if( !parsed_url.protocol )
