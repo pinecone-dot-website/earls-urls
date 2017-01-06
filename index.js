@@ -43,7 +43,7 @@ app.post( '/shorten', function(req, res){
 
 // api post
 app.post( '/api', function(req, res){
-	var input_url = req.query.url;
+	var input_url = req.body.url;
 	var formatted_url = earl.format( input_url );
 
 	earl.insert( formatted_url, function(id){
