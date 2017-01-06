@@ -1,6 +1,6 @@
 {
   "name": "earls-urls",
-  "version": "0.2",
+  "version": "0.2.0",
   "description": "testing it out",
   "main": "index.js",
   "scripts": {
