@@ -70,12 +70,12 @@ app.get( '/:short', function(req, res){
 		return;
 	}
 
-	earl.get_by_shortid( short, function(url){
-		if( url ){
-			res.redirect( url ); 
+	earl.get_by_shortid( short, function(row){
+		if( row.url ){
+			res.redirect( row.url ); 
 		} else {
 			res.render( 'error', {
-				
+				db_id: row.db_id
 			} );
 		}
 	} );

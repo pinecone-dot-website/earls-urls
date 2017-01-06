@@ -9,7 +9,7 @@ var earl = new function(){
 	/**
 	*
 	*	@param int database id
-	*	@return string long url
+	*	@return object db row
 	*/
 	this.get_by_id = function( db_id, callback ){
 		pg.connect( process.env.DATABASE_URL, function(err, client, done){
@@ -17,12 +17,12 @@ var earl = new function(){
 				console.log( 'result', result );
 
 				if( !result || !result.rowCount ){
-					callback( '' );
+					callback( {db_id: db_id} );
 				}
 			} );
 
 			query.on( "row", function(row, result){
-				callback( row.url );
+				callback( row );
 			} );
 		} );
 	}
