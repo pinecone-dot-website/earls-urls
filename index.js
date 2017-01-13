@@ -41,6 +41,11 @@ app.post( '/shorten', function(req, res){
 	} );
 } );
 
+// lets encrypt
+app.get( '/.well-known/acme-challenge/R_0BAVeJHFCXBbyGueZXe_xRGx4OTXgCDta4FaM91Bw', function(req, res){
+	res.send( 'R_0BAVeJHFCXBbyGueZXe_xRGx4OTXgCDta4FaM91Bw.aRtutkbrCRZxw9-jUWMxiEK7Zzk5FFjF3BvpgmRtbgw' );
+} );
+
 // api post
 app.post( '/api', function(req, res){
 	var input_url = req.body.url;
