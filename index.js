@@ -1,11 +1,12 @@
-var earl = require( './models/earl' ),
+var bodyParser = require( 'body-parser' ),
+	earl = require( './models/earl' ),
 	express = require( 'express' ),
 	exphbs = require( 'express3-handlebars' ),
 	logfmt = require( 'logfmt' ),
 	
 	app = express();
 
-app.use( express.bodyParser() );
+app.use( bodyParser.urlencoded({ extended: false }) );
 app.use( express.static('public') );
 app.use( logfmt.requestLogger() );
 
@@ -63,7 +64,7 @@ app.post( '/api', function(req, res){
 
 // get shortlink and redirect
 app.get( '/:short', function(req, res){
-	var short = req.route.params.short;
+	var short = req.params.short;
 	
 	if( short.length > 20 ){
 		res.render( 'error' );
