@@ -83,11 +83,15 @@ app.get( '/:short', function(req, res){
 				db_id: err.db_id
 			} );
 		}, function( row ){
+			res.redirect( row.url ); 
+			
+			/*
 			res.render( 'info', {
 				row: row
-			} 
-		); 
-	} );
+			} );
+			*/ 
+		} 
+	);
 } );
 
 // 404 all others
