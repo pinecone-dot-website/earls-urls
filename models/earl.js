@@ -14,8 +14,6 @@ var earl = new function(){
 	this.get_by_id = function( db_id, callback ){
 		pg.connect( process.env.DATABASE_URL, function(err, client, done){
 			var query = client.query( 'SELECT * FROM urls WHERE id = $1 LIMIT 1', [db_id], function( err, result ){
-				console.log( 'result', result );
-
 				if( !result || !result.rowCount ){
 					callback( {db_id: db_id} );
 				}
@@ -63,7 +61,7 @@ var earl = new function(){
 	*	@param string
 	*	@return string | false
 	*/
-	this.format = function( input_url ){
+	this.format = function( input_url = '' ){
 		if( !input_url.length )
 			return false;
 
@@ -87,7 +85,6 @@ var earl = new function(){
 	*	@param int
 	*/
 	this.get_shortlink = function( db_id, req ){
-		console.log( 'req', req );
 		var earl = base_x.convert( db_id, base_x.BASE10, base_x.BASE75 );
 
 		return req.protocol + '://' + req.get('Host') + "/" + earl;
