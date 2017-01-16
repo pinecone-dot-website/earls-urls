@@ -1,7 +1,7 @@
 var bodyParser = require( 'body-parser' ),
 	earl = require( './models/earl' ),
 	express = require( 'express' ),
-	exphbs = require( 'express3-handlebars' ),
+	exphbs = require( 'express-handlebars' ),
 	logfmt = require( 'logfmt' ),
 	
 	app = express();
@@ -101,7 +101,7 @@ app.get( '*', function(req, res){
 	res.render( '404', {} );
 } );
 
-var port = Number( process.env.PORT || 5000 );
+var port = Number( process.env.PORT || 5010 );
 app.listen( port, function(){
 	console.log( "Listening on port" + port );
 } );
