@@ -2,10 +2,6 @@
 
 var pg = require( 'pg' );
 
-// @TODO better envs
-if( !process.env.DATABASE_URL )
-	process.env.DATABASE_URL = "postgres://eeaglstun@localhost/earls_urls";
-
 module.exports = {
    query: function(text, values, cb) {
       pg.connect( process.env.DATABASE_URL, function(err, client, done){

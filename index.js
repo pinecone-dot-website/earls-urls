@@ -10,6 +10,8 @@ app.use( bodyParser.urlencoded( {extended: false} ) );
 app.use( express.static('public') );
 app.use( logfmt.requestLogger() );
 
+require( 'dotenv' ).config();
+
 app.engine( 'handlebars', exphbs({
 	defaultLayout: 'main',
 	helpers: {
