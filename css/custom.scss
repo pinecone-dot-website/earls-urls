@@ -2,6 +2,8 @@
  * Globals
  */
 
+@import url('https://fonts.googleapis.com/css?family=Averia+Serif+Libre');
+
 @font-face {
     font-family: 'mgopen_modernaregular';
     src: url('../fonts/mgopenmodernaregular-webfont.eot');
@@ -26,6 +28,12 @@
 
 $font-family-sans-serif: 'mgopen_modernaregular', "Helvetica Neue", Helvetica, Arial, sans-serif;
 $headings-font-family: 'mgopen_modernabold', "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+h1.site{
+  font-family: 'Averia Serif Libre', sans-serif;
+}
+
+$font-size-h1: 48px;
 
 /* Links */
 a,
@@ -59,9 +67,6 @@ body {
   text-align: center;
  
 }
-
- 
-
 
 /* Extra markup and styles for table-esque vertical and horizontal centering */
 .site-wrapper {
