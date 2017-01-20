@@ -1,5 +1,6 @@
-var gulp = require('gulp');
-var sass = require('gulp-sass');
+var gulp = require('gulp'),
+    sass = require('gulp-sass'),
+    watch = require('gulp-watch');
 
 var config = {
     bootstrapDir: './bower_components/bootstrap-sass',
