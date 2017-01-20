@@ -63,7 +63,7 @@ var earl = new function(){
 
 		var parsed_url = url.parse( input_url );
 
-		if( !parsed_url.protocol )
+		if( ['https:', 'http:'].indexOf(parsed_url.protocol) < 0 )
 			parsed_url.protocol = 'http:';
 
 		if( !parsed_url.hostname ){
