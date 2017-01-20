@@ -55,7 +55,9 @@ app.post( '/api', function(req, res){
 	earl.insert( 
 		formatted_url, 
 		function(){
-			res.json( {success: false} );
+			res.json( {
+				success: false
+			} );
 		},
 		function( id ){
 			res.json( {
