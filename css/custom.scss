@@ -35,6 +35,18 @@ h1.site{
 
 $font-size-h1: 48px;
 
+p.original{
+  font-size: 24px;  
+}
+
+p.result{
+  font-size: 36px;  
+}
+
+span.info{
+  font-size: 50%;  
+}
+
 /* Links */
 a,
 a:focus,

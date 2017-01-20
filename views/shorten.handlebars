@@ -1,2 +1,13 @@
-<h2><a href="{{short_url}}">{{short_url}}</a></h2>
-<h3>{{input_url}}</h3>
+<p class="original">
+	<span class="">{{ formatted_url }}</span> 
+	<span class="info">({{ formatted_url.length }} characters)
+</p>
+
+<p>has been shortened to</p>
+
+<p class="result">
+	<a href="{{ short_url }}">{{ short_url }}</a>
+	<span class="info">({{ short_url.length }} characters)</span>
+</p>
+
+<!-- <h3>{{ input_url }}</h3> -->
