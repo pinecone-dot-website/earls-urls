@@ -20,7 +20,19 @@
 				</div>
 
 				<div class="inner cover">
-				{{{body}}}
+					{{#if user}}
+						<pre>user: {{ json user }}</pre>
+						<a href="/logout">logout</a>
+					{{else}}
+						<form class="" method="post" action="/login">
+							<input type="text" class="form-control"  id="url" name="username" tabindex="1" placeholder="user"/>
+							<input type="password" class="form-control"  id="url" name="password" tabindex="2" placeholder="pass"/>
+
+							<input type="submit"  class="btn btn-lg btn-primary btn-block" tabindex="3" value="login" />
+						</form>
+						{{/if}}
+
+					{{{body}}}
 				</div>
 
 				<div class="mastfoot">

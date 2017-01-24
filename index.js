@@ -1,17 +1,54 @@
+const express = require( 'express' ),
+		exphbs = require( 'express-handlebars' ),
+		expsession = require( 'express-session' ),
+	  passport = require( 'passport' ),
+	  	LocalStrategy = require('passport-local'),
+	  logfmt = require( 'logfmt' );
+
 var bodyParser = require( 'body-parser' ),
 	earl = require( './models/earl' ),
-	express = require( 'express' ),
-	exphbs = require( 'express-handlebars' ),
-	logfmt = require( 'logfmt' ),
+	
 	
 	app = express();
 
 app.use( bodyParser.urlencoded( {extended: false} ) );
+app.use( expsession({ secret: 'so cool' }) );
 app.use( express.static('public') );
 app.use( logfmt.requestLogger() );
 
+// passport setup
+app.use( passport.initialize() );
+app.use( passport.session() );
+passport.serializeUser( function(user, done){
+	console.log( "serializing user", user );
+	done( null, user );
+} );
+
+passport.deserializeUser( function(obj, done){
+	console.log( "deserializing obj", obj );
+	done( null, obj );
+} );
+
+passport.use( 'local-login', new LocalStrategy(
+	{ passReqToCallback : true },
+	function(req, username, password, done) {
+		//console.log( 'local-login', arguments );
+
+		return done( null, {
+			id: 1
+		} );
+	}
+) );
+
+// user data on all routes
+app.use( function(req, res, next){
+    res.locals.user = req.user;
+    next();
+} );
+
 require( 'dotenv' ).config();
 
+// handlebars setup
 app.engine( 'handlebars', exphbs({
 	defaultLayout: 'main',
 	helpers: {
@@ -24,7 +61,7 @@ app.set( 'view engine', 'handlebars' );
 
 // home page
 app.get( '/', function(req, res){
-	res.render('home');
+	res.render( 'home' );
 } );
 
 // post to shorten
@@ -45,6 +82,24 @@ app.post( '/shorten', function(req, res){
 			} );
 		} 
 	);
+} );
+
+// user login and our
+app.post( '/login', 
+		  passport.authenticate('local-login'),
+		  /* {
+			successRedirect: '/yay',
+			failureRedirect: '/sorry'
+		  } */
+		  
+		  function(req, res) {
+			res.redirect( '/' );
+		  }
+);
+
+app.get( '/logout', function(req, res){
+	req.logout();
+	res.redirect( '/' );
 } );
 
 // api post
@@ -107,5 +162,5 @@ app.get( '*', function(req, res){
 
 var port = Number( process.env.PORT || 5010 );
 app.listen( port, function(){
-	console.log( "Listening on port" + port );
+	console.log( "Listening on port " + port );
 } );
