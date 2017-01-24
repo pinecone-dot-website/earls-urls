@@ -157,7 +157,7 @@ app.get( '/:short', function(req, res){
 } );
 
 // 404 all others
-app.get( '*', function(req, res){
+app.all( '*', function(req, res){
 	res.status( 404 );
 
 	res.render( '404', {} );
