@@ -12,7 +12,10 @@ var bodyParser = require( 'body-parser' ),
 	app = express();
 
 app.use( bodyParser.urlencoded( {extended: false} ) );
-app.use( expsession({ secret: 'so cool' }) );
+app.use( expsession({ 
+	saveUninitialized: true,
+	secret: 'so cool' 
+}) );
 app.use( express.static('public') );
 app.use( logfmt.requestLogger() );
 
