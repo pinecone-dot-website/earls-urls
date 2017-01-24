@@ -13,6 +13,7 @@ var bodyParser = require( 'body-parser' ),
 
 app.use( bodyParser.urlencoded( {extended: false} ) );
 app.use( expsession({ 
+	resave: false,
 	saveUninitialized: true,
 	secret: 'so cool' 
 }) );
@@ -35,8 +36,6 @@ passport.deserializeUser( function(obj, done){
 passport.use( 'local-login', new LocalStrategy(
 	{ passReqToCallback : true },
 	function(req, username, password, done) {
-		//console.log( 'local-login', arguments );
-
 		return done( null, {
 			id: 1
 		} );
@@ -89,15 +88,14 @@ app.post( '/shorten', function(req, res){
 
 // user login and our
 app.post( '/login', 
-		  passport.authenticate('local-login'),
-		  /* {
-			successRedirect: '/yay',
-			failureRedirect: '/sorry'
-		  } */
-		  
-		  function(req, res) {
-			res.redirect( '/' );
-		  }
+	passport.authenticate( 'local-login',{
+		successRedirect: '/',
+		failureRedirect: '/'
+	} ),
+
+	function(req, res) {
+		res.redirect( '/' );
+	}
 );
 
 app.get( '/logout', function(req, res){
