@@ -10,28 +10,45 @@
 	<title>EARLS URLS</title>
 </head>
 <body>
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="/">Earls Urls</a>
+			</div>
+
+		    <div class="" id="">
+		    	{{#if user }}
+					<div class="navbar-right">
+						<a href="/logout" class="">logout</a>
+						<pre>{{ json user }}</pre>
+			    	</div>
+	     		{{ else }}
+	     			<form method="post" action="/login" id="signin" class="navbar-form navbar-right" role="form">
+						<div class="input-group">
+							<input id="email" type="text" class="form-control" name="username" value="" placeholder="username">
+						</div>
+
+						<div class="input-group">
+							<input id="password" type="password" class="form-control" name="password" value="" placeholder="password">
+						</div>
+
+						<button type="submit" class="btn btn-primary">login</button>
+					</form>
+	     		{{/if }}
+			</div>
+		</div>
+	</nav>
+
 	<div class="site-wrapper">
 		<div class="site-wrapper-inner">
 			<div class="cover-container">
 				<div class="masthead clearfix">
 					<div class="inner">
-						<h1 class="site"><a href="/">Earls Urls</a></h1>
+						
 					</div>
 				</div>
 
 				<div class="inner cover">
-					{{#if user}}
-						<pre>user: {{ json user }}</pre>
-						<a href="/logout">logout</a>
-					{{else}}
-						<form class="" method="post" action="/login">
-							<input type="text" class="form-control"  id="url" name="username" tabindex="1" placeholder="user"/>
-							<input type="password" class="form-control"  id="url" name="password" tabindex="2" placeholder="pass"/>
-
-							<input type="submit"  class="btn btn-lg btn-primary btn-block" tabindex="3" value="login" />
-						</form>
-						{{/if}}
-
 					{{{body}}}
 				</div>
 
