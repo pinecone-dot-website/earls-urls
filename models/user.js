@@ -19,9 +19,9 @@ var user = new function(){
 
 		        db.query( 'INSERT INTO users ( "username", "password" ) VALUES( $1, $2 ) RETURNING id', [username, hash], function(err, result){
 		        	if( err )
-		        		console.log( 'err', err );
+		        		fail();
 					else
-						console.log( 'result', result );
+						success( 'result', result );
 				} );
 		    } );
 		} );
@@ -43,9 +43,6 @@ var user = new function(){
 				hash = result.rows[0].password;
 
 			bcrypt.compare( password, hash, function(err, res){
-				console.log( 'err', err );
-				console.log( 'res', res );
-				
 				if( res )
 					success( result.rows[0].id );
 				else
