@@ -50,6 +50,7 @@ passport.use( 'local-login', new pass_localstrategy(
 // user data on all routes
 app.use( function(req, res, next){
     res.locals.user = req.user;
+
     next();
 } );
 
@@ -93,31 +94,33 @@ app.post( '/shorten', function(req, res){
 } );
 
 // user login / registration
-app.post( '/u/login', 
-	passport.authenticate( 'local-login',{
-		successRedirect: '/',
-		failureRedirect: '/'
-	} ),
-
-	function(req, res) {
-		res.redirect( '/' );
+app.post( '/u/auth', function( req, res ){
+	if( req.body.login ){
+		passport.authenticate( 'local-login', {
+			successRedirect: '/?success',
+			failureRedirect: '/?failure'
+		} )(req, res, function(){
+			console.log( 'login done' );
+			res.redirect( '/?login' );
+		} );
+	} else if( req.body.register ){
+		console.log( 'register' );
+		user.create( req.body.username, req.body.password, function(){
+			// @todo show error message
+			res.redirect( '/?error' );
+		}, function(){
+			passport.authenticate('local-login')( req, res, function(){
+	            res.redirect('/?create');
+	        } );
+		} );
+	} else {
+		res.redirect( '/?unknown' );
 	}
-);
+} );
 
 app.get( '/u/logout', function(req, res){
 	req.logout();
-	res.redirect( '/' );
-} );
-
-app.post( '/u/signup', function(req, res){
-	user.create( req.body.username, req.body.password, function(){
-		// @todo show error message
-		res.redirect( '/' );
-	}, function(){
-		passport.authenticate('local-login')( req, res, function(){
-            res.redirect('/');
-        } );
-	} );
+	res.redirect( '/?logout' );
 } );
 
 // api post
