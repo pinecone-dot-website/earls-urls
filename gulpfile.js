@@ -29,3 +29,7 @@ gulp.task( 'js', function(){
 } );
 
 gulp.task( 'default', ['css', 'fonts', 'js'] );
+
+gulp.task( 'watch', ['default'], function(){
+    gulp.watch( './css/*.scss', ['css'] );
+} );
