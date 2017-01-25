@@ -3,12 +3,13 @@ const express = require( 'express' ),
 		expsession = require( 'express-session' ),
 	  passport = require( 'passport' ),
 	  	LocalStrategy = require('passport-local'),
-	  logfmt = require( 'logfmt' );
+	  logfmt = require( 'logfmt' ),
+
+	  // models
+	  earl = require( './models/earl' )
+	  user = require( './models/user' );
 
 var bodyParser = require( 'body-parser' ),
-	earl = require( './models/earl' ),
-	
-	
 	app = express();
 
 app.use( bodyParser.urlencoded( {extended: false} ) );
@@ -35,9 +36,13 @@ passport.deserializeUser( function(obj, done){
 
 passport.use( 'local-login', new LocalStrategy(
 	{ passReqToCallback : true },
-	function(req, username, password, done) {
-		return done( null, {
-			id: 1
+	function( req, username, password, done ){
+		user.login( username, password, function(){
+			return done( null, false );
+		}, function(id){
+			return done( null, {
+				id: id
+			} );
 		} );
 	}
 ) );
@@ -86,8 +91,8 @@ app.post( '/shorten', function(req, res){
 	);
 } );
 
-// user login and our
-app.post( '/login', 
+// user login / registration
+app.post( '/u/login', 
 	passport.authenticate( 'local-login',{
 		successRedirect: '/',
 		failureRedirect: '/'
@@ -98,9 +103,19 @@ app.post( '/login',
 	}
 );
 
-app.get( '/logout', function(req, res){
+app.get( '/u/logout', function(req, res){
 	req.logout();
 	res.redirect( '/' );
+} );
+
+app.post( '/u/signup', function(req, res){
+	user.create( req.body.username, req.body.password, function(){
+		console.log( arguments );
+	}, function(){
+		console.log( arguments );
+
+		res.redirect( '/' );
+	} );
 } );
 
 // api post

@@ -19,17 +19,29 @@
 		    <div class="" id="">
 		    	{{#if user }}
 					<div class="navbar-right">
-						<a href="/logout" class="">logout</a>
+						<a href="/u/logout" class="">logout</a>
 						<pre>{{ json user }}</pre>
 			    	</div>
 	     		{{ else }}
-	     			<form method="post" action="/login" id="signin" class="navbar-form navbar-right" role="form">
+	     			<form method="post" action="/u/login" id="login" class="navbar-form navbar-right" role="form">
 						<div class="input-group">
-							<input id="email" type="text" class="form-control" name="username" value="" placeholder="username">
+							<input id="username" type="text" class="form-control" name="username" value="" placeholder="username">
 						</div>
 
 						<div class="input-group">
 							<input id="password" type="password" class="form-control" name="password" value="" placeholder="password">
+						</div>
+
+						<button type="submit" class="btn btn-primary">login</button>
+					</form>
+
+					<form method="post" action="/u/signup" id="signup" class="navbar-form navbar-right" role="form">
+						<div class="input-group">
+							<input id="username" type="text" class="form-control" name="username" value="" placeholder="signup username">
+						</div>
+
+						<div class="input-group">
+							<input id="password" type="password" class="form-control" name="password" value="" placeholder="signup password">
 						</div>
 
 						<button type="submit" class="btn btn-primary">login</button>
