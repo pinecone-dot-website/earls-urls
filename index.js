@@ -75,9 +75,10 @@ app.get( '/', function(req, res){
 app.post( '/shorten', function(req, res){
 	var input_url = req.body.url;
 	var formatted_url = earl.format( input_url );
+	var user_id = req.user ? req.user.id : 0;
 
 	earl.insert( 
-		formatted_url, 
+		formatted_url, user_id,
 		function(){
 			res.render( 'error', {} );
 		},
@@ -110,11 +111,12 @@ app.get( '/u/logout', function(req, res){
 
 app.post( '/u/signup', function(req, res){
 	user.create( req.body.username, req.body.password, function(){
-		console.log( arguments );
-	}, function(){
-		console.log( arguments );
-
+		// @todo show error message
 		res.redirect( '/' );
+	}, function(){
+		passport.authenticate('local-login')( req, res, function(){
+            res.redirect('/');
+        } );
 	} );
 } );
 
@@ -125,6 +127,7 @@ app.post( '/api', function(req, res){
 
 	earl.insert( 
 		formatted_url, 
+		0,
 		function(){
 			res.json( {
 				success: false

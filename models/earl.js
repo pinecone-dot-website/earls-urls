@@ -37,17 +37,18 @@ var earl = new function(){
 	/**
 	*
 	*	@param string
+	*	@param int
 	*	@param callback
 	*	@param callback
 	*	@return int
 	*/
-	this.insert = function( formatted_url, fail, success ){
+	this.insert = function( formatted_url, user_id, fail, success ){
 		console.log( 'formatted_url', formatted_url );
 
 		if( !formatted_url )
 			fail( false );
 
-		db.query( 'INSERT INTO urls ( "url", "timestamp" ) VALUES( $1, now() ) RETURNING id', [formatted_url], function(err, result){
+		db.query( 'INSERT INTO urls ( "url", "timestamp", "user_id" ) VALUES( $1, now(), $2 ) RETURNING id', [formatted_url, user_id], function(err, result){
 			success( result.rows[0].id );
 		} );
 	}
