@@ -1,8 +1,8 @@
 const express = require( 'express' ),
-		exphbs = require( 'express-handlebars' ),
-		expsession = require( 'express-session' ),
+		exp_hbs = require( 'express-handlebars' ),
+		exp_session = require( 'express-session' ),
 	  passport = require( 'passport' ),
-	  	LocalStrategy = require('passport-local'),
+	  	pass_localstrategy = require('passport-local'),
 	  logfmt = require( 'logfmt' ),
 
 	  // models
@@ -13,7 +13,7 @@ var bodyParser = require( 'body-parser' ),
 	app = express();
 
 app.use( bodyParser.urlencoded( {extended: false} ) );
-app.use( expsession({ 
+app.use( exp_session({ 
 	resave: false,
 	saveUninitialized: true,
 	secret: 'so cool' 
@@ -34,7 +34,7 @@ passport.deserializeUser( function(obj, done){
 	done( null, obj );
 } );
 
-passport.use( 'local-login', new LocalStrategy(
+passport.use( 'local-login', new pass_localstrategy(
 	{ passReqToCallback : true },
 	function( req, username, password, done ){
 		user.login( username, password, function(){
@@ -56,7 +56,7 @@ app.use( function(req, res, next){
 require( 'dotenv' ).config();
 
 // handlebars setup
-app.engine( 'handlebars', exphbs({
+app.engine( 'handlebars', exp_hbs({
 	defaultLayout: 'main',
 	helpers: {
 		json: function( context ){
