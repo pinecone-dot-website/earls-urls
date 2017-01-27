@@ -12,7 +12,7 @@ const express = require( 'express' ),
 var bodyParser = require( 'body-parser' ),
 	app = express();
 
-app.use( bodyParser.urlencoded( {extended: false} ) );
+app.use( bodyParser.urlencoded( {extended: true} ) );
 app.use( exp_session({ 
 	resave: false,
 	saveUninitialized: true,

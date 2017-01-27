@@ -43,10 +43,8 @@ var earl = new function(){
 	*	@return int
 	*/
 	this.insert = function( formatted_url, user_id, fail, success ){
-		console.log( 'formatted_url', formatted_url );
-
 		if( !formatted_url )
-			fail( false );
+			return fail( false );
 
 		db.query( 'INSERT INTO urls ( "url", "timestamp", "user_id" ) VALUES( $1, now(), $2 ) RETURNING id', [formatted_url, user_id], function(err, result){
 			success( result.rows[0].id );
@@ -59,22 +57,31 @@ var earl = new function(){
 	*	@return string | false
 	*/
 	this.format = function( input_url = '' ){
-		if( !input_url.length )
-			return false;
+		var parsed_url = '',
+			output_url = '';
 
-		var parsed_url = url.parse( input_url );
+		try{
+			parsed_url = url.parse( input_url );
 
-		if( ['https:', 'http:'].indexOf(parsed_url.protocol) < 0 )
-			parsed_url.protocol = 'http:';
 
-		if( !parsed_url.hostname ){
-			parsed_url.hostname = parsed_url.pathname;
+			if( ['https:', 'http:'].indexOf(parsed_url.protocol) < 0 )
+				parsed_url.protocol = 'http:';
 
-			parsed_url.path = '/';
-			parsed_url.pathname = '';
+			if( !parsed_url.hostname ){
+				parsed_url.hostname = parsed_url.pathname;
+
+				parsed_url.path = '/';
+				parsed_url.pathname = '';
+			}
+
+			output_url = url.format( parsed_url );
+		} catch( e ){
+			//console.log( e );
+
+			output_url = false;
 		}
 
-		return url.format( parsed_url );
+		return output_url;
 	}
 
 	/**
