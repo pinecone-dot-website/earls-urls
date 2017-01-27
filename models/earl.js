@@ -1,8 +1,8 @@
 "use strict";
 
-var base_x = require( '@eaglstun/base-x' ),
-	db = require( './db' ),
-	url = url = require('url');
+const base_x = require( '@eaglstun/base-x' ),
+	  db = require( './db' ),
+	  url = require('url');
 
 var earl = new function(){
 
