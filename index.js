@@ -54,7 +54,7 @@ app.use( function(req, res, next){
     
     // malformed urls like http://earlsurls.site/abc%5
     try {
-        decodeURIComponent(req.path)
+        decodeURIComponent( req.path );
     } catch ( err ){
     	return res.render( 'error' );
     }
