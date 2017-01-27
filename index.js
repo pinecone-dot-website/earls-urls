@@ -47,9 +47,17 @@ passport.use( 'local-login', new pass_localstrategy(
 	}
 ) );
 
-// user data on all routes
+
 app.use( function(req, res, next){
+	// user data on all routes
     res.locals.user = req.user;
+    
+    // malformed urls like http://earlsurls.site/abc%5
+    try {
+        decodeURIComponent(req.path)
+    } catch ( err ){
+    	return res.render( 'error' );
+    }
 
     next();
 } );
