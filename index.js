@@ -6,8 +6,12 @@ const express = require( 'express' ),
 	  logfmt = require( 'logfmt' ),
 
 	  // models
-	  earl = require( './models/earl' )
+	  earl = require( './models/earl' ),
 	  user = require( './models/user' );
+
+	  // controllers
+	  controller_user = require( './controllers/user' );
+	  controller_shorten = require( './controllers/shorten' );
 
 var bodyParser = require( 'body-parser' ),
 	app = express();
@@ -47,11 +51,12 @@ passport.use( 'local-login', new pass_localstrategy(
 	}
 ) );
 
-
 app.use( function(req, res, next){
 	// user data on all routes
     res.locals.user = req.user;
-    
+
+    req.passport = passport;
+
     // malformed urls like http://earlsurls.site/abc%5
     try {
         decodeURIComponent( req.path );
@@ -81,55 +86,12 @@ app.get( '/', function(req, res){
 } );
 
 // post to shorten
-app.post( '/shorten', function(req, res){
-	var input_url = req.body.url;
-	var formatted_url = earl.format( input_url );
-	var user_id = req.user ? req.user.id : 0;
-
-	earl.insert( 
-		formatted_url, user_id,
-		function(){
-			res.render( 'error', {} );
-		},
-		function( id ){
-			res.render( 'shorten', {
-				formatted_url: formatted_url,
-				input_url: input_url,
-				short_url: earl.get_shortlink( id, req )
-			} );
-		} 
-	);
-} );
+app.post( '/shorten', controller_shorten.post );
 
 // user login / registration
-app.post( '/u/auth', function( req, res ){
-	if( req.body.login ){
-		passport.authenticate( 'local-login', {
-			successRedirect: '/?success',
-			failureRedirect: '/?failure'
-		} )(req, res, function(){
-			console.log( 'login done' );
-			res.redirect( '/?login' );
-		} );
-	} else if( req.body.register ){
-		console.log( 'register' );
-		user.create( req.body.username, req.body.password, function(){
-			// @todo show error message
-			res.redirect( '/?error' );
-		}, function(){
-			passport.authenticate('local-login')( req, res, function(){
-	            res.redirect('/?create');
-	        } );
-		} );
-	} else {
-		res.redirect( '/?unknown' );
-	}
-} );
-
-app.get( '/u/logout', function(req, res){
-	req.logout();
-	res.redirect( '/?logout' );
-} );
+app.post( '/u/auth', controller_user.auth );
+app.get( '/u/logout', controller_user.logout );
+app.get( '/u/stats', controller_user.stats );
 
 // api post
 app.post( '/api', function(req, res){
