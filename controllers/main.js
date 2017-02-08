@@ -7,7 +7,7 @@ var controller_main = new function(){
 	this.index = function(req, res){
 		res.render( 'home' );
 	}
-	
+
 	/**
 	*
 	*/

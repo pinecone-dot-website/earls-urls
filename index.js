@@ -14,7 +14,8 @@ const express = require( 'express' ),
 	  controller_main = require( './controllers/main' );
 
 var bodyParser = require( 'body-parser' ),
-	app = express();
+	app = express(),
+	git = require('git-rev');
 
 app.use( bodyParser.urlencoded( {extended: true} ) );
 app.use( exp_session({ 
@@ -64,7 +65,11 @@ app.use( function(req, res, next){
     	return res.render( 'error' );
     }
 
-    next();
+    git.tag( function(str){
+	  res.locals.version = str;
+
+	  next();
+	} );
 } );
 
 require( 'dotenv' ).config();
@@ -86,13 +91,13 @@ app.get( '/', controller_main.index );
 // post to shorten
 app.post( '/shorten', controller_main.post );
 
+// api post
+app.post( '/api', controller_main.api );
+
 // user login / registration
 app.post( '/u/auth', controller_user.auth );
 app.get( '/u/logout', controller_user.logout );
 app.get( '/u/stats', controller_user.stats );
-
-// api post
-app.post( '/api', controller_main.api );
 
 // get shortlink and redirect
 app.get( '/:short', controller_main.get );
