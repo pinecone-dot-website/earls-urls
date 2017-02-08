@@ -11,7 +11,7 @@ const express = require( 'express' ),
 
 	  // controllers
 	  controller_user = require( './controllers/user' );
-	  controller_shorten = require( './controllers/shorten' );
+	  controller_main = require( './controllers/main' );
 
 var bodyParser = require( 'body-parser' ),
 	app = express();
@@ -81,12 +81,10 @@ app.engine( 'handlebars', exp_hbs({
 app.set( 'view engine', 'handlebars' );
 
 // home page
-app.get( '/', function(req, res){
-	res.render( 'home' );
-} );
+app.get( '/', controller_main.index );
 
 // post to shorten
-app.post( '/shorten', controller_shorten.post );
+app.post( '/shorten', controller_main.post );
 
 // user login / registration
 app.post( '/u/auth', controller_user.auth );
@@ -94,63 +92,13 @@ app.get( '/u/logout', controller_user.logout );
 app.get( '/u/stats', controller_user.stats );
 
 // api post
-app.post( '/api', function(req, res){
-	var input_url = req.body.url;
-	var formatted_url = earl.format( input_url );
-
-	earl.insert( 
-		formatted_url, 
-		0,
-		function(){
-			res.json( {
-				success: false
-			} );
-		},
-		function( id ){
-			res.json( {
-				formatted_url: formatted_url,
-				input_url: input_url,
-				short_url: earl.get_shortlink( id, req ),
-
-				success: true
-			} );
-		} 
-	);
-} );
+app.post( '/api', controller_main.api );
 
 // get shortlink and redirect
-app.get( '/:short', function(req, res){
-	var short = req.params.short;
-	
-	if( short.length > 20 ){
-		res.render( 'error' );
-		return;
-	}
-
-	earl.get_by_shortid( 
-		short, 
-		function( err ){
-			res.render( 'error', {
-				db_id: err.db_id
-			} );
-		}, function( row ){
-			res.redirect( row.url ); 
-			
-			/*
-			res.render( 'info', {
-				row: row
-			} );
-			*/ 
-		} 
-	);
-} );
+app.get( '/:short', controller_main.get );
 
 // 404 all others
-app.all( '*', function(req, res){
-	res.status( 404 );
-
-	res.render( '404', {} );
-} );
+app.all( '*', controller_main.not_found );
 
 var port = Number( process.env.PORT || 5010 );
 app.listen( port, function(){
