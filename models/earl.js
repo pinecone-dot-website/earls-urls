@@ -94,6 +94,21 @@ var earl = new function(){
 
 		return req.protocol + '://' + req.get('Host') + "/" + earl;
 	}
+
+	/**
+	*
+	*	@param int
+	*/
+	this.get_urls_by_user = function( user_id, fail, success ){
+		db.query( 'SELECT * FROM urls WHERE user_id = $1 ORDER BY "timestamp" DESC', [user_id], function(err, result){
+			if( err ){
+				console.log( err );
+				fail();
+			} else{
+				success( result.rows );
+			}
+		} );
+	}
 }
 
 module.exports = earl;

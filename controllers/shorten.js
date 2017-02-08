@@ -1,4 +1,4 @@
-var earl = require( '../models/earl' )
+var earl = require( '../models/earl' );
 
 var controller_shorten = new function(){
 	this.post = function(req, res){
