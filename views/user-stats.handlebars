@@ -1,1 +1,5 @@
-your stats here:
+<ul>
+{{#each earls}}
+	<li><a href="{{ this.short }}">{{ this.long }}</a> - {{ this.timestamp }}</li>
+{{/each}}
+</ul>
