@@ -84,13 +84,15 @@ var earl = new function(){
 	/**
 	*
 	*	@param int
-  * @param 
+  * @param string
+  * @param int
 	*	@return string
 	*/
-	this.get_shortlink = function( db_id, req ){
+	this.get_shortlink = function( db_id, host, secure = 1 ){
 		var earl = base_x.convert( db_id, base_x.BASE10, base_x.BASE75 );
-
-		return req.protocol + '://' + req.get('Host') + "/" + earl;
+    var protocol = secure ? 'https' : 'http';
+    
+		return protocol + '://' + host + "/" + earl;
 	}
 
 	/**

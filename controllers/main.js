@@ -27,7 +27,7 @@ var controller_main = new function(){
 				res.json( {
 					formatted_url: formatted_url,
 					input_url: input_url,
-					short_url: earl.get_shortlink( id, req ),
+					short_url: earl.get_shortlink( id, req.get('Host'), req.secure ),
 
 					success: true
 				} );
@@ -81,7 +81,7 @@ var controller_main = new function(){
 				res.render( 'shorten', {
 					formatted_url: formatted_url,
 					input_url: input_url,
-					short_url: earl.get_shortlink( id, req )
+					short_url: earl.get_shortlink( id, req.get('Host'), req.secure )
 				} );
 			} 
 		);
