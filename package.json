@@ -22,7 +22,6 @@
     "gulp-bower": ">=0.0.13",
     "gulp-sass": "^3.0.0",
     "gulp-watch": ">=3.10.8",
-    "logfmt": ">=1.2.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "pg": ">= 0.6.15",
