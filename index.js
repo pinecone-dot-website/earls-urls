@@ -1,21 +1,23 @@
-const express = require( 'express' ),
+const bodyParser = require( 'body-parser' ),
+	  express = require( 'express' ),
 		exp_hbs = require( 'express-handlebars' ),
 		exp_session = require( 'express-session' ),
 	  passport = require( 'passport' ),
 	  	pass_localstrategy = require('passport-local'),
 	  logfmt = require( 'logfmt' ),
+	  git = require('git-rev')
 
+	  app = express(),
+	  
 	  // models
 	  earl = require( './models/earl' ),
-	  user = require( './models/user' );
+	  user = require( './models/user' ),
 
 	  // controllers
-	  controller_user = require( './controllers/user' );
+	  controller_user = require( './controllers/user' ),
 	  controller_main = require( './controllers/main' );
 
-var bodyParser = require( 'body-parser' ),
-	app = express(),
-	git = require('git-rev');
+app.enable('trust proxy');
 
 app.use( bodyParser.urlencoded( {extended: true} ) );
 app.use( exp_session({ 

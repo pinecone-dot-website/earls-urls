@@ -4,14 +4,14 @@ var controller_main = new function(){
 	/**
 	*
 	*/
-	this.index = function(req, res){
+	this.index = function( req, res ){
 		res.render( 'home' );
 	}
 
 	/**
 	*
 	*/
-	this.api = function(req, res){
+	this.api = function( req, res ){
 		var input_url = req.body.url;
 		var formatted_url = earl.format( input_url );
 
@@ -38,7 +38,7 @@ var controller_main = new function(){
 	/**
 	*
 	*/
-	this.get = function(req, res){
+	this.get = function( req, res ){
 		var short = req.params.short;
 		
 		if( short.length > 20 ){
@@ -67,7 +67,7 @@ var controller_main = new function(){
 	/**
 	*
 	*/
-	this.post = function(req, res){
+	this.post = function( req, res ){
 		var input_url = req.body.url;
 		var formatted_url = earl.format( input_url );
 		var user_id = req.user ? req.user.id : 0;
@@ -90,7 +90,7 @@ var controller_main = new function(){
 	/**
 	*
 	*/
-	this.not_found =  function(req, res){
+	this.not_found =  function( req, res ){
 		res.status( 404 );
 
 		res.render( '404', {} );
