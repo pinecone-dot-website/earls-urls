@@ -40,7 +40,7 @@ var controller_user = new function(){
 		}, function( rows ){
 			var earls = rows.map( function(x) {
 				return {
-					short: earl.get_shortlink( x.id, req ),
+					short: earl.get_shortlink( x.id, req.get('Host'), req.secure ),
 					long: x.url,
 					timestamp: x.timestamp
 				};
