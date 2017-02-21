@@ -62,8 +62,7 @@ var earl = new function(){
 
 		try{
 			parsed_url = url.parse( input_url );
-
-
+      
 			if( ['https:', 'http:'].indexOf(parsed_url.protocol) < 0 )
 				parsed_url.protocol = 'http:';
 
@@ -76,8 +75,6 @@ var earl = new function(){
 
 			output_url = url.format( parsed_url );
 		} catch( e ){
-			//console.log( e );
-
 			output_url = false;
 		}
 
@@ -87,6 +84,7 @@ var earl = new function(){
 	/**
 	*
 	*	@param int
+  * @param 
 	*	@return string
 	*/
 	this.get_shortlink = function( db_id, req ){

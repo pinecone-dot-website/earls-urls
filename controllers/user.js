@@ -25,12 +25,12 @@ var controller_user = new function(){
 		}
 	}
 
-	this.logout = function(req, res){
+	this.logout = function( req, res ){
 		req.logout();
 		res.redirect( '/?logout' );
 	}
 
-	this.stats = function(req, res){
+	this.stats = function( req, res ){
 		if( !res.locals.user ){
 			res.redirect( '/' );
 		}
