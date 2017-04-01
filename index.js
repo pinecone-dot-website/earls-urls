@@ -107,3 +107,5 @@ var port = Number(process.env.PORT || 5010);
 app.listen(port, function() {
     console.log("Listening on port " + port);
 });
+
+module.exports = app;
