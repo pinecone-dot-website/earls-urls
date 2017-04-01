@@ -13,8 +13,7 @@ const bodyParser = require('body-parser'),
     user = require('./models/user'),
 
     // controllers
-    controller_user = require('./controllers/user'),
-    controller_main = require('./controllers/main');
+    controller_user = require('./controllers/user');
 
 require('dotenv').config();
 
@@ -96,26 +95,12 @@ passport.use('local-login', new pass_localstrategy({ passReqToCallback: true },
 ));
 
 // routes
-
-// home page
-app.get('/', controller_main.index);
-
-// post to shorten
-app.post('/shorten', controller_main.post);
-
-// api post
-app.post('/api', controller_main.api);
+app.use('/', require('./controllers/main')());
 
 // user login / registration
 app.post('/u/auth', controller_user.auth);
 app.get('/u/logout', controller_user.logout);
 app.get('/u/stats', controller_user.stats);
-
-// get shortlink and redirect
-app.get('/:short', controller_main.get);
-
-// 404 all others
-app.all('*', controller_main.not_found);
 
 // run it
 var port = Number(process.env.PORT || 5010);
