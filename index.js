@@ -91,6 +91,11 @@ passport.use('local-login', new pass_localstrategy({ passReqToCallback: true },
 // routes
 app.use('/', require('./controllers/main')());
 app.use('/u/', require('./controllers/user')(passport));
+app.all('*', function(req, res) {
+    res.status(404);
+
+    res.render('404', {});
+});
 
 // run it
 var port = Number(process.env.PORT || 5010);
