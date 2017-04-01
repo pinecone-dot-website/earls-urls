@@ -1,10 +1,12 @@
 var earl = require('../models/earl'),
-    user = require('../models/user');
+    user = require('../models/user'),
+    express = require('express'),
+    router = express.Router();
 
-var controller_user = new function() {
-    this.auth = function(req, res) {
+module.exports = function(passport) {
+    router.post('/auth', function(req, res) {
         if (req.body.login) {
-            req.passport.authenticate('local-login', {
+            passport.authenticate('local-login', {
                 successRedirect: '/?success',
                 failureRedirect: '/?failure'
             })(req, res, function() {
@@ -16,21 +18,21 @@ var controller_user = new function() {
                 // @todo show error message
                 res.redirect('/?error');
             }, function() {
-                req.passport.authenticate('local-login')(req, res, function() {
+                passport.authenticate('local-login')(req, res, function() {
                     res.redirect('/?create');
                 });
             });
         } else {
             res.redirect('/?unknown');
         }
-    }
+    });
 
-    this.logout = function(req, res) {
+    router.get('/logout', function(req, res) {
         req.logout();
         res.redirect('/?logout');
-    }
+    });
 
-    this.stats = function(req, res) {
+    router.get('/stats', function(req, res) {
         if (!res.locals.user) {
             res.redirect('/');
         }
@@ -50,7 +52,7 @@ var controller_user = new function() {
                 earls: earls
             });
         });
-    }
-}
+    });
 
-module.exports = controller_user;
+    return router;
+}

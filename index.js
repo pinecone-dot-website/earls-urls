@@ -10,10 +10,7 @@ const bodyParser = require('body-parser'),
 
     // models
     earl = require('./models/earl'),
-    user = require('./models/user'),
-
-    // controllers
-    controller_user = require('./controllers/user');
+    user = require('./models/user');
 
 require('dotenv').config();
 
@@ -52,9 +49,6 @@ app.use(passport.session());
 app.use(function(req, res, next) {
     // user data on all routes
     res.locals.user = req.user;
-
-    // feels wrong
-    req.passport = passport;
 
     // malformed urls like http://earlsurls.site/abc%5
     try {
@@ -96,11 +90,7 @@ passport.use('local-login', new pass_localstrategy({ passReqToCallback: true },
 
 // routes
 app.use('/', require('./controllers/main')());
-
-// user login / registration
-app.post('/u/auth', controller_user.auth);
-app.get('/u/logout', controller_user.logout);
-app.get('/u/stats', controller_user.stats);
+app.use('/u/', require('./controllers/user')(passport));
 
 // run it
 var port = Number(process.env.PORT || 5010);
