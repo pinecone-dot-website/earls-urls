@@ -1,17 +1,19 @@
-var earl = require('../models/earl');
+var earl = require('../models/earl'),
+    express = require('express'),
+    router = express.Router();
 
-var controller_main = new function() {
+module.exports = function() {
     /**
      *
      */
-    this.index = function(req, res) {
+    router.get('/', function(req, res) {
         res.render('home');
-    }
+    });
 
     /**
      *
      */
-    this.api = function(req, res) {
+    router.post('/api', function(req, res) {
         var input_url = req.body.url;
         var formatted_url = earl.format(input_url);
 
@@ -33,12 +35,12 @@ var controller_main = new function() {
                 });
             }
         );
-    }
+    });
 
     /**
      *
      */
-    this.get = function(req, res) {
+    router.get('/:short', function(req, res) {
         var short = req.params.short;
 
         if (short.length > 20) {
@@ -63,12 +65,12 @@ var controller_main = new function() {
                 */
             }
         );
-    }
+    });
 
     /**
      *
      */
-    this.post = function(req, res) {
+    router.post('/shorten', function(req, res) {
         var input_url = req.body.url;
         var formatted_url = earl.format(input_url);
         var user_id = req.user ? req.user.id : 0;
@@ -86,16 +88,16 @@ var controller_main = new function() {
                 });
             }
         );
-    }
+    });
 
     /**
      *
-     */
-    this.not_found = function(req, res) {
+     
+    router.all('*', function(req, res) {
         res.status(404);
 
         res.render('404', {});
-    }
+    });
+	*/
+    return router;
 }
-
-module.exports = controller_main;
