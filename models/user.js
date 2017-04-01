@@ -6,11 +6,11 @@ var bcrypt = require('bcryptjs'),
 var user = new function() {
     /**
      *
-     *	@param string
-     *	@param string raw password
-     *	@param callback
-     *	@param callback
-     *	@return
+     * @param string
+     * @param string raw password
+     * @param callback
+     * @param callback
+     * @return
      */
     this.create = function(username, password, fail, success) {
         bcrypt.genSalt(10, function(err, salt) {
@@ -29,11 +29,11 @@ var user = new function() {
 
     /**
      *
-     *	@param string
-     *	@param string raw password
-     *	@param callback
-     *	@param callback
-     *	@return
+     * @param string
+     * @param string raw password
+     * @param callback
+     * @param callback
+     * @return
      */
     this.login = function(username, password, fail, success) {
         db.query('SELECT * FROM users WHERE username = $1 LIMIT 1', [username], function(err, result) {
