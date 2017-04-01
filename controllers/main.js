@@ -90,14 +90,5 @@ module.exports = function() {
         );
     });
 
-    /**
-     *
-     
-    router.all('*', function(req, res) {
-        res.status(404);
-
-        res.render('404', {});
-    });
-	*/
     return router;
 }
