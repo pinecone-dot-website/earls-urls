@@ -12,6 +12,12 @@ const bodyParser = require('body-parser'),
     earl = require('./models/earl'),
     user = require('./models/user');
 
+// for unit testing
+app.use(bodyParser.json());
+
+// allow arrays in query string
+app.use(bodyParser.urlencoded({ extended: true }));
+
 require('dotenv').config();
 
 // for req.secure
@@ -28,8 +34,7 @@ app.engine('handlebars', exp_hbs({
 }));
 app.set('view engine', 'handlebars');
 
-// allow arrays in query string
-app.use(bodyParser.urlencoded({ extended: true }));
+
 
 // sessions
 app.use(exp_session({
