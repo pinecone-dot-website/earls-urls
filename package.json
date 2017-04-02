@@ -3,6 +3,10 @@
     "version": "0.3.9",
     "description": "earl shortener",
     "main": "index.js",
+    "engines": {
+        "node": "6.9.x",
+        "npm": "3.10.x"
+    },
     "scripts": {
         "postinstall": "bower install && gulp default",
         "test": "mocha --reporter spec"
