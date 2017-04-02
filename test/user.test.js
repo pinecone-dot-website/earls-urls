@@ -1,7 +1,6 @@
 var app = require('../index');
 var chai = require('chai');
 var faker = require('faker');
-//var request = require('supertest');
 var expect = chai.expect;
 
 chai.use(require('chai-http'));
