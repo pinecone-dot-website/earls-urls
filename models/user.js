@@ -15,13 +15,11 @@ var user = new function() {
     this.create = function(username, password, fail, success) {
         bcrypt.genSalt(10, function(err, salt) {
             bcrypt.hash(password, salt, function(err, hash) {
-                console.log(password, hash);
-
                 db.query('INSERT INTO users ( "username", "password" ) VALUES( $1, $2 ) RETURNING id', [username, hash], function(err, result) {
                     if (err)
                         fail();
                     else
-                        success('result', result);
+                        success(result.rows[0].id);
                 });
             });
         });

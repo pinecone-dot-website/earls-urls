@@ -7,19 +7,18 @@ module.exports = function(passport) {
     router.post('/auth', function(req, res) {
         if (req.body.login) {
             passport.authenticate('local-login', {
-                successRedirect: '/?success',
-                failureRedirect: '/?failure'
+                successRedirect: '/?login-success',
+                failureRedirect: '/?login-error'
             })(req, res, function() {
-                console.log('login done');
                 res.redirect('/?login');
             });
         } else if (req.body.register) {
             user.create(req.body.username, req.body.password, function() {
                 // @todo show error message
-                res.redirect('/?error');
-            }, function() {
+                res.redirect('/?register-error');
+            }, function(id) {
                 passport.authenticate('local-login')(req, res, function() {
-                    res.redirect('/?create');
+                    res.redirect('/?register-create');
                 });
             });
         } else {
