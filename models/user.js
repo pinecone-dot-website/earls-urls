@@ -12,7 +12,10 @@ var user = new function() {
      * @param callback
      * @return
      */
-    this.create = function(username, password, fail, success) {
+    this.create = function(username = '', password = '', fail, success) {
+        if (username.length < 1)
+            return fail();
+
         bcrypt.genSalt(10, function(err, salt) {
             bcrypt.hash(password, salt, function(err, hash) {
                 db.query('INSERT INTO users ( "username", "password" ) VALUES( $1, $2 ) RETURNING id', [username, hash], function(err, result) {
