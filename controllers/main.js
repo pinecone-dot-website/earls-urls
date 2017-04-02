@@ -20,8 +20,10 @@ module.exports = function() {
         earl.insert(
             formatted_url,
             0,
-            function() {
+            function(msg) {
+                res.status(400);
                 res.json({
+                    message: msg,
                     success: false
                 });
             },
@@ -77,8 +79,8 @@ module.exports = function() {
 
         earl.insert(
             formatted_url, user_id,
-            function() {
-                res.render('error', {});
+            function(msg) {
+                res.render('error', { msg: msg });
             },
             function(id) {
                 res.render('shorten', {

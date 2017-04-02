@@ -35,7 +35,7 @@ var earl = new function() {
     }
 
     /**
-     *
+     * insert a url into the db with or without user id
      * @param string
      * @param int
      * @param callback
@@ -44,7 +44,7 @@ var earl = new function() {
      */
     this.insert = function(formatted_url, user_id, fail, success) {
         if (!formatted_url)
-            return fail(false);
+            return fail("No input URL was provided");
 
         db.query('INSERT INTO urls ( "url", "timestamp", "user_id" ) VALUES( $1, now(), $2 ) RETURNING id', [formatted_url, user_id], function(err, result) {
             success(result.rows[0].id);
@@ -53,12 +53,15 @@ var earl = new function() {
 
     /**
      * helper function to ensure proper url 
-     * @param string
+     * @param string user data
      * @return string | false
      */
     this.format = function(input_url = '') {
         var parsed_url = '',
             output_url = '';
+
+        if (input_url.length < 1)
+            return false;
 
         try {
             parsed_url = url.parse(input_url);
