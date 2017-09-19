@@ -44,8 +44,6 @@ module.exports = function () {
      */
     router.get('/:short', function (req, res) {
         var short = req.params.short;
-        console.log( 'short', short );
-        return res.json( short );
 
         if (short.length > 20) {
             res.render('error');
