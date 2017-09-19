@@ -3,21 +3,21 @@ var earl = require('../models/earl'),
     express = require('express'),
     router = express.Router();
 
-module.exports = function(passport) {
-    router.post('/auth', function(req, res) {
+module.exports = function (passport) {
+    router.post('/auth', function (req, res) {
         if (req.body.login) {
             passport.authenticate('local-login', {
                 successRedirect: '/?login-success',
                 failureRedirect: '/?login-error'
-            })(req, res, function() {
+            })(req, res, function () {
                 res.redirect('/?login');
             });
         } else if (req.body.register) {
-            user.create(req.body.username, req.body.password, function() {
+            user.create(req.body.username, req.body.password, function () {
                 // @todo show error message
                 res.redirect('/?register-error');
-            }, function(id) {
-                passport.authenticate('local-login')(req, res, function() {
+            }, function (id) {
+                passport.authenticate('local-login')(req, res, function () {
                     res.redirect('/?register-create');
                 });
             });
@@ -26,20 +26,20 @@ module.exports = function(passport) {
         }
     });
 
-    router.get('/logout', function(req, res) {
+    router.get('/logout', function (req, res) {
         req.logout();
         res.redirect('/?logout');
     });
 
-    router.get('/stats', function(req, res) {
+    router.get('/stats', function (req, res) {
         if (!res.locals.user) {
             res.redirect('/');
         }
 
-        earl.get_urls_by_user(res.locals.user.id, function() {
+        earl.get_urls_by_user(res.locals.user.id, function () {
 
-        }, function(rows) {
-            var earls = rows.map(function(x) {
+        }, function (rows) {
+            var earls = rows.map(function (x) {
                 return {
                     short: earl.get_shortlink(x.id, req.get('Host'), req.secure),
                     long: x.url,

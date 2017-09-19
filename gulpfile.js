@@ -7,7 +7,7 @@ var config = {
     publicDir: './public',
 };
 
-gulp.task('css', function() {
+gulp.task('css', function () {
     return gulp.src('./css/app.scss')
         .pipe(sass({
             includePaths: [config.bootstrapDir + '/assets/stylesheets'],
@@ -15,7 +15,7 @@ gulp.task('css', function() {
         .pipe(gulp.dest(config.publicDir + '/css'));
 });
 
-gulp.task('fonts', function() {
+gulp.task('fonts', function () {
     gulp.src('./css/fonts/**/*')
         .pipe(gulp.dest(config.publicDir + '/fonts'));
 
@@ -23,13 +23,13 @@ gulp.task('fonts', function() {
         .pipe(gulp.dest(config.publicDir + '/fonts'));
 });
 
-gulp.task('js', function() {
+gulp.task('js', function () {
     return gulp.src('./bower_components/jquery/dist/jquery.js')
         .pipe(gulp.dest(config.publicDir + '/js'));
 });
 
 gulp.task('default', ['css', 'fonts', 'js']);
 
-gulp.task('watch', ['default'], function() {
+gulp.task('watch', ['default'], function () {
     gulp.watch('./css/*.scss', ['css']);
 });

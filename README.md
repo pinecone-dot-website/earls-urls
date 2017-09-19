@@ -1,8 +1,8 @@
-#earls-urls
+# earls-urls
 
-##earl shortener
+## earl shortener
 
-##.env file
+## .env file
 Define your db connection string and port
 
 ```
@@ -10,10 +10,9 @@ DATABASE_URL="postgres://user@host/dbname"
 PORT=5000
 ```
 
-##Database schema:
+## Database schema:
 
-###urls
-
+### urls
 
   Column   |            Type             |              Modifiers              
 -----------+-----------------------------+-------------------------------------
