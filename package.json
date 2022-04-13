@@ -9,7 +9,8 @@
     },
     "scripts": {
         "postinstall": "bower install && gulp default",
-        "test": "mocha --reporter spec"
+        "server:dev": "nodemon server.js",
+        "test": "jest"
     },
     "author": "",
     "license": "BSD-2-Clause",
@@ -42,5 +43,6 @@
         "faker": "^4.1.0",
         "knex": "^0.12.9",
         "mocha": "^3.2.0"
+        "jest": "^27.5.1"
     }
 }
