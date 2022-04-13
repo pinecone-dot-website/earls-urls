@@ -3,7 +3,7 @@ const express = require('express'),
     Earl = require('../models/earl');
 
 // post to /api
-function api_post(req, res) {
+async function api_post(req, res) {
     const input_url = req.body?.url;
     const valid_url = Earl.validate(input_url);
 

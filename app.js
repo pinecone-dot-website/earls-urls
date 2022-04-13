@@ -8,6 +8,18 @@ require('dotenv').config();
 // have POST data in req.body
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// passport config
+// user info to sessions
+passport.serializeUser((user, done) => {
+    console.log("serializing user", user);
+    done(null, user);
+});
+
+passport.deserializeUser(function (obj, done) {
+    console.log("deserializing obj", obj);
+    done(null, obj);
+});
+
 // templates
 app.set('views', __dirname + '/src/views/');
 app.engine('hbs', exp_hbs.engine({

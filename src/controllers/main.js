@@ -13,6 +13,9 @@ router.post('/shorten', (req, res) => {
 
     res.send(input_url);
     
+// lookup shortened url and redirect
+router.get('/:short', (req, res) => {
+    const short = req.params.short;
 });
 
 module.exports = router;

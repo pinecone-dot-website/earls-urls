@@ -1,17 +1,39 @@
 const express = require('express'),
-    router = express.Router();
+    user_router = express.Router(),
+    passport = require('passport'),
+    LocalStrategy = require('passport-local'),
+    User = require('../models/user');
+
+// called on login
+passport.use(new LocalStrategy(
+    function (username, password, done) {
+        console.log('LocalStrategy', username, password, done);
+
+        User.login(
+            username,
+            password,
+            (err) => {
+                console.log('login err');
+                done(null, false);
+            },
+            (user) => {
+                console.log('login user');
+                return done(null, user);
+            });
+    }
+));
 
 // process login / register form
-router.post('/auth', (req, res) => {
-    console.log('req.body', req.body);
+function user_auth(req, res) {
 
     if (req.body.login) {
-        //     passport.authenticate('local-login', {
-        //         successRedirect: '/?login-success',
-        //         failureRedirect: '/?login-error'
-        //     })(req, res, function () {
-        //         res.redirect('/?login');
-        //     });
+        passport.authenticate('local', {
+            failureRedirect: '/?login-error',
+            successRedirect: '/?login-success',
+        })(req, res, () => {
+            console.log('authenticate here');
+            // res.redirect('/?logged-in');
+        });
     } else if (req.body.register) {
         //     user.create(req.body.username, req.body.password, function () {
         //         // @todo show error message
@@ -25,17 +47,21 @@ router.post('/auth', (req, res) => {
         //     res.redirect('/?unknown');
     }
 
-    res.send('ok');
-});
+    // res.send('ok');
+}
+user_router.post(
+    '/auth',
+    user_auth
+);
 
 // log user out
-router.all('/logout', (req, res) => {
+user_router.all('/logout', (req, res) => {
     // req.logout();
     // res.redirect('/?logout');
 });
 
 // user stats
-router.get('/stats', (req, res) => {
+user_router.get('/stats', (req, res) => {
     // if (!res.locals.user) {
     //     res.redirect('/');
     // }
@@ -57,4 +83,7 @@ router.get('/stats', (req, res) => {
     // });
 });
 
-module.exports = router;
+module.exports = {
+    user_router,
+    user_auth,
+};

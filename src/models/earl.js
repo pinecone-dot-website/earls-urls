@@ -22,6 +22,25 @@ class Earl {
     }
 
     /**
+     * insert a url into the db with or without user id
+     * @param string
+     * @param int
+     * @param callback
+     * @param callback
+     * @return int
+     */
+    static insert(formatted_url, user_id, fail, success) {
+        if (!formatted_url)
+            return fail("No input URL was provided");
+
+        // db.query('INSERT INTO urls ( "url", "timestamp", "user_id" ) VALUES( $1, now(), $2 ) RETURNING id', [formatted_url, user_id], function (err, result) {
+        //     success(result.rows[0].id);
+        // });
+
+        success();
+    }
+
+    /**
      * ensure proper url 
      * @param string user supplied url
      * @return string | false
