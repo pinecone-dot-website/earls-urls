@@ -55,35 +55,41 @@ user_router.post(
 );
 
 // log user out
-user_router.all('/logout', (req, res) => {
-    // req.logout();
-    // res.redirect('/?logout');
-});
+function user_logout(req, res) {
+    req.logout();
+    res.redirect('/?logout');
+}
+user_router.all('/logout', user_logout);
 
 // user stats
-user_router.get('/stats', (req, res) => {
-    // if (!res.locals.user) {
-    //     res.redirect('/');
-    // }
+function user_stats(req, res) {
+    if (!res.locals.user) {
+        res.redirect('/');
+    }
 
-    // earl.get_urls_by_user(res.locals.user.id, function () {
+    User.get_urls_by_user(
+        res.locals.user.id,
+        (err) => {
+        },
+        (rows) => {
+            //     var earls = rows.map(function (x) {
+            //         return {
+            //             short: earl.get_shortlink(x.id, req.get('Host'), req.secure),
+            //             long: x.url,
+            //             timestamp: x.timestamp
+            //         };
+            //     });
 
-    // }, function (rows) {
-    //     var earls = rows.map(function (x) {
-    //         return {
-    //             short: earl.get_shortlink(x.id, req.get('Host'), req.secure),
-    //             long: x.url,
-    //             timestamp: x.timestamp
-    //         };
-    //     });
-
-    //     res.render('user-stats', {
-    //         earls: earls
-    //     });
-    // });
-});
+            res.render('user-stats', {
+                earls: [], //earls
+            });
+        });
+}
+user_router.get('/stats', user_stats);
 
 module.exports = {
     user_router,
     user_auth,
+    user_logout,
+    user_stats
 };

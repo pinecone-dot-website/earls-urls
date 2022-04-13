@@ -20,6 +20,14 @@ passport.deserializeUser(function (obj, done) {
     done(null, obj);
 });
 
+// called on all requests
+app.use((req, res, next) => {
+    // user data on all routes
+    res.locals.user = req.user;
+
+    next();
+});
+
 // templates
 app.set('views', __dirname + '/src/views/');
 app.engine('hbs', exp_hbs.engine({
@@ -39,10 +47,10 @@ app.use('/static', express.static('public'));
 // routes
 const { api_router } = require('./src/controllers/api')
 const main_controller = require('./src/controllers/main');
-const user_controller = require('./src/controllers/user');
+const { user_router } = require('./src/controllers/user');
 
 app.use('/', main_controller);
-app.use('/u', user_controller);
+app.use('/u', user_router);
 app.use('/api', api_router);
 
 app.all('*', (req, res) => {
