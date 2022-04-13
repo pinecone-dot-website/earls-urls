@@ -3,12 +3,12 @@ const express = require('express'),
     Earl = require('../models/earl');
 
 // index
-router.all('/', function (req, res) {
+router.all('/', (req, res) => {
     res.render('home');
 });
 
 // post to shorten url from index
-router.post('/shorten', function (req, res) {
+router.post('/shorten', (req, res) => {
     const input_url = Earl.validate(req.body.url);
 
     res.send(input_url);

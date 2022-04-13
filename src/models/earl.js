@@ -1,8 +1,20 @@
-// const base_x = require('@eaglstun/base-x'),
+const base_x = require('@eaglstun/base-x');
 //     db = require('./db'),
 //     url = require('url');
 
 class Earl {
+    /**
+     * Convert short url to base10 and lookup by id
+     * @param string
+     * @param callback
+     * @param callback
+     */
+    static get_by_shortid(earl, fail, success) {
+        const db_id = base_x.convert(earl, base_x.BASE75, base_x.BASE10);
+        console.log('get_by_shortid', earl, db_id);
+
+        }
+    }
 
     /**
      * ensure proper url 
