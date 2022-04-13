@@ -7,6 +7,7 @@ const bodyParser = require( 'body-parser' ),
     git = require( 'git-rev' ),
 
     app = express(),
+require('dotenv').config();
 
     // models
     earl = require( './models/earl' ),
@@ -17,8 +18,6 @@ app.use( bodyParser.json() );
 
 // allow arrays in query string
 app.use( bodyParser.urlencoded( { extended: true } ) );
-
-require( 'dotenv' ).config();
 
 // for req.secure
 app.enable( 'trust proxy' );
@@ -103,9 +102,7 @@ app.all( '*', function( req, res ) {
 } );
 
 // run it
-var port = Number( process.env.PORT || 5010 );
-app.listen( port, function() {
-    console.log( "Listening on port " + port );
-} );
 
-module.exports = app;
+app.listen(process.env.PORT, function () {
+    console.log("Listening on port " + process.env.PORT);
+});
