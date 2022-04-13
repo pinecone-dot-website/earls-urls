@@ -13,6 +13,9 @@ class Earl {
         const db_id = base_x.convert(earl, base_x.BASE75, base_x.BASE10);
         console.log('get_by_shortid', earl, db_id);
 
+        if(db_id){
+        } else {
+            fail();
         }
     }
 

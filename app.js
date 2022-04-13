@@ -25,7 +25,15 @@ app.set('view engine', 'hbs');
 app.use('/static',express.static('public'));
 
 // routes
+const api_controller = require('./src/controllers/main')
 const main_controller = require('./src/controllers/main');
+const user_controller = require('./src/controllers/user');
 app.use('/', main_controller);
+app.use('/u/', user_controller);
+app.use('/api/', api_controller);
+
+app.all('*', (req, res) => {
+    res.status(404).render('404', {});
+});
 
 module.exports = app;

@@ -1,5 +1,5 @@
 // https://stackoverflow.com/questions/8484404/what-is-the-proper-way-to-use-the-node-js-postgresql-module/19282657#19282657
-var pg = require('pg');
+const pg = require('pg');
 
 module.exports = {
     query: function (text, values, cb) {
