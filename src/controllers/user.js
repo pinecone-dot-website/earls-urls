@@ -41,8 +41,10 @@ function user_auth(req, res) {
             req.body.username,
             req.body.password,
             (err) => {
-                console.log('user create err', err);
-                // @todo show error message
+                req.flash('error', err);
+                req.flash('username', req.body.username);
+                req.flash('password', req.body.password);
+
                 res.redirect('/?register-error');
             },
             (success) => {
@@ -52,10 +54,8 @@ function user_auth(req, res) {
                 //         });
             });
     } else {
-        //     res.redirect('/?unknown');
+        res.redirect('/?auth-error');
     }
-
-    // res.send('ok');
 }
 user_router.post(
     '/auth',

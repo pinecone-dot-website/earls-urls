@@ -45,11 +45,12 @@
               </li>
             </ul>
           {{else}}
+
             <form
               method="post"
               action="/u/auth"
               id="login"
-              class="navbar-nav align-items-center "
+              class="navbar-nav align-items-center"
               role="form"
             >
               <div class="form-floating me-2">
@@ -58,7 +59,7 @@
                   type="text"
                   class="form-control"
                   name="username"
-                  value=""
+                  value="{{username}}"
                   placeholder="username"
                 />
                 <label for="username">Username</label>
@@ -70,7 +71,7 @@
                   type="password"
                   class="form-control"
                   name="password"
-                  value=""
+                  value="{{password}}"
                   placeholder="password"
                 />
                 <label for="password">Password</label>
@@ -84,7 +85,7 @@
 
               <button
                 type="submit"
-                class="btn btn-primary me-2"
+                class="btn btn-primary"
                 name="register"
                 value="1"
               >register</button>
@@ -96,13 +97,19 @@
 
     <main class="flex-shrink-0">
       <section class="py-5 text-center container">
+        {{#if error}}
+          <div class="alert alert-warning" role="alert">
+            {{error}}
+          </div>
+        {{/if}}
+
         <!-- body: -->
         {{{body}}}
       </section>
     </main>
 
     <footer class="footer mt-auto py-3 bg-light text-muted">
-      <div class="container text-center ">
+      <div class="container text-center">
         {{#if version}}
           <span>v {{version}}</span>
           /

@@ -4,14 +4,17 @@ const express = require('express'),
 
 // index
 router.all('/', (req, res) => {
-    res.render('home');
+    res.render('home', {
+        error: req.flash('error'),
+        username: req.flash('username'),
+        password: req.flash('password')
+    });
 });
 
 // post to shorten url from index
 router.post('/shorten', (req, res) => {
     const input_url = Earl.validate(req.body.url);
     const user_id = req.user ? req.user : 0;
-    
 
     Earl.insert(
         input_url,

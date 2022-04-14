@@ -1,6 +1,7 @@
 const express = require('express'),
     exp_hbs = require('express-handlebars'),
     bodyParser = require('body-parser'),
+    flash = require('connect-flash'),
     git = require('git-rev-sync'),
     passport = require('passport'),
     LocalStrategy = require('passport-local'),
@@ -11,19 +12,19 @@ require('dotenv').config();
 
 // have POST data in req.body
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(flash());
 
-// use sessions
-// sessions
+// use sessions and flash data
 app.use(session({
     resave: false,
     saveUninitialized: true,
     secret: process.env.SESSION_SECRET
 }));
 
+// passport config
 app.use(passport.initialize());
 app.use(passport.session());
 
-// passport config
 // user info to sessions
 passport.serializeUser((user, done) => {
     console.log("serializing user", user);
