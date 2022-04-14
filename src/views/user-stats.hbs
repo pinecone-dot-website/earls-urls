@@ -1,14 +1,19 @@
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th scope="col">URL</th>
-      <th scope="col">Date</th>
-    </tr>
-  </thead>
-  {{#each earls}}
-    <tr>
-      <td><a href="{{this.short}}">{{this.long}}</a></td>
-      <td>{{this.timestamp}}</td>
-    </tr>
-  {{/each}}
-</table>
+{{#if earls}}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">URL</th>
+        <th scope="col">Date</th>
+      </tr>
+    </thead>
+
+    {{#each earls}}
+      <tr>
+        <td><a href="{{this.short}}">{{this.long}}</a></td>
+        <td>{{this.timestamp}}</td>
+      </tr>
+    {{/each}}
+  </table>
+{{else}}
+  <h2>No urls saved!</h2>
+{{/if}}
