@@ -78,8 +78,7 @@ class User {
             [user_id],
             (err, result) => {
                 if (err) {
-                    console.log('get_urls_by_user err', err);
-                    fail();
+                    fail(err);
                 } else {
                     success(result.rows);
                 }

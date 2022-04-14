@@ -2,6 +2,7 @@ const express = require('express'),
     user_router = express.Router(),
     passport = require('passport'),
     LocalStrategy = require('passport-local'),
+    Earl = require('../models/earl'),
     User = require('../models/user');
 
 // called on login
@@ -77,18 +78,25 @@ function user_stats(req, res) {
     User.get_urls_by_user(
         res.locals.user.id,
         (err) => {
+            res.render('error', {
+                message: err
+            });
         },
         (rows) => {
-            //     var earls = rows.map(function (x) {
-            //         return {
-            //             short: earl.get_shortlink(x.id, req.get('Host'), req.secure),
-            //             long: x.url,
-            //             timestamp: x.timestamp
-            //         };
-            //     });
+            rows = rows.map((row) => {
+                return {
+                    short: Earl.get_shortlink(
+                        row.id,
+                        req.get('Host'),
+                        req.secure
+                    ),
+                    long: row.url,
+                    timestamp: row.timestamp
+                };
+            });
 
             res.render('user-stats', {
-                earls: [], //earls
+                earls: rows
             });
         });
 }
