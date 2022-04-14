@@ -66,6 +66,25 @@ class User {
                 }
             });
     }
+
+    /**
+     *
+     * @param int
+     */
+    static get_urls_by_user = function (user_id, fail, success) {
+        db.query(`SELECT * FROM urls 
+                  WHERE user_id = $1 
+                  ORDER BY "timestamp" DESC`,
+            [user_id],
+            (err, result) => {
+                if (err) {
+                    console.log('get_urls_by_user err', err);
+                    fail();
+                } else {
+                    success(result.rows);
+                }
+            });
+    }
 }
 
 module.exports = User;

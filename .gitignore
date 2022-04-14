@@ -6,3 +6,4 @@ public/fonts
 public/js
 .env
 settings.json
+coverage

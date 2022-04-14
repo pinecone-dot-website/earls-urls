@@ -35,13 +35,13 @@ router.get('/:short', (req, res) => {
 
     Earl.get_by_shortid(
         short,
-        function (err) {
+        (err) => {
             console.log('err', err);
             res.render('error', {
-                // db_id: err.db_id
+                message: err
             });
         },
-        function (row) {
+        (row) => {
             console.log('row', row);
             res.redirect(row.url);
 

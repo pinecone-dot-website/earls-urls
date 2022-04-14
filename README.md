@@ -22,14 +22,7 @@ PORT=5000
  timestamp | timestamp without time zone | default now()
  user_id   | integer                     | 
 
-```
-CREATE TABLE urls (
-    id integer DEFAULT nextval('id_seq'::regclass),
-    url text,
-    "timestamp" timestamp without time zone DEFAULT now(),
-    user_id integer
-);
-```
+
 
 ###users
 
@@ -41,13 +34,7 @@ CREATE TABLE urls (
 Indexes:
     "users_username_key" UNIQUE, btree (lower(username::text))
 
-```
-CREATE TABLE users (
-    id integer NOT NULL,
-    username character varying(40),
-    password character varying(255)
-);
-```
+
 
 ```
 CREATE SEQUENCE users_id_seq
@@ -64,3 +51,28 @@ CREATE SEQUENCE users_id_seq
 
 ##Front-end
 `gulp default|watch`
+
+## Create database
+CREATE database earls_urls;
+
+## Use database
+\c earls_urls
+
+## Create urls table
+```
+CREATE TABLE urls (
+    id serial,
+    url text,
+    "timestamp" timestamp without time zone DEFAULT now(),
+    user_id integer
+);
+```
+
+## Create users table
+```
+CREATE TABLE users (
+    id serial,
+    username character varying(40),
+    password character varying(255)
+);
+```

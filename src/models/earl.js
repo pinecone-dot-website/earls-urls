@@ -1,8 +1,26 @@
 const base_x = require('@eaglstun/base-x'),
     db = require('./db');
-//     url = require('url');
 
 class Earl {
+    /**
+     *
+     * @param int database id
+     * @return object db row
+     */
+    static get_by_id(db_id, fail, success) {
+        db.query(`SELECT * FROM urls 
+                  WHERE id = $1 
+                  LIMIT 1`,
+            [db_id],
+            (err, result) => {
+                if (!result || !result.rowCount) {
+                    fail(`${db_id} not found`);
+                } else {
+                    success(result.rows[0]);
+                }
+            });
+    }
+
     /**
      * Convert short url to base10 and lookup by id
      * @param string
@@ -14,11 +32,24 @@ class Earl {
         console.log('get_by_shortid', earl, db_id);
 
         if (db_id) {
-            // return this.get_by_id(db_id, fail, success);
-            success(db_id);
+            return this.get_by_id(db_id, fail, success);
         } else {
-            fail();
+            fail('Invalid shortlink');
         }
+    }
+
+    /**
+     *
+     * @param int
+     * @param string
+     * @param int
+     * @return string
+     */
+    static get_shortlink(db_id, host, secure = 1) {
+        const earl = base_x.convert(db_id, base_x.BASE10, base_x.BASE75);
+        const protocol = secure ? 'https' : 'http';
+
+        return protocol + '://' + host + "/" + earl;
     }
 
     /**
@@ -33,11 +64,19 @@ class Earl {
         if (!formatted_url)
             return fail("No input URL was provided");
 
-        // db.query('INSERT INTO urls ( "url", "timestamp", "user_id" ) VALUES( $1, now(), $2 ) RETURNING id', [formatted_url, user_id], function (err, result) {
-        //     success(result.rows[0].id);
-        // });
-
-        success();
+        db.query(`INSERT INTO urls 
+                  ( "url", "timestamp", "user_id" ) 
+                  VALUES
+                  ( $1, now(), $2 ) 
+                  RETURNING id`,
+            [formatted_url, user_id],
+            (err, result) => {
+                if (err) {
+                    fail(err);
+                } else {
+                    success(result.rows[0].id);
+                }
+            });
     }
 
     /**

@@ -25,6 +25,7 @@ passport.use(new LocalStrategy(
 
 // process login / register form
 function user_auth(req, res) {
+    console.log('user_auth req.body', req.body);
 
     if (req.body.login) {
         passport.authenticate('local', {
@@ -35,14 +36,20 @@ function user_auth(req, res) {
             // res.redirect('/?logged-in');
         });
     } else if (req.body.register) {
-        //     user.create(req.body.username, req.body.password, function () {
-        //         // @todo show error message
-        //         res.redirect('/?register-error');
-        //     }, function (id) {
-        //         passport.authenticate('local-login')(req, res, function () {
-        //             res.redirect('/?register-create');
-        //         });
-        //     });
+        User.create(
+            req.body.username,
+            req.body.password,
+            (err) => {
+                console.log('user create err', err);
+                // @todo show error message
+                res.redirect('/?register-error');
+            },
+            (success) => {
+                console.log('user create success', success);
+                //         passport.authenticate('local-login')(req, res, function () {
+                //             res.redirect('/?register-create');
+                //         });
+            });
     } else {
         //     res.redirect('/?unknown');
     }

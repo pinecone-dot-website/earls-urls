@@ -1,12 +1,27 @@
 const express = require('express'),
     exp_hbs = require('express-handlebars'),
     bodyParser = require('body-parser'),
+    git = require('git-rev-sync'),
+    passport = require('passport'),
+    LocalStrategy = require('passport-local'),
+    session = require('express-session'),
     app = express();
 
 require('dotenv').config();
 
 // have POST data in req.body
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// use sessions
+// sessions
+app.use(session({
+    resave: false,
+    saveUninitialized: true,
+    secret: process.env.SESSION_SECRET
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // passport config
 // user info to sessions
@@ -24,6 +39,9 @@ passport.deserializeUser(function (obj, done) {
 app.use((req, res, next) => {
     // user data on all routes
     res.locals.user = req.user;
+
+    // show git tag in footer
+    res.locals.version = git.tag();
 
     next();
 });
