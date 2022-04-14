@@ -21,7 +21,7 @@ function user_auth(req, res) {
                     if (err) {
                         res.redirect('/?register-error');
                     } else {
-                        res.redirect('/?register-create');
+                        res.redirect('/?login-success');
                     }
                 })
             });
