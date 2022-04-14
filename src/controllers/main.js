@@ -10,7 +10,8 @@ router.all('/', (req, res) => {
 // post to shorten url from index
 router.post('/shorten', (req, res) => {
     const input_url = Earl.validate(req.body.url);
-    const user_id = req.user ? req.user.id : 0;
+    const user_id = req.user ? req.user : 0;
+    
 
     Earl.insert(
         input_url,
@@ -23,7 +24,11 @@ router.post('/shorten', (req, res) => {
         (id) => {
             res.render('shorten', {
                 input_url: input_url,
-                short_url: Earl.get_shortlink(id, req.get('Host'), req.secure)
+                short_url: Earl.get_shortlink(
+                    id,
+                    req.get('Host'),
+                    req.secure
+                )
             });
         }
     );

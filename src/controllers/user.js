@@ -71,12 +71,12 @@ user_router.all('/logout', user_logout);
 
 // user stats
 function user_stats(req, res) {
-    if (!res.locals.user) {
+    if (!req.user) {
         res.redirect('/');
     }
 
     User.get_urls_by_user(
-        res.locals.user.id,
+        req.user,
         (err) => {
             res.render('error', {
                 message: err
