@@ -62,6 +62,9 @@ app.set('view engine', 'hbs');
 // serve assets in /public
 app.use('/static', express.static('public'));
 
+// recognize ssl from proxy
+app.set('trust proxy', true);
+
 // routes
 const { api_router } = require('./src/controllers/api')
 const main_controller = require('./src/controllers/main');
