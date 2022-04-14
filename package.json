@@ -1,46 +1,35 @@
 {
     "name": "earls-urls",
-    "version": "0.3.9",
+    "version": "0.4.0",
     "description": "earl shortener",
     "main": "index.js",
-    "engines": {
-        "node": "6.9.x",
-        "npm": "3.10.x"
-    },
     "scripts": {
-        "postinstall": "bower install && gulp default",
-        "test": "mocha --reporter spec"
+        "assets:dev": "sass --watch --update --style=expanded src/assets/scss:public/css",
+        "server:dev": "nodemon server.js",
+        "test": "jest"
     },
     "author": "",
     "license": "BSD-2-Clause",
     "dependencies": {
-        "@eaglstun/base-x": ">= 0.1.3",
-        "bcryptjs": "^2.4.0",
-        "body-parser": ">= 1.15.2",
-        "dotenv": "^4.0.0",
-        "express": ">= 4.14.0",
-        "express-handlebars": ">= 0.5.0",
-        "express-session": "^1.15.0",
-        "git-rev": "^0.2.1",
-        "gulp": "^3.9.1",
-        "gulp-bower": ">= 0.0.13",
-        "gulp-sass": "^3.0.0",
-        "gulp-watch": ">= 3.10.8",
-        "passport": "^0.3.2",
+        "@eaglstun/base-x": "^0.1.4",
+        "bcryptjs": "^2.4.3",
+        "body-parser": "^1.20.0",
+        "bootstrap": "^5.1.3",
+        "dotenv": "^16.0.0",
+        "express": "^4.17.3",
+        "express-handlebars": "^6.0.5",
+        "express-session": "^1.17.2",
+        "git-rev-sync": "^3.0.2",
+        "passport": "^0.5.2",
         "passport-local": "^1.0.0",
-        "pg": ">= 0.6.15",
-        "url": ">= 0.11.0"
+        "pg": "^8.7.3",
+        "sass": "^1.50.0"
     },
     "repository": {
         "type": "git",
         "url": "https://github.com/pinecone-dot-website/earls-urls/"
     },
     "devDependencies": {
-        "chai": "^3.5.0",
-        "chai-http": "^3.0.0",
-        "cheerio": "^0.22.0",
-        "faker": "^4.1.0",
-        "knex": "^0.12.9",
-        "mocha": "^3.2.0"
+        "jest": "^27.5.1"
     }
 }
