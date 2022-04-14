@@ -1,0 +1,12 @@
+<table class="user-earls">
+  <thead>
+    <td>URL</td>
+    <td>Date</td>
+  </thead>
+  {{#each earls}}
+    <tr>
+      <td><a href="{{this.short}}">{{this.long}}</a></td>
+      <td>{{this.timestamp}}</td>
+    </tr>
+  {{/each}}
+</table>

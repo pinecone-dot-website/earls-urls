@@ -12,16 +12,6 @@ module.exports = {
                 // console.log('query err, res', err, res);
                 cb(err, res);
             }
-            // process.env.DATABASE_URL,
-            // function (err, client, done) {
-            //     client.query(
-            //         text,
-            //         values,
-            //         function (err, result) {
-            //             done();
-            //             cb(err, result);
-            //         })
-            // }
         );
     }
 }

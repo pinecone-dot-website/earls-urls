@@ -1,107 +1,110 @@
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="maximum-scale=.5" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1,maximum-scale=.5"
+    />
 
     <link rel="shortlink" href="http://earlsurls.site/" />
     <link rel="stylesheet" href="/static/css/app.css" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/static/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/static/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/static/favicon-16x16.png"
+    />
     <link rel="manifest" href="/static/site.webmanifest" />
 
     <title>EARLS URLS</title>
   </head>
-  <body>
-    <nav class="navbar navbar-default">
+  <body class="d-flex flex-column h-100">
+    <nav class="navbar navbar-dark bg-dark">
       <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="/">Earls Urls</a>
-        </div>
+        <a class="navbar-brand" href="/">Earls Urls</a>
 
-        <div class="" id="">
-          {{#if user}}
-            <ul class="nav navbar-nav navbar-right">
-              <li><a href="/u/stats" class="">stats</a></li>
-              <li><a href="/u/logout" class="">logout</a></li>
-            </ul>
-          {{else}}
-            <form
-              method="post"
-              action="/u/auth"
-              id="login"
-              class="navbar-form navbar-right control-login"
-              role="form"
-            >
-              <div class="input-group">
-                <input
-                  id="username"
-                  type="text"
-                  class="form-control"
-                  name="username"
-                  value=""
-                  placeholder="username"
-                />
-              </div>
+        {{#if user}}
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/u/stats" class="">stats</a></li>
+            <li><a href="/u/logout" class="">logout</a></li>
+          </ul>
+        {{else}}
+          <form
+            method="post"
+            action="/u/auth"
+            id="login"
+            class="d-flex"
+            role="form"
+          >
+            <div class="form-floating">
+              <input
+                id="username"
+                type="text"
+                class="form-control"
+                name="username"
+                value=""
+                placeholder="username"
+              />
+              <label for="username">Username</label>
+            </div>
 
-              <div class="input-group">
-                <input
-                  id="password"
-                  type="password"
-                  class="form-control"
-                  name="password"
-                  value=""
-                  placeholder="password"
-                />
-              </div>
+            <div class="form-floating">
+              <input
+                id="password"
+                type="password"
+                class="form-control"
+                name="password"
+                value=""
+                placeholder="password"
+              />
+              <label for="password">Password</label>
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              name="login"
+              value="1"
+            >login</button>
 
-              <button
-                type="submit"
-                class="btn btn-primary"
-                name="login"
-                value="1"
-              >login</button>
-              <button
-                type="submit"
-                class="btn btn-primary"
-                name="register"
-                value="1"
-              >register</button>
-            </form>
-          {{/if}}
-        </div>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              name="register"
+              value="1"
+            >register</button>
+          </form>
+        {{/if}}
       </div>
     </nav>
 
-    <div class="site-wrapper">
-      <div class="site-wrapper-inner">
-        <div class="cover-container">
-          <div class="masthead clearfix">
-
-          </div>
-
-          <div class="inner cover">
-            <!-- body: -->
-            {{{body}}}
-          </div>
-
-          <div class="mastfoot">
-            <div class="inner">
-              <p>
-                {{#if version}}
-                  <span>v {{version}}</span>
-                  /
-                {{/if}}
-                <a
-                  href="https://github.com/pinecone-dot-website/earls-urls"
-                >github</a>
-                /
-                <a href="https://rack.and.pinecone.website">rack &amp; pinecone</a>
-              </p>
-            </div>
-          </div>
-        </div>
+    <main class="flex-shrink-0">
+      <div class="container">
+        <!-- body: -->
+        {{{body}}}
       </div>
-    </div>
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-light">
+      <div class="container">
+        {{#if version}}
+          <span>v {{version}}</span>
+          /
+        {{/if}}
+        <a href="https://github.com/pinecone-dot-website/earls-urls">github</a>
+        /
+        <a href="https://rack.and.pinecone.website">rack &amp; pinecone</a>
+      </div>
+    </footer>
   </body>
 </html>

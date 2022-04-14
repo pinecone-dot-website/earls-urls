@@ -12,7 +12,10 @@ class User {
      */
     static create(username, password, fail, success) {
         if (username.length < 1)
-            return fail();
+            return fail('No username');
+
+        if (password.length < 1)
+            return fail('No password');
 
         bcrypt.genSalt(10, function (err, salt) {
             bcrypt.hash(password, salt, function (err, hash) {
@@ -23,7 +26,7 @@ class User {
                     [username, hash],
                     function (err, result) {
                         if (err)
-                            fail();
+                            fail('Could not create user');
                         else
                             success(result.rows[0].id);
                     });

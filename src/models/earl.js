@@ -1,5 +1,5 @@
-const base_x = require('@eaglstun/base-x');
-//     db = require('./db'),
+const base_x = require('@eaglstun/base-x'),
+    db = require('./db');
 //     url = require('url');
 
 class Earl {
