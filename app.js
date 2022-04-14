@@ -4,7 +4,7 @@ const express = require('express'),
     git = require('git-rev-sync'),
     passport = require('passport'),
     LocalStrategy = require('passport-local'),
-    session = require('express-session'),
+    session = require('cookie-session'),
     app = express();
 
 require('dotenv').config();
