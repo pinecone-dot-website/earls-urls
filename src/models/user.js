@@ -8,7 +8,7 @@ class User {
      * @param string raw password
      * @param callback
      * @param callback
-     * @return
+     * @return int user id
      */
     static create(username, password, fail, success) {
         if (username.length < 1)
@@ -40,7 +40,7 @@ class User {
      * @param string raw password
      * @param callback
      * @param callback
-     * @return
+     * @return int user id
      */
     static login(username, password, fail, success) {
         db.query(`SELECT * FROM users 
@@ -48,21 +48,19 @@ class User {
                   LIMIT 1`,
             [username],
             (err, res) => {
-                console.log('login');
-
-                if (res && res.rowCount) {
+                if (err) {
+                    return fail(err.message);
+                } else if (res && res.rowCount) {
                     let hash = res.rows[0].password;
 
                     bcrypt.compare(password, hash, (err, ok) => {
-                        console.log('compare', ok);
-
                         if (ok)
                             return success(res.rows[0].id);
 
-                        return fail();
+                        return fail('Password is wrong');
                     });
                 } else {
-                    return fail();
+                    return fail('Username does not exist');
                 }
             });
     }

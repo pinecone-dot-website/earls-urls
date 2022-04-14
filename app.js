@@ -4,7 +4,6 @@ const express = require('express'),
     flash = require('connect-flash'),
     git = require('git-rev-sync'),
     passport = require('passport'),
-    LocalStrategy = require('passport-local'),
     session = require('cookie-session'),
     app = express();
 

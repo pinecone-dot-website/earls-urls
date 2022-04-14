@@ -1,41 +1,30 @@
 const express = require('express'),
     user_router = express.Router(),
-    passport = require('passport'),
-    LocalStrategy = require('passport-local'),
     Earl = require('../models/earl'),
     User = require('../models/user');
 
-// called on login
-passport.use(new LocalStrategy(
-    function (username, password, done) {
-        console.log('LocalStrategy', username, password, done);
-
-        User.login(
-            username,
-            password,
-            (err) => {
-                console.log('login err');
-                done(null, false);
-            },
-            (user) => {
-                console.log('login user');
-                return done(null, user);
-            });
-    }
-));
-
 // process login / register form
 function user_auth(req, res) {
-    console.log('user_auth req.body', req.body);
-
     if (req.body.login) {
-        passport.authenticate('local', {
-            failureRedirect: '/?login-error',
-            successRedirect: '/?login-success',
-        })(req, res, () => {
-            console.log('authenticate here');
-            // res.redirect('/?logged-in');
-        });
+        User.login(
+            req.body.username,
+            req.body.password,
+            (err) => {
+                req.flash('error', err);
+                req.flash('username', req.body.username);
+                req.flash('password', req.body.password);
+
+                res.redirect('/?login-error');
+            },
+            (user) => {
+                req.login(user, function (err) {
+                    if (err) {
+                        res.redirect('/?register-error');
+                    } else {
+                        res.redirect('/?register-create');
+                    }
+                })
+            });
     } else if (req.body.register) {
         User.create(
             req.body.username,
@@ -49,9 +38,13 @@ function user_auth(req, res) {
             },
             (success) => {
                 console.log('user create success', success);
-                //         passport.authenticate('local-login')(req, res, function () {
-                //             res.redirect('/?register-create');
-                //         });
+                req.login(success, function (err) {
+                    if (err) {
+                        res.redirect('/?register-error');
+                    } else {
+                        res.redirect('/?register-create');
+                    }
+                })
             });
     } else {
         res.redirect('/?auth-error');
@@ -72,7 +65,7 @@ user_router.all('/logout', user_logout);
 // user stats
 function user_stats(req, res) {
     if (!req.user) {
-        res.redirect('/');
+        return res.redirect('/');
     }
 
     User.get_urls_by_user(

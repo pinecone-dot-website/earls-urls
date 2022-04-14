@@ -23,7 +23,6 @@
         "express-handlebars": "^6.0.5",
         "git-rev-sync": "^3.0.2",
         "passport": "^0.5.2",
-        "passport-local": "^1.0.0",
         "pg": "^8.7.3",
         "sass": "^1.50.0"
     },
