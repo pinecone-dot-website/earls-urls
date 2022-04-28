@@ -12,7 +12,7 @@
     "author": "",
     "license": "BSD-2-Clause",
     "dependencies": {
-        "@rackandpinecone/base-x": "^0.2.0",
+        "@rackandpinecone/base-x": "^0.2.1",
         "bcryptjs": "^2.4.3",
         "body-parser": "^1.20.0",
         "bootstrap": "^5.1.3",
