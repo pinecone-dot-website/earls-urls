@@ -27,7 +27,7 @@ CREATE SEQUENCE users_id_seq
     NO MAXVALUE
     CACHE 1;
 
-CREATE UNIQUE INDEX unique_username ON public.users USING btree (username);
+CREATE UNIQUE INDEX unique_username ON users USING btree (username);
 ```
 
 ## Create urls table
@@ -46,4 +46,9 @@ CREATE SEQUENCE public.urls_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
+```
+
+## Start locally
+```
+pg_ctl -D /usr/local/var/postgres start
 ```

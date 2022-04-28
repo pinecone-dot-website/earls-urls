@@ -1,5 +1,7 @@
-const base_x = require('@eaglstun/base-x'),
-    db = require('./db');
+const { BaseX } = require('@rackandpinecone/base-x');
+const db = require('./db');
+
+const Base = new BaseX();
 
 class Earl {
     /**
@@ -28,7 +30,7 @@ class Earl {
      * @param callback
      */
     static get_by_shortid(earl, fail, success) {
-        const db_id = base_x.convert(earl, base_x.BASE75, base_x.BASE10);
+        const db_id = Base.convert(earl, 'BASE75', 'BASE10');
         console.log('get_by_shortid', earl, db_id);
 
         if (db_id) {
@@ -46,7 +48,7 @@ class Earl {
      * @return string
      */
     static get_shortlink(db_id, host, secure = 1) {
-        const earl = base_x.convert(db_id, base_x.BASE10, base_x.BASE75);
+        const earl = Base.convert(db_id, 'BASE10', 'BASE75');
         const protocol = secure ? 'https' : 'http';
 
         return protocol + '://' + host + "/" + earl;
