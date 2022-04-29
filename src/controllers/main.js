@@ -13,12 +13,12 @@ router.all('/', (req, res) => {
 
 // post to shorten url from index
 router.post('/shorten', (req, res) => {
+    console.log('req.user',req.user);
     const input_url = Earl.validate(req.body.url);
-    const user_id = req.user?.id;
-
+    
     Earl.insert(
         input_url,
-        user_id,
+        req.user,
         (err) => {
             res.render('error', {
                 message: err
