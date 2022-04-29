@@ -6,7 +6,8 @@
     "scripts": {
         "assets:dev": "sass --watch --update --style=expanded src/assets/scss:public/css",
         "assets:prod": "sass src/assets/scss:public/css",
-        "server:dev": "nodemon src/server.js",
+        "build:dev": "tsc --watch --preserveWatchOutput",
+        "serve:dev": "nodemon dist/app.js",
         "test": "jest"
     },
     "author": "",
