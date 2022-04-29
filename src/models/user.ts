@@ -4,13 +4,13 @@ const bcrypt = require('bcryptjs'),
 class User {
     /**
      *
-     * @param string
-     * @param string raw password
+     * @param username string
+     * @param password string raw password
      * @param callback
      * @param callback
      * @return int user id
      */
-    static create(username, password, fail, success) {
+    static create(username:string, password:string, fail, success) {
         bcrypt.genSalt(10, function (err, salt) {
             bcrypt.hash(password, salt, async (err, hash) => {
                 // @todo validate blank password
@@ -34,7 +34,7 @@ class User {
      * @param callback
      * @return int user id
      */
-    static async login(username, password, fail, success) {
+    static async login(username:string, password:string, fail, success) {
         const user = await models.User.findOne({
             where: {
                 username: username
@@ -58,15 +58,18 @@ class User {
 
     /**
      *
-     * @param int
+     * @param user_id integer
+     * @param 
+     * @param 
+     * @return
      */
-    static async get_urls_by_user(user_id, fail, success) {
+    static async get_urls_by_user(user_id: number, fail, success) {
         const urls = await models.Url.findAll({
             where: {
                 userId: user_id
             }
         });
-
+        
         success(urls);
     }
 }
