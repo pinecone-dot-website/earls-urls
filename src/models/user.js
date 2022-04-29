@@ -39,6 +39,8 @@ class User {
             where: {
                 username: username
             }
+        }).catch((err) => {
+            console.log(err.message);
         });
 
         if (user) {
@@ -63,8 +65,7 @@ class User {
             where: {
                 userId: user_id
             }
-        }
-        );
+        });
 
         success(urls);
     }

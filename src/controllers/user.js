@@ -14,14 +14,14 @@ function user_auth(req, res) {
                 req.flash('username', req.body.username);
                 req.flash('password', req.body.password);
 
-                res.redirect('/?login-error');
+                return res.redirect('/?login-error');
             },
             (user) => {
                 req.login(user, function (err) {
                     if (err) {
-                        res.redirect('/?register-error');
+                        return res.redirect('/?register-error');
                     } else {
-                        res.redirect('/?login-success');
+                        return res.redirect('/?login-success');
                     }
                 })
             });
@@ -34,19 +34,19 @@ function user_auth(req, res) {
                 req.flash('username', req.body.username);
                 req.flash('password', req.body.password);
 
-                res.redirect('/?register-error');
+                return res.redirect('/?register-error');
             },
             (success) => {
                 req.login(success, function (err) {
                     if (err) {
-                        res.redirect('/?register-error');
+                        return res.redirect('/?register-error');
                     } else {
-                        res.redirect('/?register-create');
+                        return res.redirect('/?register-create');
                     }
                 })
             });
     } else {
-        res.redirect('/?auth-error');
+        return res.redirect('/?auth-error');
     }
 }
 user_router.post(
@@ -57,7 +57,7 @@ user_router.post(
 // log user out
 function user_logout(req, res) {
     req.logout();
-    res.redirect('/?logout');
+    return res.redirect('/?logout');
 }
 user_router.all('/logout', user_logout);
 
@@ -70,7 +70,7 @@ function user_stats(req, res) {
     User.get_urls_by_user(
         req.user,
         (err) => {
-            res.render('error', {
+            return res.render('error', {
                 message: err
             });
         },

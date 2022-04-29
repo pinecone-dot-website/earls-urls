@@ -4,7 +4,7 @@ const express = require('express'),
 
 // index
 router.all('/', (req, res) => {
-    res.render('home', {
+    return res.render('home', {
         error: req.flash('error'),
         username: req.flash('username'),
         password: req.flash('password')
@@ -13,19 +13,18 @@ router.all('/', (req, res) => {
 
 // post to shorten url from index
 router.post('/shorten', (req, res) => {
-    console.log('req.user',req.user);
     const input_url = Earl.validate(req.body.url);
     
     Earl.insert(
         input_url,
         req.user,
         (err) => {
-            res.render('error', {
+            return res.render('error', {
                 message: err
             });
         },
         (id) => {
-            res.render('shorten', {
+            return res.render('shorten', {
                 input_url: input_url,
                 short_url: Earl.get_shortlink(
                     id,
@@ -44,12 +43,12 @@ router.get('/:short', (req, res) => {
     Earl.get_by_shortid(
         short,
         (err) => {
-            res.render('error', {
+            return res.render('error', {
                 message: err
             });
         },
         (row) => {
-            res.redirect(row.url);
+            return res.redirect(row.url);
         }
     );
 });
@@ -61,13 +60,12 @@ router.get('/:short/info', (req, res) => {
     Earl.get_by_shortid(
         short,
         (err) => {
-            res.render('error', {
+            return res.render('error', {
                 message: err
             });
         },
         (row) => {
-            console.log('row',row);
-            res.render('info', {
+            return res.render('info', {
                 short: short,
                 row: row.dataValues
             });

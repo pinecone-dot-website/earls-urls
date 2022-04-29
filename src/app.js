@@ -47,7 +47,7 @@ app.use((req, res, next) => {
 });
 
 // templates
-app.set('views', __dirname + '/src/views/');
+app.set('views', __dirname + '/views/');
 app.engine('hbs', exp_hbs.engine({
     defaultLayout: 'main',
     extname: ".hbs",
@@ -66,9 +66,9 @@ app.use('/static', express.static('public'));
 app.set('trust proxy', true);
 
 // routes
-const { api_router } = require('./src/controllers/api')
-const main_controller = require('./src/controllers/main');
-const { user_router } = require('./src/controllers/user');
+const { api_router } = require('./controllers/api')
+const main_controller = require('./controllers/main');
+const { user_router } = require('./controllers/user');
 
 app.use('/', main_controller);
 app.use('/u', user_router);

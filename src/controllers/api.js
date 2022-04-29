@@ -12,10 +12,10 @@ async function api_post(req, res) {
             input_url,
             0,
             (err) => { },
-            (success) => {
+            (id) => {
                 res.status(200).json({
                     input_url: input_url,
-                    // short_url: earl.get_shortlink(id, req.get('Host'), req.secure),
+                    short_url: Earl.get_shortlink(id, req.get('Host'), req.secure),
                     success: true
                 });
             }
