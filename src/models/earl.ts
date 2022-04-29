@@ -54,7 +54,7 @@ class Earl {
 
   /**
    *
-   * @param db_id
+   * @param db_id integer
    * @param string
    * @param secure boolean
    * @return string
