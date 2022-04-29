@@ -30,7 +30,7 @@ class Earl {
      */
     static get_by_shortid(earl, fail, success) {
         const db_id = Base.convert(earl, 'BASE75', 'BASE10');
-        
+
         if (db_id) {
             return this.get_by_id(db_id, fail, success);
         } else {
@@ -69,7 +69,11 @@ class Earl {
             url: formatted_url
         });
 
-        success(url.id);
+        if (url) {
+            success(url.id);
+        } else {
+            fail('URL was not inserted');
+        }
     }
 
     /**
