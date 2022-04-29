@@ -1,7 +1,7 @@
 const express = require('express'),
     exp_hbs = require('express-handlebars'),
     bodyParser = require('body-parser'),
-    flash = require('connect-flash'),
+    flash = require('@rackandpinecone/express-flash'),
     git = require('git-rev-sync'),
     passport = require('passport'),
     session = require('cookie-session'),
