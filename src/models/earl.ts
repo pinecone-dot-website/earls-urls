@@ -1,3 +1,5 @@
+import { Model } from "sequelize/types";
+import HTTP_Error, { HttpStatusCode } from "../classes/http_error";
 const { BaseX } = require("@rackandpinecone/base-x");
 const models = require("../../database/models"),
   Base = new BaseX();
@@ -8,97 +10,102 @@ class Earl {
    * @param db_id integer
    * @return object db row
    */
-  static async get_by_id(db_id: number, fail, success) {
-    await models.Url.findOne({
+  static async get_by_id(db_id: number) {
+    return models.Url.findOne({
       where: {
         id: db_id,
       },
     })
-      .then((url) => {
-        if (url) {
-          success(url);
+      .then((row) => {
+        if (row) {
+          return row;
         } else {
-          fail({
-            message: `${db_id} not found`,
-            code: 404,
-          });
+          throw new HTTP_Error(`ID "${db_id}" not found`, 404);
         }
       })
-      .catch((err) => {
-        console.log("catch err", err);
-        fail({
-          message: err.message,
-          code: 422,
-        });
+      .catch((err: Error) => {
+        throw new HTTP_Error(err.message, err.status || 500);
       });
   }
 
   /**
    * Convert short url to base10 and lookup by id
-   * @param earl string 
+   * @param earl string
    * @param callback
    * @param callback
    */
-  static async get_by_shortid(earl: string, fail, success) {
-    const db_id = Base.convert(earl, "BASE75", "BASE10");
-
-    if (db_id) {
-      return await this.get_by_id(db_id, fail, success);
-    } else {
-      return fail({
-        message: "Invalid shortlink",
-        code: 404,
-      });
-    }
+  static async get_by_shortid(earl: string): Promise<Model> {
+    return new Promise((resolve, reject) => {
+      Base.convert(earl, "BASE75", "BASE10")
+        .then(async (db_id) => {
+          return this.get_by_id(db_id);
+        })
+        .then((row) => {
+          console.log("get_by_shortid row", row);
+          resolve(row);
+        })
+        .catch((err) => {
+          console.log("get_by_shortid err", err);
+          reject(new HTTP_Error(err.message, err.status || 422));
+        });
+    });
   }
 
   /**
    *
    * @param db_id integer
-   * @param string
+   * @param host string
    * @param secure boolean
    * @return string
    */
-  static get_shortlink(db_id: number, host, secure: boolean = true) {
-    const earl = Base.convert(db_id, "BASE10", "BASE75");
-    const protocol = secure ? "https" : "http";
+  static async get_shortlink(
+    db_id: number,
+    host: string,
+    secure: boolean = true
+  ): Promise<string> {
+    console.log("get_shortlink db_id", db_id);
+    const short_url = await Base.convert(db_id, "BASE10", "BASE75")
+      .then((earl) => {
+        const protocol = secure ? "https" : "http";
 
-    return protocol + "://" + host + "/" + earl;
+        return protocol + "://" + host + "/" + earl;
+      })
+      .catch((err: Error) => {
+        throw new HTTP_Error(err.message, HttpStatusCode.BAD_REQUEST);
+      });
+
+    return short_url;
   }
 
   /**
    * insert a url into the db with or without user id
    * @param user_url string
    * @param user_id integer
-   * @param callback
-   * @param callback
-   * @return int
+   *
    */
-  static async insert(user_url, user_id: number, fail, success) {
-    if (!user_url)
-      return fail({
-        message: "No input URL was provided",
-        code: 400,
-      });
+  static async insert(user_url: string, user_id: number) {
+    return new Promise((resolve, reject) => {
+      if (!user_url) {
+        throw new HTTP_Error("No input URL was provided", 400);
+      }
 
-    const formatted_url = Earl.validate(user_url);
+      const formatted_url = Earl.validate(user_url);
 
-    if (!formatted_url)
-      return fail({
-        message: "URL is not valid",
-        code: 422,
-      });
+      if (!formatted_url) {
+        throw new HTTP_Error("URL is not valid", 422);
+      }
 
-    const url = await models.Url.create({
-      userId: user_id,
-      url: formatted_url,
+      models.Url.create({
+        userId: user_id,
+        url: formatted_url,
+      })
+        .then((row) => {
+          resolve(row);
+        })
+        .catch((err: Error) => {
+          reject(new HTTP_Error(err.message, 500));
+        });
     });
-
-    if (url) {
-      success(url);
-    } else {
-      fail("URL was not inserted");
-    }
   }
 
   /**
