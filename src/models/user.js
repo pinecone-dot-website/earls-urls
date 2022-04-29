@@ -11,20 +11,17 @@ class User {
      * @return int user id
      */
     static create(username, password, fail, success) {
-        if (username.length < 1)
-            return fail('No username');
-
-        if (password.length < 1)
-            return fail('No password');
-
         bcrypt.genSalt(10, function (err, salt) {
             bcrypt.hash(password, salt, async (err, hash) => {
-                const user = await models.User.create({
+                // @todo validate blank password
+                await models.User.create({
                     username: username,
                     password: hash
+                }).then((user) => {
+                    success(user.id);
+                }).catch((err) => {
+                    fail(err.message);
                 });
-
-                success(user.id);
             });
         });
     }
@@ -65,7 +62,8 @@ class User {
         const urls = await models.Url.findAll({
             where: {
                 userId: user_id
-              }}
+            }
+        }
         );
 
         success(urls);
