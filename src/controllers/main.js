@@ -14,7 +14,7 @@ router.all('/', (req, res) => {
 // post to shorten url from index
 router.post('/shorten', (req, res) => {
     const input_url = Earl.validate(req.body.url);
-    const user_id = req.user ? req.user : 0;
+    const user_id = req.user?.id;
 
     Earl.insert(
         input_url,
@@ -44,19 +44,33 @@ router.get('/:short', (req, res) => {
     Earl.get_by_shortid(
         short,
         (err) => {
-            console.log('err', err);
             res.render('error', {
                 message: err
             });
         },
         (row) => {
-            console.log('row', row);
             res.redirect(row.url);
+        }
+    );
+});
 
-            // res.render('info', {
-            //     short: short,
-            //     row: row
-            // });
+// lookup shortened url and show info
+router.get('/:short/info', (req, res) => {
+    const short = req.params.short;
+
+    Earl.get_by_shortid(
+        short,
+        (err) => {
+            res.render('error', {
+                message: err
+            });
+        },
+        (row) => {
+            console.log('row',row);
+            res.render('info', {
+                short: short,
+                row: row.dataValues
+            });
         }
     );
 });

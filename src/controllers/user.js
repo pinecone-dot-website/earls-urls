@@ -37,7 +37,6 @@ function user_auth(req, res) {
                 res.redirect('/?register-error');
             },
             (success) => {
-                console.log('user create success', success);
                 req.login(success, function (err) {
                     if (err) {
                         res.redirect('/?register-error');
@@ -84,7 +83,7 @@ function user_stats(req, res) {
                         req.secure
                     ),
                     long: row.url,
-                    timestamp: row.timestamp
+                    timestamp: new Date(row.createdAt).toLocaleString()
                 };
             });
 
