@@ -67,7 +67,10 @@ function user_stats(req: Request, res: Response) {
                 timestamp: new Date(row.createdAt).toLocaleString(),
               };
             }
-          );
+          ).catch((err)=>{
+            // get_shortlink fails
+            return err;
+          });
         })
       );
 
