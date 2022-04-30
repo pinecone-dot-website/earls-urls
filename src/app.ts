@@ -27,12 +27,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // user info to sessions
-passport.serializeUser((user, done) => {
+passport.serializeUser((user: number, done) => {
   console.log("serializing user", user);
   done(null, user);
 });
 
-passport.deserializeUser(function (obj, done) {
+passport.deserializeUser(function (obj: number, done) {
   console.log("deserializing obj", obj);
   done(null, obj);
 });
