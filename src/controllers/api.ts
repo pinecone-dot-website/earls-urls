@@ -1,3 +1,4 @@
+import HTTP_Error from "../classes/http_error";
 import express, { Request, Response } from "express";
 import Earl from "../models/earl";
 const api_router = express.Router();
@@ -20,7 +21,7 @@ async function api_get(req: Request, res: Response) {
         }
       );
     })
-    .catch((err) => {
+    .catch((err: HTTP_Error) => {
       return res.status(err.status).json({
         success: false,
         message: err.message,
@@ -39,15 +40,16 @@ async function api_post(req: Request, res: Response) {
       await Earl.get_shortlink(row.id, req.get("Host"), req.secure).then(
         (short_url) => {
           return res.status(200).json({
+            success: true,
             input_url: input_url,
             short_url: short_url,
-            success: true,
+            created: row.createdAt,
           });
         }
       );
     })
     .catch((err) => {
-      console.log('api_post err',err);
+      console.log("api_post err", err);
       return res.status(err.status).json({
         error: err.message,
         success: false,

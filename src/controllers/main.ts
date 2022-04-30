@@ -1,4 +1,4 @@
-import HTTP_Error from "classes/http_error";
+import HTTP_Error from "../classes/http_error";
 import express, { Request, Response } from "express";
 import Earl from "../models/earl";
 const router = express.Router();
@@ -58,7 +58,7 @@ router.get("/:short/info", (req: Request, res: Response) => {
         row: row.dataValues,
       });
     })
-    .catch((err) => {
+    .catch((err: HTTP_Error) => {
       return res.status(err.status).render("error", {
         message: err,
       });

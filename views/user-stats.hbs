@@ -3,13 +3,19 @@
     <thead>
       <tr>
         <th scope="col">URL</th>
+        <th scope="col">Info</th>
         <th scope="col">Date</th>
       </tr>
     </thead>
 
     {{#each earls}}
       <tr>
-        <td><a href="{{this.short}}">{{this.long}}</a></td>
+        <td>
+          <a href="{{this.short}}">{{this.long}}</a>
+          </td>
+          <td>
+          <a href="{{this.short}}/info">info</a>
+          </td>
         <td>{{this.timestamp}}</td>
       </tr>
     {{/each}}
