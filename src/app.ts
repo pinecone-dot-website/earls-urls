@@ -7,6 +7,9 @@ const exp_hbs = require("express-handlebars"),
   session = require("cookie-session"),
   app = express();
 
+import { Strategy as LocalStrategy } from "passport-local";
+import User from "./models/user";
+
 require("dotenv").config();
 
 // have POST data in req.body
@@ -23,6 +26,7 @@ app.use(
 );
 
 // passport config
+passport.use(new LocalStrategy(User.authenticateLocal));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -38,10 +42,17 @@ passport.deserializeUser(function (obj: number, done) {
 });
 
 // called on all requests
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use(async (req: Request, res: Response, next: NextFunction) => {
   // user data on all routes
-  res.locals.user = req.user;
+  res.locals.user = await User.findByID(req.user)
+    .then((user) => {
+      return user?.toJSON();
+    })
+    .catch((e) => {
+      return false;
+    });
 
+  console.log("locals", res.locals.user);
   // show git tag in footer
   res.locals.version = git.tag();
 

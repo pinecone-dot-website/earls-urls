@@ -1,9 +1,42 @@
+import { IVerifyOptions } from "passport-local";
+
 import HTTP_Error from "../classes/http_error";
 
 const bcrypt = require("bcryptjs"),
   models = require("../../database/models");
 
 class User {
+  static authenticateLocal(
+    username: string,
+    password: string,
+    done: (error: any, user?: any, options?: IVerifyOptions) => void
+  ) {
+    models.User.findOne({
+      where: {
+        username: username,
+      },
+    })
+      .then((user) => {
+        if (!user) {
+          throw new HTTP_Error("Username not found", 401);
+        }
+
+        return user;
+      })
+      .then((user) => {
+        return bcrypt.compare(password, user.password).then((ok: boolean) => {
+          if (ok) {
+            return done(false, user);
+          }
+
+          throw new HTTP_Error("Incorrect password", 401);
+        });
+      })
+      .catch((err) => {
+        return done(err);
+      });
+  }
+
   /**
    *
    * @param username string
@@ -24,6 +57,17 @@ class User {
       })
       .then((user) => {
         return user.id;
+      });
+  }
+
+  static async findByID(user_id: number) {
+    return models.User.findOne({
+      where: {
+        id: user_id,
+      },
+    })
+      .then((user) => {
+        return user;
       });
   }
 
@@ -73,4 +117,4 @@ class User {
   }
 }
 
-module.exports = User;
+export default User;

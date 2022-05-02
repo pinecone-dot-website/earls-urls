@@ -1,26 +1,29 @@
-import HTTP_Error from "classes/http_error";
-import express, { Request, Response } from "express";
-import Earl from "../models/earl";
+import express, { Request, Response, NextFunction } from "express";
+import passport from "passport";
 
-const user_router = express.Router(),
-  User = require("../models/user");
+import Earl from "../models/earl";
+import User from "../models/user";
+
+const user_router = express.Router();
 
 // process login / register form
-async function user_auth(req: Request, res: Response) {
+async function user_auth(req: Request, res: Response, next: NextFunction) {
   if (req.body.login) {
-    await User.login(req.body.username, req.body.password)
-      .then((user_id) => {
-        req.login(user_id, (err) => {
-          return res.redirect("/?login-success");
-        });
-      })
-      .catch((err: HTTP_Error) => {
-        req.flash("error", err.message);
+    const verified = (err: Error, user, info) => {
+      if (!user) {
+        req.flash("error", err?.message || info?.message);
         req.flash("username", req.body.username);
         req.flash("password", req.body.password);
 
         return res.redirect("/?login-error");
+      }
+
+      req.login(user.id, (err) => {
+        return res.redirect("/?login-success");
       });
+    };
+
+    passport.authenticate("local", verified)(req, res);
   } else if (req.body.register) {
     await User.create(req.body.username, req.body.password)
       .then((user_id: number) => {
@@ -59,18 +62,18 @@ function user_stats(req: Request, res: Response) {
     .then(async (rows) => {
       rows = await Promise.all(
         rows.map((row) => {
-          return Earl.get_shortlink(row.id, req.get("Host"), req.secure).then(
-            (short_url) => {
+          return Earl.get_shortlink(row.id, req.get("Host"), req.secure)
+            .then((short_url) => {
               return {
                 short: short_url,
                 long: row.url,
                 timestamp: new Date(row.createdAt).toLocaleString(),
               };
-            }
-          ).catch((err)=>{
-            // get_shortlink fails
-            return err;
-          });
+            })
+            .catch((err) => {
+              // get_shortlink fails
+              return err;
+            });
         })
       );
 
