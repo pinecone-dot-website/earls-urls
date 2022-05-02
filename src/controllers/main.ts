@@ -26,7 +26,7 @@ router.post("/shorten", (req: Request, res: Response) => {
       );
     })
     .catch((err) => {
-      return res.status(err.code).render("error", {
+      return res.status(err.status).render("error", {
         message: err.message,
       });
     });
