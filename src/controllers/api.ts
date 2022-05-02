@@ -1,9 +1,24 @@
-import HTTP_Error from "../classes/http_error";
 import express, { Request, Response } from "express";
+import { sign } from "jsonwebtoken";
+import passport from "passport";
+
+import HTTP_Error from "../classes/http_error";
 import Earl from "../models/earl";
 const api_router = express.Router();
 
-// GET
+// POST for auth login with jwt
+function api_auth(req: Request, res: Response) {
+}
+
+api_router.post("/auth/login", api_auth);
+
+// GET user information
+function api_user(req: Request, res: Response) {
+}
+
+api_router.get("/auth", api_user);
+
+// GET long url from short
 async function api_get(req: Request, res: Response) {
   const short = req.params.short;
 
@@ -31,7 +46,7 @@ async function api_get(req: Request, res: Response) {
 
 api_router.get("/:short", api_get);
 
-// POST to /api
+// POST long url and receive short
 async function api_post(req: Request, res: Response) {
   const input_url = req.body?.url;
 

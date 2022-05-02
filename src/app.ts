@@ -7,13 +7,17 @@ const exp_hbs = require("express-handlebars"),
   session = require("cookie-session"),
   app = express();
 
+import { Strategy as JWTStrategy, ExtractJwt } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
 import User from "./models/user";
 
 require("dotenv").config();
 
-// have POST data in req.body
+// parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
+// parse application/json
+app.use(bodyParser.json())
+//
 app.use(flash());
 
 // use sessions and flash data
@@ -26,6 +30,15 @@ app.use(
 );
 
 // passport config
+passport.use(
+  new JWTStrategy(
+    {
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: process.env.JWT_SECRET,
+    },
+    User.authenticateJWT
+  )
+);
 passport.use(new LocalStrategy(User.authenticateLocal));
 app.use(passport.initialize());
 app.use(passport.session());
