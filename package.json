@@ -1,6 +1,6 @@
 {
     "name": "earls-urls",
-    "version": "0.5.0",
+    "version": "0.5.2",
     "description": "earl shortener",
     "main": "index.js",
     "scripts": {
@@ -26,6 +26,7 @@
         "express-handlebars": "^6.0.5",
         "git-rev-sync": "^3.0.2",
         "passport": "^0.5.2",
+        "passport-local": "^1.0.0",
         "pg": "^8.7.3",
         "sass": "^1.50.0",
         "sequelize": "^6.19.0"
@@ -36,6 +37,7 @@
     },
     "devDependencies": {
         "@types/jest": "^27.4.1",
+        "@types/passport-local": "^1.0.34",
         "jest": "^27.5.1",
         "ts-jest": "^27.1.4",
         "typescript": "^4.6.4"
