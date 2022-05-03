@@ -1,14 +1,15 @@
+import bcrypt from "bcryptjs";
 import { IVerifyOptions } from "passport-local";
 
 import HTTP_Error from "../classes/http_error";
 
-const bcrypt = require("bcryptjs"),
-  models = require("../../database/models");
+const models = require("../../database/models");
 
 class User {
-  static authenticateJWT(jwt_payload, done) {
-    console.log("authenticateJWT jwt_payload", jwt_payload);
-
+  static authenticateJWT(
+    jwt_payload,
+    done: (error: any, user?: any, options?: IVerifyOptions) => void
+  ) {
     return models.User.findOne({
       where: {
         id: jwt_payload.user_id,
@@ -18,9 +19,7 @@ class User {
       .then((user) => {
         done(false, user);
       })
-      .catch((err) => {
-        done(err);
-      });
+      .catch(done);
   }
 
   /**
@@ -40,24 +39,17 @@ class User {
       },
     })
       .then(User.validateUser)
+      .then(User.validatePassword(password))
       .then((user) => {
-        return bcrypt.compare(password, user.password).then((ok: boolean) => {
-          if (ok) {
-            return done(false, user);
-          }
-
-          throw new HTTP_Error("Incorrect password", 401);
-        });
+        done(false, user);
       })
-      .catch((err) => {
-        return done(err);
-      });
+      .catch(done);
   }
 
   /**
-   * 
-   * @param user 
-   * @returns 
+   *
+   * @param user
+   * @returns
    */
   static validateUser(user) {
     if (!user) {
@@ -66,6 +58,24 @@ class User {
 
     return user;
   }
+
+  /**
+   *
+   * @param password
+   * @returns
+   */
+  static validatePassword(password: string) {
+    return (user) => {
+      return bcrypt.compare(password, user.password).then((ok: boolean) => {
+        if (!ok) {
+          throw new HTTP_Error("Incorrect password", 401);
+        }
+
+        return user;
+      });
+    };
+  }
+
   /**
    *
    * @param username string
@@ -94,10 +104,7 @@ class User {
       where: {
         id: user_id,
       },
-    })
-      .then((user) => {
-        return user;
-      });
+    });
   }
 
   /**
@@ -143,8 +150,6 @@ class User {
       where: {
         userId: user_id,
       },
-    }).then((rows) => {
-      return rows;
     });
   }
 }

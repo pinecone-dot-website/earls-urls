@@ -1,6 +1,8 @@
 import express, { Request, Response, NextFunction } from "express";
 import passport from "passport";
 
+import git_tag from "../middleware/git_tag";
+import http_user from "../middleware/http_user";
 import Earl from "../models/earl";
 import User from "../models/user";
 
@@ -32,7 +34,6 @@ async function user_auth(req: Request, res: Response, next: NextFunction) {
         });
       })
       .catch((err: Error) => {
-        console.log("register err", err);
         req.flash("error", err.message);
         req.flash("username", req.body.username);
         req.flash("password", req.body.password);
@@ -87,11 +88,6 @@ function user_stats(req: Request, res: Response) {
       });
     });
 }
-user_router.get("/stats", user_stats);
+user_router.get("/stats", [git_tag, http_user], user_stats);
 
-module.exports = {
-  user_router,
-  user_auth,
-  user_logout,
-  user_stats,
-};
+module.exports = user_router;

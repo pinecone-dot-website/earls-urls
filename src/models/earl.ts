@@ -1,6 +1,6 @@
 import { Model } from "sequelize/types";
 import HTTP_Error, { HttpStatusCode } from "../classes/http_error";
-const { BaseX } = require("@rackandpinecone/base-x");
+import { BaseX } from "@rackandpinecone/base-x";
 const models = require("../../database/models"),
   Base = new BaseX();
 
@@ -10,7 +10,7 @@ class Earl {
    * @param db_id integer
    * @return object db row
    */
-  static async get_by_id(db_id: number) {
+  static async get_by_id(db_id: string) {
     return models.Url.findOne({
       where: {
         id: db_id,
@@ -31,24 +31,10 @@ class Earl {
   /**
    * Convert short url to base10 and lookup by id
    * @param earl string
-   * @param callback
-   * @param callback
+   * @return
    */
-  static async get_by_shortid(earl: string): Promise<Model> {
-    return new Promise((resolve, reject) => {
-      Base.convert(earl, "BASE75", "BASE10")
-        .then(async (db_id) => {
-          return this.get_by_id(db_id);
-        })
-        .then((row) => {
-          console.log("get_by_shortid row", row);
-          resolve(row);
-        })
-        .catch((err) => {
-          console.log("get_by_shortid err", err);
-          reject(new HTTP_Error(err.message, err.status || 422));
-        });
-    });
+  static get_by_shortid(earl: string) {
+    return Base.convert(earl, "BASE75", "BASE10").then(this.get_by_id);
   }
 
   /**
@@ -63,9 +49,8 @@ class Earl {
     host: string,
     secure: boolean = true
   ): Promise<string> {
-    console.log("get_shortlink db_id", db_id);
     const short_url = await Base.convert(db_id, "BASE10", "BASE75")
-      .then((earl) => {
+      .then((earl: string) => {
         const protocol = secure ? "https" : "http";
 
         return protocol + "://" + host + "/" + earl;
@@ -83,28 +68,14 @@ class Earl {
    * @param user_id integer
    *
    */
-  static async insert(user_url: string, user_id: number = 0) {
-    return new Promise((resolve, reject) => {
-      if (!user_url) {
-        throw new HTTP_Error("No input URL was provided", 400);
-      }
-
-      const formatted_url = Earl.validate(user_url);
-
-      if (!formatted_url) {
-        throw new HTTP_Error("URL is not valid", 422);
-      }
-
-      models.Url.create({
+  static insert(user_url: string, user_id: number = 0) {
+    return Earl.validate(user_url).then((formatted_url) => {
+      return models.Url.create({
         userId: user_id,
         url: formatted_url,
-      })
-        .then((row) => {
-          resolve(row);
-        })
-        .catch((err: Error) => {
-          reject(new HTTP_Error(err.message, 500));
-        });
+      }).then((row) => {
+        return row;
+      });
     });
   }
 
@@ -113,15 +84,17 @@ class Earl {
    * @param input_url string user supplied url
    * @return string | false
    */
-  static validate(input_url: string) {
-    try {
+  static validate(input_url: string): Promise<string> {
+    return new Promise((resolve, reject) => {
       const url = new URL(input_url);
 
       // disallow urls like javascript:void(0)
-      return url.origin === "null" ? false : url.href;
-    } catch (e) {
-      return false;
-    }
+      if (url.origin === "null") {
+        reject(new HTTP_Error("URL is not valid", 422));
+      }
+
+      return resolve(url.href);
+    });
   }
 }
 

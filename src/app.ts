@@ -2,13 +2,13 @@ import express, { Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 const exp_hbs = require("express-handlebars"),
   flash = require("@rackandpinecone/express-flash"),
-  git = require("git-rev-sync"),
   passport = require("passport"),
   session = require("cookie-session"),
   app = express();
 
 import { Strategy as JWTStrategy, ExtractJwt } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
+
 import User from "./models/user";
 
 require("dotenv").config();
@@ -52,24 +52,6 @@ passport.serializeUser((user: number, done) => {
 passport.deserializeUser(function (obj: number, done) {
   console.log("deserializing obj", obj);
   done(null, obj);
-});
-
-// called on all requests
-app.use(async (req: Request, res: Response, next: NextFunction) => {
-  // user data on all routes
-  res.locals.user = await User.findByID(req.user)
-    .then((user) => {
-      return user?.toJSON();
-    })
-    .catch((e) => {
-      return false;
-    });
-
-  console.log("locals", res.locals.user);
-  // show git tag in footer
-  res.locals.version = git.tag();
-
-  next();
 });
 
 // templates

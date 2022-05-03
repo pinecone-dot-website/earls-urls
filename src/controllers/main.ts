@@ -1,22 +1,25 @@
 import HTTP_Error from "../classes/http_error";
 import express, { Request, Response } from "express";
+import git_tag from "../middleware/git_tag";
+import http_user from "../middleware/http_user";
 import Earl from "../models/earl";
 const router = express.Router();
 
 // index
-router.all("/", (req: Request, res: Response) => {
+router.all("/", [git_tag, http_user], (req: Request, res: Response) => {
   return res.render("home", {
     error: req.flash("error"),
+    input_url: req.flash("input_url"),
     username: req.flash("username"),
     password: req.flash("password"),
   });
 });
 
 // post to shorten url from index
-router.post("/shorten", (req: Request, res: Response) => {
+router.post("/shorten", [git_tag, http_user], (req: Request, res: Response) => {
   Earl.insert(req.body.url, req.user)
-    .then(async (row) => {
-      await Earl.get_shortlink(row.id, req.get("Host"), req.secure).then(
+    .then((row) => {
+      Earl.get_shortlink(row.id, req.get("Host"), req.secure).then(
         (short_url) => {
           return res.render("shorten", {
             input_url: row.url,
@@ -26,43 +29,57 @@ router.post("/shorten", (req: Request, res: Response) => {
       );
     })
     .catch((err) => {
-      return res.status(err.status).render("error", {
-        message: err.message,
-      });
+      req.flash("error", err.message);
+      req.flash("input_url", req.body.url);
+
+      return res.redirect("/?url-error");
     });
 });
 
 // lookup shortened url and redirect
-router.get("/:short", async (req: Request, res: Response) => {
-  const short = req.params.short;
+router.get(
+  "/:short",
+  [git_tag, http_user],
+  async (req: Request, res: Response) => {
+    const short = req.params.short;
 
-  await Earl.get_by_shortid(short)
-    .then((row) => {
-      return res.redirect(row.url);
-    })
-    .catch((err: HTTP_Error) => {
-      return res.status(err.status).render("error", {
-        message: err.message,
+    Earl.get_by_shortid(short)
+      .then((row) => {
+        return res.redirect(row.url);
+      })
+      .catch((err: HTTP_Error) => {
+        return res.status(err.status).render("error", {
+          message: err.message,
+        });
       });
-    });
-});
+  }
+);
 
 // lookup shortened url and show info
-router.get("/:short/info", (req: Request, res: Response) => {
-  const short = req.params.short;
+router.get(
+  "/:short/info",
+  [git_tag, http_user],
+  (req: Request, res: Response) => {
+    const short = req.params.short;
 
-  Earl.get_by_shortid(short)
-    .then((row) => {
-      return res.render("info", {
-        short: short,
-        row: row.dataValues,
+    Earl.get_by_shortid(short)
+      .then(async (row) => {
+        return res.render("info", {
+          short: short,
+          short_url: await Earl.get_shortlink(
+            row.id,
+            req.get("Host"),
+            req.secure
+          ),
+          row: row.dataValues,
+        });
+      })
+      .catch((err: HTTP_Error) => {
+        return res.status(err.status).render("error", {
+          message: err,
+        });
       });
-    })
-    .catch((err: HTTP_Error) => {
-      return res.status(err.status).render("error", {
-        message: err,
-      });
-    });
-});
+  }
+);
 
 module.exports = router;
