@@ -4,8 +4,9 @@ const exp_hbs = require("express-handlebars"),
   flash = require("@rackandpinecone/express-flash"),
   passport = require("passport"),
   session = require("cookie-session"),
-  app = express();
-
+  app = express(),
+  swaggerJsdoc = require("swagger-jsdoc"),
+  swaggerUi = require("swagger-ui-express");
 import { Strategy as JWTStrategy, ExtractJwt } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
 
@@ -16,9 +17,28 @@ require("dotenv").config();
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 // parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 //
 app.use(flash());
+
+// swagger docs
+const options = {
+  definition: {
+    // openapi: "3.0.0",
+    info: {
+      title: "Earls Urls",
+      version: '1.0.0'
+    },
+  },
+  apis: [`${__dirname}/controllers/api.js`],
+};
+const specs = swaggerJsdoc(options);
+
+app.use(
+  "/api/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(specs, { explorer: true })
+);
 
 // use sessions and flash data
 app.use(

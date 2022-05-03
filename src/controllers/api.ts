@@ -9,37 +9,17 @@ import User from "../models/user";
 
 const api_router = express.Router();
 
-// POST for auth login with jwt
-function api_auth(req: Request, res: Response) {
-  const user = User.login(req.body.username, req.body.password)
-    .then((user_id) => {
-      const token = sign(
-        {
-          user_id: user_id,
-        },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: 1000000,
-        }
-      );
-
-      return res.json({
-        success: true,
-        user_id: user_id,
-        token,
-      });
-    })
-    .catch((err) => {
-      return res.status(err.status).json({
-        success: false,
-        error: err.message,
-      });
-    });
-}
-
-api_router.post("/auth/login", api_auth);
-
-// GET user information
+/**
+ * @swagger
+ *  /api/auth:
+ *    get:
+ *      summary: View authenticated user
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        200:
+ *          description: Yes
+ */
 function api_user(req: Request, res: Response) {
   if (req.user) {
     const { id, username, createdAt } = req.user;
@@ -58,7 +38,64 @@ function api_user(req: Request, res: Response) {
 
 api_router.get("/auth", [json_user], api_user);
 
-// GET long url from short
+/**
+ * @swagger
+ *  /api/login:
+ *    post:
+ *      summary: Log in and receive JWT
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        200:
+ *          description: Yes
+ */
+function api_auth(req: Request, res: Response) {
+  User.login(req.body.username, req.body.password)
+    .then((user_id) => {
+      console.log("user_id", user_id);
+      const token = sign(
+        {
+          user_id: user_id,
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: 1000000,
+        }
+      );
+
+      return res.json({
+        success: true,
+        user_id: user_id,
+        token,
+      });
+    })
+    .catch((err) => {
+      console.log("err", err);
+      return res.status(err.status).json({
+        success: false,
+        error: err.message,
+      });
+    });
+}
+
+api_router.post("/auth/login", api_auth);
+
+/**
+ * @swagger
+ *  /api/{id}:
+ *    get:
+ *      summary: Gets information about a short url
+ *      parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: slug of the short url.
+ *         schema:
+ *           type: string
+ *      responses:
+ *        200:
+ *          description: Short URL was found
+ */
 async function api_get(req: Request, res: Response) {
   const short = req.params.short;
 
@@ -87,7 +124,26 @@ async function api_get(req: Request, res: Response) {
 
 api_router.get("/:short", api_get);
 
-// POST long url and receive short
+/**
+ * @swagger
+ *  /api/:
+ *    post:
+ *      summary: Shorten a URL
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                url:
+ *                  type: string
+ *                  description: url to shorten
+ *                  example: "https://dev.to/kabartolo/how-to-document-an-express-api-with-swagger-ui-and-jsdoc-50do"
+ *    responses:
+ *      422:
+ *        description: Invalid URL
+ */
 async function api_post(req: Request, res: Response) {
   const input_url = req.body?.url;
   const user_id = req.user?.id;
@@ -107,7 +163,7 @@ async function api_post(req: Request, res: Response) {
       );
     })
     .catch((err) => {
-      return res.status(err.status || 500).json({
+      return res.status(err.status || 422).json({
         error: err.message,
         success: false,
       });
