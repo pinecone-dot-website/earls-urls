@@ -18,11 +18,13 @@ const api_router = express.Router();
  *        - application/json
  *      responses:
  *        200:
- *          description: Yes
+ *          description: Valid JWT
+ *        401:
+ *          description: Unauthorized
  */
 function api_user(req: Request, res: Response) {
-  if (req.user) {
-    const { id, username, createdAt } = req.user;
+  if (req.user.props) {
+    const { id, username, createdAt } = req.user.props;
 
     return res.json({
       success: true,
@@ -30,9 +32,9 @@ function api_user(req: Request, res: Response) {
     });
   }
 
-  return res.status(req.user_error.status || 401).json({
+  return res.status(req.user.error.status || 401).json({
     success: false,
-    message: req.user_error.message,
+    error: req.user.error.message,
   });
 }
 
@@ -40,16 +42,35 @@ api_router.get("/auth", [json_user], api_user);
 
 /**
  * @swagger
- *  /api/login:
+ *  /api/auth/login:
  *    post:
  *      summary: Log in and receive JWT
  *      produces:
  *        - application/json
+ *      parameters:
+ *        - in: body
+ *          description: The user to log in
+ *          name: body
+ *          schema:
+ *            type: object
+ *            required:
+ *              - username
+ *              - password
+ *            properties:
+ *              username:
+ *                type: string
+ *              password:
+ *                type: string
+ *            example:
+ *              username: 'demo'
+ *              password: 'password'
  *      responses:
  *        200:
- *          description: Yes
+ *          description: Successful login
+ *        401:
+ *          description: Username or password is incorrect
  */
-function api_auth(req: Request, res: Response) {
+function api_login(req: Request, res: Response) {
   User.login(req.body.username, req.body.password)
     .then((user_id) => {
       console.log("user_id", user_id);
@@ -59,7 +80,7 @@ function api_auth(req: Request, res: Response) {
         },
         process.env.JWT_SECRET,
         {
-          expiresIn: 1000000,
+          expiresIn: 10,
         }
       );
 
@@ -70,7 +91,6 @@ function api_auth(req: Request, res: Response) {
       });
     })
     .catch((err) => {
-      console.log("err", err);
       return res.status(err.status).json({
         success: false,
         error: err.message,
@@ -78,7 +98,7 @@ function api_auth(req: Request, res: Response) {
     });
 }
 
-api_router.post("/auth/login", api_auth);
+api_router.post("/auth/login", api_login);
 
 /**
  * @swagger
@@ -92,9 +112,14 @@ api_router.post("/auth/login", api_auth);
  *         description: slug of the short url.
  *         schema:
  *           type: string
+ *           example: "a"
  *      responses:
  *        200:
  *          description: Short URL was found
+ *        404:
+ *          description: Record does not exist
+ *        500:
+ *          description: Integer out of bounds
  */
 async function api_get(req: Request, res: Response) {
   const short = req.params.short;
@@ -129,31 +154,44 @@ api_router.get("/:short", api_get);
  *  /api/:
  *    post:
  *      summary: Shorten a URL
- *      requestBody:
- *        required: true
- *        content:
- *          application/json:
- *            schema:
- *              type: object
- *              properties:
- *                url:
- *                  type: string
- *                  description: url to shorten
- *                  example: "https://dev.to/kabartolo/how-to-document-an-express-api-with-swagger-ui-and-jsdoc-50do"
- *    responses:
- *      422:
- *        description: Invalid URL
+ *      consumes:
+ *        - application/json
+ *      produces:
+ *        - application/json
+ *      parameters:
+ *        - in: body
+ *          description: The url to shorten
+ *          name: body
+ *          schema:
+ *            type: object
+ *            required:
+ *              - url
+ *            properties:
+ *              url:
+ *                type: string
+ *            example:
+ *              url: https://earlsurls.site
+ *      responses:
+ *        201:
+ *          description: Success
+ *        400:
+ *          description: Server Error
+ *        422:
+ *          description: Invalid URL
+ *        500:
+ *          description: Error in convertion
  */
 async function api_post(req: Request, res: Response) {
-  const input_url = req.body?.url;
-  const user_id = req.user?.id;
+  const input_url = req.body.url;
+  const user_id = req.user.props.id;
 
   await Earl.insert(input_url, user_id)
     .then(async (row) => {
       await Earl.get_shortlink(row.id, req.get("Host"), req.secure).then(
         (short_url) => {
-          return res.status(200).json({
+          return res.status(201).json({
             success: true,
+            id: row.id,
             input_url: input_url,
             short_url: short_url,
             created: row.createdAt,
@@ -164,8 +202,10 @@ async function api_post(req: Request, res: Response) {
     })
     .catch((err) => {
       return res.status(err.status || 422).json({
-        error: err.message,
         success: false,
+        error: err.message,
+        input_url: input_url,
+        user_id: user_id,
       });
     });
 }

@@ -56,7 +56,7 @@ class Earl {
         return protocol + "://" + host + "/" + earl;
       })
       .catch((err: Error) => {
-        throw new HTTP_Error(err.message, HttpStatusCode.BAD_REQUEST);
+        throw new HTTP_Error(err.message, HttpStatusCode.INTERNAL_SERVER);
       });
 
     return short_url;
@@ -73,8 +73,6 @@ class Earl {
       return models.Url.create({
         userId: user_id,
         url: formatted_url,
-      }).then((row) => {
-        return row;
       });
     });
   }

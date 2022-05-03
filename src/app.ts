@@ -27,7 +27,15 @@ const options = {
     // openapi: "3.0.0",
     info: {
       title: "Earls Urls",
-      version: '1.0.0'
+      version: "0.6.0",
+    },
+    securityDefinitions: {
+      bearerAuth: {
+        type: "apiKey",
+        name: "x-auth-token",
+        scheme: "bearer",
+        in: "header",
+      },
     },
   },
   apis: [`${__dirname}/controllers/api.js`],
@@ -95,6 +103,15 @@ app.use("/static", express.static("public"));
 
 // recognize ssl from proxy
 app.set("trust proxy", true);
+
+// handle undefined values in response json
+app.set("json replacer", (key, value) => {
+  // undefined values are set to `null`
+  if (typeof value === "undefined") {
+    return null;
+  }
+  return value;
+});
 
 // routes
 const api_router = require("./controllers/api");
