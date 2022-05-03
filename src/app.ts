@@ -24,17 +24,17 @@ app.use(flash());
 // swagger docs
 const options = {
   definition: {
-    // openapi: "3.0.0",
+    openapi: "3.0.0",
     info: {
       title: "Earls Urls",
       version: "0.6.0",
     },
-    securityDefinitions: {
-      bearerAuth: {
-        type: "apiKey",
-        name: "x-auth-token",
-        scheme: "bearer",
-        in: "header",
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+        },
       },
     },
   },

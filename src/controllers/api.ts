@@ -13,6 +13,8 @@ const api_router = express.Router();
  * @swagger
  *  /api/auth:
  *    get:
+ *      security:
+ *        - bearerAuth: []
  *      summary: View authenticated user
  *      produces:
  *        - application/json
@@ -45,25 +47,26 @@ api_router.get("/auth", [json_user], api_user);
  *  /api/auth/login:
  *    post:
  *      summary: Log in and receive JWT
+ *      consumes:
+ *      - "application/json"
  *      produces:
- *        - application/json
- *      parameters:
- *        - in: body
- *          description: The user to log in
- *          name: body
- *          schema:
- *            type: object
- *            required:
- *              - username
- *              - password
- *            properties:
- *              username:
- *                type: string
- *              password:
- *                type: string
- *            example:
- *              username: 'demo'
- *              password: 'password'
+ *      - "application/json"
+ *      requestBody:
+ *        description: The user to log in
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              required:
+ *                - "username"
+ *                - "password"
+ *              properties:
+ *                username:
+ *                  example: demo1
+ *                  type: string
+ *                password:
+ *                  example: password1
+ *                  type: string
  *      responses:
  *        200:
  *          description: Successful login
@@ -71,31 +74,33 @@ api_router.get("/auth", [json_user], api_user);
  *          description: Username or password is incorrect
  */
 function api_login(req: Request, res: Response) {
-  User.login(req.body.username, req.body.password)
-    .then((user_id) => {
-      console.log("user_id", user_id);
-      const token = sign(
-        {
-          user_id: user_id,
-        },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: 10,
-        }
-      );
+  const verified = (err: Error, user, info) => {
+    const cb = (err: Error, encoded: string) => {
+      if (err) {
+        return res.json({
+          success: false,
+          error: err.message,
+        });
+      }
 
       return res.json({
         success: true,
-        user_id: user_id,
-        token,
+        user_id: user.id,
+        token: encoded,
       });
-    })
-    .catch((err) => {
-      return res.status(err.status).json({
+    };
+
+    if (!user) {
+      return res.status(400).json({
         success: false,
-        error: err.message,
+        error: err?.message || info?.message,
       });
-    });
+    }
+
+    sign({ user_id: user.id }, process.env.JWT_SECRET, { expiresIn: 120 }, cb);
+  };
+
+  passport.authenticate("local", verified)(req, res);
 }
 
 api_router.post("/auth/login", api_login);
@@ -153,24 +158,24 @@ api_router.get("/:short", api_get);
  * @swagger
  *  /api/:
  *    post:
+ *      security:
+ *        - bearerAuth: []
  *      summary: Shorten a URL
  *      consumes:
- *        - application/json
+ *        - "application/json"
  *      produces:
- *        - application/json
- *      parameters:
- *        - in: body
+ *        - "application/json"
+ *      requestBody:
  *          description: The url to shorten
- *          name: body
- *          schema:
- *            type: object
- *            required:
- *              - url
- *            properties:
- *              url:
- *                type: string
- *            example:
- *              url: https://earlsurls.site
+ *          content:
+ *            application/json:
+ *              schema:
+ *                required:
+ *                  - url
+ *                properties:
+ *                  url:
+ *                    example: https://earlsurls.site
+ *                    type: string
  *      responses:
  *        201:
  *          description: Success
