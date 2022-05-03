@@ -83,7 +83,7 @@ class Earl {
    * @param user_id integer
    *
    */
-  static async insert(user_url: string, user_id: number) {
+  static async insert(user_url: string, user_id: number = 0) {
     return new Promise((resolve, reject) => {
       if (!user_url) {
         throw new HTTP_Error("No input URL was provided", 400);

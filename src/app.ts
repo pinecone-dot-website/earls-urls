@@ -95,9 +95,9 @@ app.use("/static", express.static("public"));
 app.set("trust proxy", true);
 
 // routes
-const { api_router } = require("./controllers/api");
+const api_router = require("./controllers/api");
 const main_controller = require("./controllers/main");
-const { user_router } = require("./controllers/user");
+const user_router = require("./controllers/user");
 
 app.use("/", main_controller);
 app.use("/u", user_router);

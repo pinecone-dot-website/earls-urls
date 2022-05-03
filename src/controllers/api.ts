@@ -3,6 +3,7 @@ import { sign } from "jsonwebtoken";
 import passport from "passport";
 
 import HTTP_Error from "../classes/http_error";
+import json_user from "../middleware/json_user";
 import Earl from "../models/earl";
 const api_router = express.Router();
 
@@ -72,9 +73,6 @@ async function api_post(req: Request, res: Response) {
     });
 }
 
-api_router.post("/", api_post);
+api_router.post("/", [json_user], api_post);
 
-module.exports = {
-  api_router,
-  api_post,
-};
+module.exports = api_router;

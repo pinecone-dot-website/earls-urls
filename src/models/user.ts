@@ -6,6 +6,29 @@ const bcrypt = require("bcryptjs"),
   models = require("../../database/models");
 
 class User {
+  static authenticateJWT(jwt_payload, done) {
+    console.log("authenticateJWT jwt_payload", jwt_payload);
+
+    return models.User.findOne({
+      where: {
+        id: jwt_payload.user_id,
+      },
+    })
+      .then(User.validateUser)
+      .then((user) => {
+        done(false, user);
+      })
+      .catch((err) => {
+        done(err);
+      });
+  }
+
+  /**
+   *
+   * @param username
+   * @param password
+   * @param done
+   */
   static authenticateLocal(
     username: string,
     password: string,
@@ -16,13 +39,7 @@ class User {
         username: username,
       },
     })
-      .then((user) => {
-        if (!user) {
-          throw new HTTP_Error("Username not found", 401);
-        }
-
-        return user;
-      })
+      .then(User.validateUser)
       .then((user) => {
         return bcrypt.compare(password, user.password).then((ok: boolean) => {
           if (ok) {
@@ -37,6 +54,18 @@ class User {
       });
   }
 
+  /**
+   * 
+   * @param user 
+   * @returns 
+   */
+  static validateUser(user) {
+    if (!user) {
+      throw new HTTP_Error("Username not found", 401);
+    }
+
+    return user;
+  }
   /**
    *
    * @param username string
@@ -77,7 +106,10 @@ class User {
    * @param password string raw password
    * @return
    */
-  static async login(username: string, password: string): Promise<number> {
+  static async login(
+    username: string = "",
+    password: string = ""
+  ): Promise<number> {
     return models.User.findOne({
       where: {
         username: username,
