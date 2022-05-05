@@ -28,12 +28,12 @@ class User {
    * @param password
    * @param done
    */
-  static authenticateLocal(
+  static async authenticateLocal(
     username: string,
     password: string,
     done: (error: any, user?: any, options?: IVerifyOptions) => void
   ) {
-    models.User.findOne({
+    return models.User.findOne({
       where: {
         username: username,
       },
@@ -99,44 +99,17 @@ class User {
       });
   }
 
+  /**
+   * 
+   * @param user_id 
+   * @returns 
+   */
   static async findByID(user_id: number) {
     return models.User.findOne({
       where: {
         id: user_id,
       },
     });
-  }
-
-  /**
-   *
-   * @param username string
-   * @param password string raw password
-   * @return
-   */
-  static async login(
-    username: string = "",
-    password: string = ""
-  ): Promise<number> {
-    return models.User.findOne({
-      where: {
-        username: username,
-      },
-    })
-      .then((user) => {
-        if (!user) {
-          throw new HTTP_Error("Username not found", 401);
-        }
-        return user;
-      })
-      .then((user) => {
-        return bcrypt.compare(password, user.password).then((ok: boolean) => {
-          if (ok) {
-            return user.id;
-          }
-
-          throw new HTTP_Error("Password is wrong", 401);
-        });
-      });
   }
 
   /**

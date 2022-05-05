@@ -4,6 +4,7 @@ module.exports = {
   coverageDirectory: "./coverage",
   coverageReporters: ["html", "text"],
   preset: 'ts-jest',
+  setupFiles: ["dotenv/config"],
   testEnvironment: 'node',
   testMatch: ['**/tests/**/*.[jt]s?(x)',]
 };

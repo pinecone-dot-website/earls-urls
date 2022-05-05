@@ -8,3 +8,4 @@ public/js
 settings.json
 coverage
 dist
+test.db
