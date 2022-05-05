@@ -74,7 +74,7 @@ api_router.get("/auth", [json_user], api_user);
  *          description: Username or password is incorrect
  */
 function api_login(req: Request, res: Response) {
-  const verified = (err: Error, user, info) => {
+  const verified = (err: HTTP_Error, user, info) => {
     const cb = (err: Error, encoded: string) => {
       if (err) {
         return res.json({
@@ -90,10 +90,16 @@ function api_login(req: Request, res: Response) {
       });
     };
 
-    if (!user) {
-      return res.status(400).json({
+    if (err) {
+      return res.status(err.status).json({
         success: false,
-        error: err?.message || info?.message,
+        error: err.message,
+      });
+    } else if (!user) {
+      // no credentials
+      return res.status(401).json({
+        success: false,
+        error: info.message,
       });
     }
 

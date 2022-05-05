@@ -7,10 +7,10 @@ const models = require("../../database/models"),
 class Earl {
   /**
    *
-   * @param db_id integer
+   * @param db_id integer is string when called from get_by_shortid
    * @return object db row
    */
-  static async get_by_id(db_id: string) {
+  static async get_by_id(db_id: string | number) {
     return models.Url.findOne({
       where: {
         id: db_id,
@@ -22,9 +22,6 @@ class Earl {
         } else {
           throw new HTTP_Error(`ID "${db_id}" not found`, 404);
         }
-      })
-      .catch((err: Error) => {
-        throw new HTTP_Error(err.message, err.status || 500);
       });
   }
 

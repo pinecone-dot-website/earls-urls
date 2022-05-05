@@ -37,6 +37,7 @@
         "url": "https://github.com/pinecone-dot-website/earls-urls/"
     },
     "devDependencies": {
+        "@faker-js/faker": "^6.3.1",
         "@types/git-rev-sync": "^2.0.0",
         "@types/jest": "^27.4.1",
         "@types/passport-jwt": "^3.0.6",

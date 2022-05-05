@@ -43,7 +43,9 @@ class User {
       .then((user) => {
         done(false, user);
       })
-      .catch(done);
+      .catch((err)=>{
+        done(new HTTP_Error(err.message, 401));
+      });
   }
 
   /**
