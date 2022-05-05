@@ -15,14 +15,13 @@ class Earl {
       where: {
         id: db_id,
       },
-    })
-      .then((row) => {
-        if (row) {
-          return row;
-        } else {
-          throw new HTTP_Error(`ID "${db_id}" not found`, 404);
-        }
-      });
+    }).then((row) => {
+      if (row) {
+        return row;
+      } else {
+        throw new HTTP_Error(`ID "${db_id}" not found`, 404);
+      }
+    });
   }
 
   /**
@@ -31,7 +30,11 @@ class Earl {
    * @return
    */
   static get_by_shortid(earl: string) {
-    return Base.convert(earl, "BASE75", "BASE10").then(this.get_by_id);
+    return Base.convert(earl, "BASE75", "BASE10")
+      .then(this.get_by_id)
+      .catch((err: Error) => {
+        throw new HTTP_Error(err.message, 500);
+      });
   }
 
   /**
