@@ -9,7 +9,7 @@
         "build:dev": "tsc --watch --preserveWatchOutput",
         "build:prod": "tsc",
         "serve:dev": "nodemon dist/app.js",
-        "test": "jest"
+        "test": "jest --coverage"
     },
     "author": "",
     "license": "BSD-2-Clause",
