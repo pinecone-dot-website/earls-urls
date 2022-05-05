@@ -6,6 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
     />
+    <meta name="theme-color" content="#212529" />
 
     <link rel="shortlink" href="https://earlsurls.site/" />
     <link rel="stylesheet" href="/static/css/app.css" />
@@ -30,12 +31,24 @@
 
     <title>EARLS URLS</title>
   </head>
-  <body class="d-flex flex-column h-100">
-    <nav class="navbar navbar-expand navbar-dark bg-dark">
+  <body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
       <div class="container-fluid">
         <a class="navbar-brand" href="/">Earls Urls</a>
 
-        <div class="navbar-collapse justify-content-end">
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#toggle"
+          aria-controls="toggle"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="navbar-collapse collapse justify-content-end" id="toggle">
           {{#if user}}
             <ul class="navbar-nav">
               <li class="nav-item">
@@ -51,45 +64,50 @@
               method="post"
               action="/u/auth"
               id="login"
-              class="navbar-nav align-items-center"
+              class="navbar-nav align-items-center my-lg-0 flex-column flex-md-row"
               role="form"
             >
-              <div class="form-floating me-2">
-                <input
-                  id="username"
-                  type="text"
-                  class="form-control"
-                  name="username"
-                  value="{{username}}"
-                  placeholder="username"
-                />
-                <label for="username">Username</label>
+              <div class="d-flex flex-row">
+                <div class="form-floating my-2 me-2">
+                  <input
+                    id="username"
+                    type="text"
+                    class="form-control"
+                    name="username"
+                    value="{{username}}"
+                    placeholder="username"
+                  />
+                  <label for="username">Username</label>
+                </div>
+
+                <div class="form-floating my-2 me-md-2">
+                  <input
+                    id="password"
+                    type="password"
+                    class="form-control"
+                    name="password"
+                    value="{{password}}"
+                    placeholder="password"
+                  />
+                  <label for="password">Password</label>
+                </div>
               </div>
 
-              <div class="form-floating me-2">
-                <input
-                  id="password"
-                  type="password"
-                  class="form-control"
-                  name="password"
-                  value="{{password}}"
-                  placeholder="password"
-                />
-                <label for="password">Password</label>
-              </div>
-              <button
-                type="submit"
-                class="btn btn-primary me-2"
-                name="login"
-                value="1"
-              >login</button>
+              <div class="d-md-flex">
+                <button
+                  type="submit"
+                  class="btn btn-primary me-md-2"
+                  name="login"
+                  value="1"
+                >login</button>
 
-              <button
-                type="submit"
-                class="btn btn-primary"
-                name="register"
-                value="1"
-              >register</button>
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  name="register"
+                  value="1"
+                >register</button>
+              </div>
             </form>
           {{/if}}
         </div>
@@ -118,7 +136,7 @@
         </div>
         <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
           <li class="ms-3">
-            <a class="text-muted" href="/api/docs">
+            <a title="Swagger API Docs" class="text-muted" href="/api/docs">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="32"
@@ -137,6 +155,7 @@
           </li>
           <li class="ms-3">
             <a
+              title="GitHub"
               class="text-muted"
               href="https://github.com/pinecone-dot-website/earls-urls"
             ><svg
@@ -157,4 +176,10 @@
       </footer>
     </div>
   </body>
+  <script>
+    document.querySelector('.navbar-toggler').addEventListener('click',
+    displayMenu); function displayMenu(event) {
+    document.getElementById("toggle").classList.toggle("show"); }
+
+  </script>
 </html>
