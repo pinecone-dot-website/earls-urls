@@ -114,7 +114,7 @@ app.set("json replacer", (key, value) => {
 });
 
 // routes
-const api_router = require("./controllers/api");
+import api_router from "./controllers/api";
 const main_controller = require("./controllers/main");
 const user_router = require("./controllers/user");
 
@@ -126,6 +126,4 @@ app.all("*", (req: Request, res: Response) => {
   res.status(404).render("404", {});
 });
 
-app.listen(process.env.PORT, function () {
-  console.log("Listening on port " + process.env.PORT);
-});
+export default app;

@@ -5,7 +5,6 @@ import passport from "passport";
 import HTTP_Error from "../classes/http_error";
 import json_user from "../middleware/json_user";
 import Earl from "../models/earl";
-import User from "../models/user";
 
 const api_router = express.Router();
 
@@ -25,8 +24,8 @@ const api_router = express.Router();
  *          description: Unauthorized
  */
 function api_user(req: Request, res: Response) {
-  if (req.user.props) {
-    const { id, username, createdAt } = req.user.props;
+  if (res.locals.user.props) {
+    const { id, username, createdAt } = res.locals.user.props;
 
     return res.json({
       success: true,
@@ -34,9 +33,9 @@ function api_user(req: Request, res: Response) {
     });
   }
 
-  return res.status(req.user.error.status || 401).json({
+  return res.status(res.locals.user.error.status || 401).json({
     success: false,
-    error: req.user.error.message,
+    error: res.locals.user.error.message,
   });
 }
 
@@ -135,7 +134,7 @@ api_router.post("/auth/login", api_login);
 async function api_get(req: Request, res: Response) {
   const short = req.params.short;
 
-  Earl.get_by_shortid(short)
+  return Earl.get_by_shortid(short)
     .then(async (row) => {
       await Earl.get_shortlink(row.id, req.get("Host"), req.secure).then(
         (short_url) => {
@@ -194,7 +193,7 @@ api_router.get("/:short", api_get);
  */
 async function api_post(req: Request, res: Response) {
   const input_url = req.body.url;
-  const user_id = req.user.props.id;
+  const user_id = res.locals.user.props.id;
 
   await Earl.insert(input_url, user_id)
     .then(async (row) => {
@@ -223,4 +222,4 @@ async function api_post(req: Request, res: Response) {
 
 api_router.post("/", [json_user], api_post);
 
-module.exports = api_router;
+export default api_router;
