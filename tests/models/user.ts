@@ -9,7 +9,7 @@ describe("Check User class", () => {
   });
 
   it("should create user with username and password", async () => {
-    await expect(User.create("test", "test")).resolves.toEqual(1);
+    await expect(User.create("test", "test")).resolves.toHaveProperty("id", 1);
   });
 
   it("should retreive created user", async () => {
@@ -33,7 +33,7 @@ describe("Check User class", () => {
   it("should error on nonexistant user", async () => {
     expect.assertions(2);
 
-    const done = (err:Error) => {
+    const done = (err: Error) => {
       expect(err).toBeInstanceOf(HTTP_Error);
       expect(err).toHaveProperty("status", 401);
     };
@@ -44,7 +44,7 @@ describe("Check User class", () => {
   it("should error on incorrect password", async () => {
     expect.assertions(2);
 
-    const done = (err:Error) => {
+    const done = (err: Error) => {
       expect(err).toBeInstanceOf(HTTP_Error);
       expect(err).toHaveProperty("status", 401);
     };

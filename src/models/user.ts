@@ -84,7 +84,7 @@ class User {
    * @param password string raw password
    * @return
    */
-  static async create(username: string, password: string): Promise<number> {
+  static async create(username: string, password: string): Promise<Express.User> {
     return bcrypt
       .genSalt(10)
       .then((salt: string) => {
@@ -97,7 +97,7 @@ class User {
         });
       })
       .then((user) => {
-        return user.id;
+        return user;
       });
   }
 

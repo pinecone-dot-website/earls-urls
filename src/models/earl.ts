@@ -31,10 +31,10 @@ class Earl {
    */
   static get_by_shortid(earl: string) {
     return Base.convert(earl, "BASE75", "BASE10")
-      .then(this.get_by_id)
-      .catch((err: Error) => {
-        throw new HTTP_Error(err.message, 500);
-      });
+      .then(this.get_by_id);
+      // .catch((err: Error) => {
+      //   throw new HTTP_Error(err.message, 500);
+      // });
   }
 
   /**
