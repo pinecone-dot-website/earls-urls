@@ -7,7 +7,7 @@
       content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
     />
     <meta name="theme-color" content="#212529" />
-
+    <meta name="application-name" content="Earls Urls" />
     <link rel="shortlink" href="https://earlsurls.site/" />
     <link rel="stylesheet" href="/static/css/app.css" />
     <link
@@ -32,34 +32,41 @@
     <title>EARLS URLS</title>
   </head>
   <body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">Earls Urls</a>
 
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#toggle"
-          aria-controls="toggle"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
+    {{#if user}}
+      <nav class="navbar navbar-expand navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">Earls Urls</a>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/u/stats">{{user.username}}</a>
+            </li>
 
-        <div class="navbar-collapse collapse justify-content-end" id="toggle">
-          {{#if user}}
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a href="/u/stats" class="nav-link">{{user.username}}</a>
-              </li>
-              <li class="nav-item">
-                <a href="/u/logout" class="nav-link">logout</a>
-              </li>
-            </ul>
-          {{else}}
-
+            <li class="nav-item">
+              <a class="nav-link" href="/u/logout">logout</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    {{else}}
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">Earls Urls</a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#toggle"
+            aria-controls="toggle"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div
+            class="navbar-collapse collapse justify-content-end {{toggle}}"
+            id="toggle"
+          >
             <form
               method="post"
               action="/u/auth"
@@ -93,14 +100,13 @@
                 </div>
               </div>
 
-              <div class="d-md-flex">
+              <div class="d-flex">
                 <button
                   type="submit"
-                  class="btn btn-primary me-md-2"
+                  class="btn btn-primary me-2"
                   name="login"
                   value="1"
                 >login</button>
-
                 <button
                   type="submit"
                   class="btn btn-primary"
@@ -109,10 +115,10 @@
                 >register</button>
               </div>
             </form>
-          {{/if}}
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    {{/if}}
 
     <main class="flex-shrink-0">
       <section class="py-5 text-center container">
@@ -175,11 +181,12 @@
 
       </footer>
     </div>
-  </body>
-  <script>
-    document.querySelector('.navbar-toggler').addEventListener('click',
-    displayMenu); function displayMenu(event) {
-    document.getElementById("toggle").classList.toggle("show"); }
 
-  </script>
+    <script>
+      document.querySelector('.navbar-toggler').addEventListener('click',
+      displayMenu); function displayMenu(event) {
+      document.getElementById("toggle").classList.toggle("show"); }
+
+    </script>
+  </body>
 </html>

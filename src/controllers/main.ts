@@ -7,12 +7,19 @@ const router = express.Router();
 
 // index
 router.all("/", [git_tag, http_user], (req: Request, res: Response) => {
-  return res.render("home", {
+  const vars = {
     error: req.flash("error"),
     input_url: req.flash("input_url"),
     username: req.flash("username"),
     password: req.flash("password"),
-  });
+    toggle: '',
+  };
+
+  if(vars.username.length || vars.password.length){
+    vars.toggle = 'show';
+  }
+
+  return res.render("home", vars);
 });
 
 // post to shorten url from index
