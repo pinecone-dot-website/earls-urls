@@ -20,7 +20,7 @@ async function user_auth(req: Request, res: Response, next: NextFunction) {
         return res.redirect("/?login-error");
       }
 
-      req.login(user.id, (err) => {
+      req.login(user, (err) => {
         return res.redirect("/?login-success");
       });
     };
@@ -28,8 +28,8 @@ async function user_auth(req: Request, res: Response, next: NextFunction) {
     passport.authenticate("local", verified)(req, res);
   } else if (req.body.register) {
     await User.create(req.body.username, req.body.password)
-      .then((user_id: number) => {
-        req.login(user_id, (err) => {
+      .then((user) => {
+        req.login(user, (err) => {
           return res.redirect("/?register-create");
         });
       })
@@ -59,7 +59,7 @@ function user_stats(req: Request, res: Response) {
     return res.redirect("/");
   }
 
-  User.get_urls_by_user(req.user)
+  User.get_urls_by_user(req.user.id)
     .then(async (rows) => {
       rows = await Promise.all(
         rows.map((row) => {

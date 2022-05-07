@@ -1,14 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import User from "../models/user";
 
 async function http_user(req: Request, res: Response, next: NextFunction) {
-  res.locals.user = await User.findByID(req.user)
-    .then((user) => {
-      return user?.toJSON();
-    })
-    .catch((e) => {
-      return false;
-    });
+  if (req.user) {
+    res.locals.user = {
+      id: req.user.id,
+      username: req.user.username,
+    };
+  }
 
   next();
 }

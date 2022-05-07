@@ -18,7 +18,7 @@ router.all("/", [git_tag, http_user], (req: Request, res: Response) => {
 // post to shorten url from index
 router.post("/shorten", [git_tag, http_user], (req: Request, res: Response) => {
   console.log('shorten');
-  Earl.insert(req.body.url, req.user)
+  Earl.insert(req.body.url, res.locals.user.id)
     .then((row) => {
       Earl.get_shortlink(row.id, req.get("Host"), req.secure).then(
         (short_url) => {

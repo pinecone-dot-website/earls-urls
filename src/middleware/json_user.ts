@@ -8,9 +8,7 @@ function json_user(req: Request, res: Response, next: NextFunction) {
       session: false,
     },
     (err, user, info) => {
-      // console.log('jsonuser',user);
-    //   console.log("err info", err || info);
-      req.user = {
+      res.locals.user = {
         error: err || info,
         props: user,
       };
