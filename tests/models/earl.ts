@@ -56,15 +56,15 @@ describe("Check Earl class", () => {
   });
 
   it("Gets shortlink for valid db record", async () => {
-    const res = await Earl.get_shortlink(1, 'test.earls');
+    const res = await Earl.get_shortlink(1, "test.earls");
 
-    expect(res).toEqual('https://test.earls/1');
+    expect(res.short_url).toEqual("https://test.earls/1");
   });
 
   it("Errors getting shortlink for invalid db record", async () => {
     expect.assertions(1);
-    
-    await Earl.get_shortlink(-10, 'test.earls').catch((err) => {
+
+    await Earl.get_shortlink(-10, "test.earls").catch((err) => {
       expect(err).toBeInstanceOf(HTTP_Error);
     });
   });

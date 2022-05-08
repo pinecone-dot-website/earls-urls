@@ -4,6 +4,11 @@ import { BaseX } from "@rackandpinecone/base-x";
 const models = require("../../database/models"),
   Base = new BaseX();
 
+  declare interface ShortEarl{
+    earl: string;
+    short_url: string;
+  }
+
 class Earl {
   /**
    *
@@ -48,12 +53,15 @@ class Earl {
     db_id: number,
     host: string,
     secure: boolean = true
-  ): Promise<string> {
+  ): Promise<ShortEarl> {
     const short_url = await Base.convert(db_id, "BASE10", "BASE75")
       .then((earl: string) => {
         const protocol = secure ? "https" : "http";
 
-        return protocol + "://" + host + "/" + earl;
+        return {
+          short_url: protocol + "://" + host + "/" + earl,
+          earl: earl
+        };
       })
       .catch((err: Error) => {
         throw new HTTP_Error(err.message, HttpStatusCode.INTERNAL_SERVER);

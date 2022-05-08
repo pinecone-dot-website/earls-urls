@@ -28,10 +28,10 @@ router.post("/shorten", [git_tag, http_user], (req: Request, res: Response) => {
   Earl.insert(req.body.url, res.locals.user.id)
     .then((row) => {
       Earl.get_shortlink(row.id, req.get("Host"), req.secure).then(
-        (short_url) => {
+        (earl) => {
           return res.render("shorten", {
             input_url: row.url,
-            short_url: short_url,
+            short_url: earl.short_url,
           });
         }
       );
@@ -74,7 +74,7 @@ router.get(
       .then(async (row) => {
         return res.render("info", {
           short: short,
-          short_url: await Earl.get_shortlink(
+          earl: await Earl.get_shortlink(
             row.id,
             req.get("Host"),
             req.secure

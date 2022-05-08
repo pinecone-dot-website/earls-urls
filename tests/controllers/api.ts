@@ -1,10 +1,69 @@
 import app from "../../src/app";
+import Earl from "../../src/models/earl";
+import User from "../../src/models/user";
+import db from "../../database/models";
 
 import "jest";
+import { sign } from "jsonwebtoken";
 import request from "supertest";
 import { faker } from "@faker-js/faker";
+import jwt from "jsonwebtoken";
+
+interface UserTest {
+  creds: {
+    username: string;
+    password: string;
+  };
+  data?: Express.User;
+  token: string;
+}
 
 describe("Check API Endpoints", () => {
+  let user: UserTest = {
+    creds: {
+      username: faker.internet.userName(),
+      password: faker.internet.password(),
+    },
+    token: "",
+  };
+
+  let earl = {
+    input_url: `${faker.internet.url()}/`,
+    earl: {},
+    id: 0,
+  };
+
+  beforeAll(async () => {
+    await db.sequelize.sync({ force: true });
+
+    await User.create(user.creds.username, user.creds.password).then((res) => {
+      user.data = res;
+      user.token = sign({ user_id: user.data.id }, process.env.JWT_SECRET, {
+        expiresIn: 120,
+      });
+    });
+
+    await Earl.insert(earl.input_url).then((res) => {
+      earl.id = res.id;
+      earl.earl = Earl.get_shortlink(earl.id, "test.earls");
+    });
+  });
+
+  it("Should receive jwt token for user", async () => {
+    return request(app)
+      .post("/api/auth/login")
+      .send({ username: user.creds.username, password: user.creds.password })
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body).toHaveProperty("success", true);
+        expect(res.body).toHaveProperty("token");
+
+        let verified = jwt.verify(res.body.token, process.env.JWT_SECRET);
+        expect(verified).toHaveProperty("user_id", user.data.id);
+      });
+  });
+
   it("Get a result for a valid short id", async () => {
     return request(app)
       .get("/api/1")
@@ -37,6 +96,26 @@ describe("Check API Endpoints", () => {
       .expect(201)
       .expect((res) => {
         expect.objectContaining({ success: true, input_url: url, user_id: 0 });
+      });
+  });
+
+  it("Should insert a valid url as authenticated user", async () => {
+    const url = `${faker.internet.url()}/`;
+
+    return request(app)
+      .post("/api")
+      .set("Authorization", `Bearer ${user.token}`)
+      .send({
+        url: url,
+      })
+      .expect("Content-Type", /json/)
+      .expect(201)
+      .expect((res) => {
+        expect.objectContaining({
+          success: true,
+          input_url: url,
+          user_id: user.data.id,
+        });
       });
   });
 

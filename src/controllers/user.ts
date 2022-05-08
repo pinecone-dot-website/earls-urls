@@ -64,9 +64,9 @@ function user_stats(req: Request, res: Response) {
       rows = await Promise.all(
         rows.map((row) => {
           return Earl.get_shortlink(row.id, req.get("Host"), req.secure)
-            .then((short_url) => {
+            .then((earl) => {
               return {
-                short: short_url,
+                short: earl.short_url,
                 long: row.url,
                 timestamp: new Date(row.createdAt).toLocaleString(),
               };

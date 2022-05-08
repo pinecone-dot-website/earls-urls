@@ -137,12 +137,12 @@ async function api_get(req: Request, res: Response) {
   return Earl.get_by_shortid(short)
     .then(async (row) => {
       await Earl.get_shortlink(row.id, req.get("Host"), req.secure).then(
-        (short_url) => {
+        (earl) => {
           return res.status(200).json({
             success: true,
             id: row.id,
             long_url: row.url,
-            short_url: short_url,
+            short_url: earl.short_url,
             created: row.createdAt,
             user_id: row.userId,
           });
@@ -198,12 +198,12 @@ async function api_post(req: Request, res: Response) {
   await Earl.insert(input_url, user_id)
     .then(async (row) => {
       await Earl.get_shortlink(row.id, req.get("Host"), req.secure).then(
-        (short_url) => {
+        (earl) => {
           return res.status(201).json({
             success: true,
             id: row.id,
             input_url: input_url,
-            short_url: short_url,
+            short_url: earl.short_url,
             created: row.createdAt,
             user_id: row.userId,
           });
