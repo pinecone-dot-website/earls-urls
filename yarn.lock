@@ -580,10 +580,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@rackandpinecone/base-x@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@rackandpinecone/base-x/-/base-x-0.3.0.tgz#1974ee7c65b52ba2b74485f4f1e37aaf8fb47418"
-  integrity sha512-MzhSvuhJNTVqQZ/3M34YGnhviQ025QPtkKKxl5BWDNx46yQt2xfjqM1hmT2DVEyrA0eneTXAsOzNISrslkvIRg==
+"@rackandpinecone/base-x@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@rackandpinecone/base-x/-/base-x-0.3.1.tgz#59f9485a1dcd502b97d7813ffacab6b6aa592b98"
+  integrity sha512-1AHUI3PSGe9rDZbr5lv8eIEyFxg7FP/hrVHGVS+/Htq0Pj6hGl4TwYUmydeAL+aRtH2dPFzWguU/pkqphmR/nw==
 
 "@rackandpinecone/express-flash@^0.1.3":
   version "0.1.3"
