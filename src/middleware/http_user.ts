@@ -1,12 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 
 async function http_user(req: Request, res: Response, next: NextFunction) {
-  if (req.user) {
-    res.locals.user = {
-      id: req.user.id,
-      username: req.user.username,
-    };
-  }
+  res.locals.user = req.user || { id: 0, username: "" };
 
   next();
 }

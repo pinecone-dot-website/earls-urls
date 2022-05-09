@@ -73,17 +73,19 @@ app.use(passport.session());
 
 // user info to sessions
 passport.serializeUser((user: Express.User, done) => {
-  console.log("serializing user", user);
+  // console.log("serializing user", user);
   done(null, user.id);
 });
 
 passport.deserializeUser(function (user_id: number, done) {
   console.log("deserializing user_id", user_id);
-  User.findByID(user_id).then((user) => {
-    done(null, user);
-  }).catch((err)=>{
-    done(null, {id:0});
-  });
+  User.findByID(user_id)
+    .then((user) => {
+      done(null, user);
+    })
+    .catch((err) => {
+      done(null, { id: 0, username: '' });
+    });
 });
 
 // templates

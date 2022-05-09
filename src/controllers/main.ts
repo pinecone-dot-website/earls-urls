@@ -12,11 +12,11 @@ router.all("/", [git_tag, http_user], (req: Request, res: Response) => {
     input_url: req.flash("input_url"),
     username: req.flash("username"),
     password: req.flash("password"),
-    toggle: '',
+    toggle: "",
   };
 
-  if(vars.username.length || vars.password.length){
-    vars.toggle = 'show';
+  if (vars.username.length || vars.password.length) {
+    vars.toggle = "show";
   }
 
   return res.render("home", vars);
@@ -24,17 +24,15 @@ router.all("/", [git_tag, http_user], (req: Request, res: Response) => {
 
 // post to shorten url from index
 router.post("/shorten", [git_tag, http_user], (req: Request, res: Response) => {
-  console.log('shorten');
+  console.log("res.locals.user", res.locals.user);
   Earl.insert(req.body.url, res.locals.user.id)
     .then((row) => {
-      Earl.get_shortlink(row.id, req.get("Host"), req.secure).then(
-        (earl) => {
-          return res.render("shorten", {
-            input_url: row.url,
-            short_url: earl.short_url,
-          });
-        }
-      );
+      Earl.get_shortlink(row.id, req.get("Host"), req.secure).then((earl) => {
+        return res.render("shorten", {
+          input_url: row.url,
+          short_url: earl.short_url,
+        });
+      });
     })
     .catch((err) => {
       req.flash("error", err.message);
@@ -74,11 +72,7 @@ router.get(
       .then(async (row) => {
         return res.render("info", {
           short: short,
-          earl: await Earl.get_shortlink(
-            row.id,
-            req.get("Host"),
-            req.secure
-          ),
+          earl: await Earl.get_shortlink(row.id, req.get("Host"), req.secure),
           row: row.dataValues,
         });
       })
