@@ -76,7 +76,7 @@ describe("Check API Endpoints", () => {
 
   it("Return not found for a record that does not exist", async () => {
     return request(app)
-      .get("/api/abc")
+      .get("/api/bcd")
       .expect("Content-Type", /json/)
       .expect(404)
       .expect(() => {

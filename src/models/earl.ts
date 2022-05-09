@@ -4,6 +4,11 @@ import { BaseX } from "@rackandpinecone/base-x";
 const models = require("../../database/models"),
   Base = new BaseX();
 
+Base.setBase(
+  "EARLS",
+  "0123456789BCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz_,!=-*(){}[]"
+);
+
 declare interface ShortEarl {
   earl: string;
   short_url: string;
@@ -12,7 +17,7 @@ declare interface ShortEarl {
 class Earl {
   /**
    *
-   * @param db_id integer is string when called from get_by_shortid
+   * @param db_id integer (string when called from get_by_shortid)
    * @return object db row
    */
   static async get_by_id(db_id: string | number) {
@@ -20,17 +25,13 @@ class Earl {
       where: {
         id: db_id,
       },
-    })
-      .then((row) => {
-        if (row) {
-          return row;
-        } else {
-          throw new HTTP_Error(`ID "${db_id}" not found`, 404);
-        }
-      })
-      .catch((err: Error) => {
-        throw new HTTP_Error(err.message, 400);
-      });
+    }).then((row) => {
+      if (row) {
+        return row;
+      } else {
+        throw new HTTP_Error(`ID "${db_id}" not found`, 404);
+      }
+    });
   }
 
   /**
@@ -39,10 +40,14 @@ class Earl {
    * @return
    */
   static get_by_shortid(earl: string) {
-    return Base.convert(earl, "BASE75", "BASE10").then(this.get_by_id);
-    // .catch((err: Error) => {
-    //   throw new HTTP_Error(err.message, 500);
-    // });
+    return Base.convert(earl, "EARLS", "BASE10")
+      .then(this.get_by_id)
+      .catch((err: HTTP_Error) => {
+        throw new HTTP_Error(err.message, err.status);
+      })
+      .catch((err: Error) => {
+        throw err;
+      });
   }
 
   /**
@@ -57,7 +62,7 @@ class Earl {
     host: string,
     secure: boolean = true
   ): Promise<ShortEarl> {
-    const short_url = await Base.convert(db_id, "BASE10", "BASE75")
+    const short_url = await Base.convert(db_id, "BASE10", "EARLS")
       .then((earl: string) => {
         const protocol = secure ? "https" : "http";
 

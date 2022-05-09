@@ -1,5 +1,5 @@
 import HTTP_Error from "../classes/http_error";
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import git_tag from "../middleware/git_tag";
 import http_user from "../middleware/http_user";
 import Earl from "../models/earl";
@@ -45,17 +45,22 @@ router.post("/shorten", [git_tag, http_user], (req: Request, res: Response) => {
 router.get(
   "/:short",
   [git_tag, http_user],
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     const short = req.params.short;
 
     Earl.get_by_shortid(short)
       .then((row) => {
         return res.redirect(row.url);
       })
-      .catch((err: HTTP_Error) => {
-        return res.status(err.status).render("error", {
-          message: err.message,
-        });
+      .catch((err) => {
+        if (err instanceof HTTP_Error) {
+          return res.status(err.status).render("error", {
+            message: err.message,
+          });
+        }
+
+        // illegal charactr / passthru
+        next();
       });
   }
 );
