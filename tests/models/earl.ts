@@ -32,6 +32,18 @@ describe("Check Earl class", () => {
     expect(res).toHaveProperty("userId", 0);
   });
 
+  it("Inserts a long url into the database", async () => {
+    const qs = new URLSearchParams();
+    for (let i = 0; i < 100; i++) {
+      qs.append(faker.internet.domainWord(), faker.internet.domainWord());
+    }
+
+    const long_url = `${url}?${qs.toString()}`;
+    const res = await Earl.insert(long_url, 0);
+
+    expect(res).toHaveProperty("url", long_url);
+  });
+
   it("Gets a database record by id", async () => {
     const res = await Earl.get_by_id(1);
 

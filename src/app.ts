@@ -78,7 +78,7 @@ passport.serializeUser((user: Express.User, done) => {
 });
 
 passport.deserializeUser(function (user_id: number, done) {
-  console.log("deserializing user_id", user_id);
+  // console.log("deserializing user_id", user_id);
   User.findByID(user_id)
     .then((user) => {
       done(null, user.toJSON());
