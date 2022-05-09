@@ -13,5 +13,7 @@ export default class HTTP_Error extends Error {
     super(message);
 
     this.status = status;
+
+    Object.setPrototypeOf(this, HTTP_Error.prototype);
   }
 }

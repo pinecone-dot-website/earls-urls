@@ -42,10 +42,15 @@ class Earl {
   static get_by_shortid(earl: string) {
     return Base.convert(earl, "EARLS", "BASE10")
       .then(this.get_by_id)
-      .catch((err: HTTP_Error) => {
-        throw new HTTP_Error(err.message, err.status);
-      })
-      .catch((err: Error) => {
+      .catch((err) => {
+        // console.log(
+        //   "get_by_shortid err",
+        //   err instanceof HTTP_Error,
+        //   err.message
+        // );
+        if (err instanceof HTTP_Error) {
+          throw new HTTP_Error(err.message, err.status);
+        }
         throw err;
       });
   }

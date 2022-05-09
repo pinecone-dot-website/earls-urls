@@ -52,7 +52,7 @@ router.get(
       .then((row) => {
         return res.redirect(row.url);
       })
-      .catch((err) => {
+      .catch((err: HTTP_Error | Error) => {
         if (err instanceof HTTP_Error) {
           return res.status(err.status).render("error", {
             message: err.message,
