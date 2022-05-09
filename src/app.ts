@@ -105,7 +105,7 @@ app.engine(
 app.set("view engine", "hbs");
 
 // serve assets in /public
-app.use("/static", express.static("public"));
+app.use(express.static("public"));
 
 // recognize ssl from proxy
 app.set("trust proxy", true);

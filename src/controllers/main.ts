@@ -69,7 +69,7 @@ router.get(
 router.get(
   "/:short/info",
   [git_tag, http_user],
-  (req: Request, res: Response) => {
+  (req: Request, res: Response, next: NextFunction) => {
     const short = req.params.short;
 
     Earl.get_by_shortid(short)
@@ -80,10 +80,15 @@ router.get(
           row: row.dataValues,
         });
       })
-      .catch((err: HTTP_Error) => {
-        return res.status(err.status).render("error", {
-          message: err,
-        });
+      .catch((err: HTTP_Error | Error) => {
+        if (err instanceof HTTP_Error) {
+          return res.status(err.status).render("error", {
+            message: err.message,
+          });
+        }
+
+        // illegal charactr / passthru
+        next();
       });
   }
 );
