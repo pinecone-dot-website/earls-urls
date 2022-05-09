@@ -81,10 +81,10 @@ passport.deserializeUser(function (user_id: number, done) {
   console.log("deserializing user_id", user_id);
   User.findByID(user_id)
     .then((user) => {
-      done(null, user);
+      done(null, user.toJSON());
     })
     .catch((err) => {
-      done(null, { id: 0, username: '' });
+      done(null, { id: 0, username: "" });
     });
 });
 
