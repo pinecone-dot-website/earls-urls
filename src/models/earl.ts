@@ -4,10 +4,10 @@ import { BaseX } from "@rackandpinecone/base-x";
 const models = require("../../database/models"),
   Base = new BaseX();
 
-  declare interface ShortEarl{
-    earl: string;
-    short_url: string;
-  }
+declare interface ShortEarl {
+  earl: string;
+  short_url: string;
+}
 
 class Earl {
   /**
@@ -20,13 +20,17 @@ class Earl {
       where: {
         id: db_id,
       },
-    }).then((row) => {
-      if (row) {
-        return row;
-      } else {
-        throw new HTTP_Error(`ID "${db_id}" not found`, 404);
-      }
-    });
+    })
+      .then((row) => {
+        if (row) {
+          return row;
+        } else {
+          throw new HTTP_Error(`ID "${db_id}" not found`, 404);
+        }
+      })
+      .catch((err: Error) => {
+        throw new HTTP_Error(err.message, 400);
+      });
   }
 
   /**
@@ -35,11 +39,10 @@ class Earl {
    * @return
    */
   static get_by_shortid(earl: string) {
-    return Base.convert(earl, "BASE75", "BASE10")
-      .then(this.get_by_id);
-      // .catch((err: Error) => {
-      //   throw new HTTP_Error(err.message, 500);
-      // });
+    return Base.convert(earl, "BASE75", "BASE10").then(this.get_by_id);
+    // .catch((err: Error) => {
+    //   throw new HTTP_Error(err.message, 500);
+    // });
   }
 
   /**
@@ -60,7 +63,7 @@ class Earl {
 
         return {
           short_url: protocol + "://" + host + "/" + earl,
-          earl: earl
+          earl: earl,
         };
       })
       .catch((err: Error) => {
