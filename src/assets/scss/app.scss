@@ -4,15 +4,15 @@
 
 html {
   height: -webkit-fill-available;
+  // overscroll-behavior: contain;
 }
 
 body.min-vh-100 {
-  min-height: -webkit-fill-available;
+  min-height: -webkit-fill-available !important;
 }
-
 
 :root {
   @media (orientation: landscape) {
-    --bs-gutter-x: env(safe-area-inset-right);
+    --bs-gutter-x: max(env(safe-area-inset-right), 0.75rem);
   }
 }
