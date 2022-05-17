@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { sign } from "jsonwebtoken";
 import passport from "passport";
 
@@ -122,7 +122,7 @@ api_router.post("/auth/login", api_login);
  *         description: slug of the short url.
  *         schema:
  *           type: string
- *           example: "a"
+ *           example: "b"
  *      responses:
  *        200:
  *          description: Short URL was found
@@ -131,7 +131,7 @@ api_router.post("/auth/login", api_login);
  *        500:
  *          description: Integer out of bounds
  */
-async function api_get(req: Request, res: Response) {
+async function api_get(req: Request, res: Response, next: NextFunction) {
   const short = req.params.short;
 
   return Earl.get_by_shortid(short)
@@ -149,8 +149,15 @@ async function api_get(req: Request, res: Response) {
         }
       );
     })
-    .catch((err: HTTP_Error) => {
-      return res.status(err.status).json({
+    .catch((err: HTTP_Error | Error) => {
+      if (err instanceof HTTP_Error) {
+        return res.status(err.status).json({
+          success: false,
+          message: err.message,
+        });
+      }
+
+      return res.json({
         success: false,
         message: err.message,
       });
@@ -221,5 +228,11 @@ async function api_post(req: Request, res: Response) {
 }
 
 api_router.post("/", [json_user], api_post);
+
+api_router.all("*", (req: Request, res: Response) => {
+  res.status(404).json({
+    success: false,
+  });
+});
 
 export default api_router;
