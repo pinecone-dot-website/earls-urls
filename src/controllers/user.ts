@@ -90,4 +90,4 @@ function user_stats(req: Request, res: Response) {
 }
 user_router.get("/stats", [git_tag, http_user], user_stats);
 
-module.exports = user_router;
+export default user_router;
