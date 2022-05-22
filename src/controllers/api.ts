@@ -69,8 +69,33 @@ api_router.get("/auth", [json_user], api_user);
  *      responses:
  *        200:
  *          description: Successful login
+ *          content: 
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  success:
+ *                    type: boolean
+ *                  user_id:
+ *                    type: integer
+ *                    description: The user ID.
+ *                    example: 1
+ *                  token:
+ *                    type: string
+ *                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE2NTMyNjIxODQsImV4cCI6MTY1MzI2MjMwNH0.CfYv0cvtYPuiBs3e61jYs8m23yaak--n0JMnFrDc3O4"
  *        401:
  *          description: Username or password is incorrect
+ *          content: 
+ *            application/json:
+  *              schema:
+ *                type: object
+ *                properties:
+ *                  success:
+ *                    type: boolean
+ *                    example: false
+ *                  error: 
+ *                    type: string
+ *                    example: "Username not found"
  */
 function api_login(req: Request, res: Response) {
   const verified = (err: HTTP_Error, user, info) => {
@@ -126,6 +151,29 @@ api_router.post("/auth/login", api_login);
  *      responses:
  *        200:
  *          description: Short URL was found
+ *          content: 
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  success:
+ *                    type: boolean
+ *                    example: true
+ *                  id:
+ *                    type: integer
+ *                    example: 31
+ *                  long_url:
+ *                    type: string
+ *                    example: "https://stackoverflow.com/questions/52694418/error-type-is-not-a-valid-async-function-return-type-in-es5-es3-because-it-does"
+ *                  short_url:
+ *                    type: string
+ *                    example: "https://earlsurls.site/b"
+ *                  created:
+ *                    type: string
+ *                    example: "2022-04-29T23:10:44.902Z"
+ *                  user_id:
+ *                    type: integer
+ *                    example: 1
  *        404:
  *          description: Record does not exist
  *        500:
@@ -137,7 +185,7 @@ async function api_get(req: Request, res: Response, next: NextFunction) {
   return Earl.get_by_shortid(short)
     .then(async (row) => {
       await Earl.get_shortlink(row.id, req.get("Host"), req.secure).then(
-        (earl) => {
+        (earl: ShortEarl) => {
           return res.status(200).json({
             success: true,
             id: row.id,
@@ -205,7 +253,7 @@ async function api_post(req: Request, res: Response) {
   await Earl.insert(input_url, user_id)
     .then(async (row) => {
       await Earl.get_shortlink(row.id, req.get("Host"), req.secure).then(
-        (earl) => {
+        (earl: ShortEarl) => {
           return res.status(201).json({
             success: true,
             id: row.id,
