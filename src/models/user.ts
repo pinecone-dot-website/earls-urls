@@ -43,7 +43,7 @@ class User {
       .then((user) => {
         done(false, user);
       })
-      .catch((err)=>{
+      .catch((err: Error) => {
         done(new HTTP_Error(err.message, 401));
       });
   }
@@ -84,7 +84,10 @@ class User {
    * @param password string raw password
    * @return
    */
-  static async create(username: string, password: string): Promise<Express.User> {
+  static async create(
+    username: string,
+    password: string
+  ): Promise<Express.User> {
     return bcrypt
       .genSalt(10)
       .then((salt: string) => {
@@ -102,9 +105,9 @@ class User {
   }
 
   /**
-   * 
-   * @param user_id 
-   * @returns 
+   *
+   * @param user_id
+   * @returns
    */
   static async findByID(user_id: number) {
     return models.User.findOne({
