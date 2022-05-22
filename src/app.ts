@@ -121,8 +121,8 @@ app.set("json replacer", (key, value) => {
 
 // routes
 import api_router from "./controllers/api";
-const main_controller = require("./controllers/main");
-const user_router = require("./controllers/user");
+import main_controller from "./controllers/main";
+import user_router from "./controllers/user";
 
 app.use("/", main_controller);
 app.use("/u", user_router);

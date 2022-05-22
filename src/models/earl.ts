@@ -9,11 +9,6 @@ Base.setBase(
   "0123456789BCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz_,!=-*(){}[]"
 );
 
-declare interface ShortEarl {
-  earl: string;
-  short_url: string;
-}
-
 class Earl {
   /**
    *
