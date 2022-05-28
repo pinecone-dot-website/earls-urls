@@ -2,6 +2,7 @@ import Earl from "../../src/models/earl";
 import HTTPError from "../../src/classes/http_error";
 import db from "../../database/models";
 
+import 'jest';
 import { faker } from "@faker-js/faker";
 
 describe("Check Earl class", () => {

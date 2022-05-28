@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 const exp_hbs = require("express-handlebars"),
   flash = require("@rackandpinecone/express-flash"),

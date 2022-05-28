@@ -1,5 +1,6 @@
 import app from "../../src/app";
 
+import 'jest';
 import request from "supertest";
 import { faker } from "@faker-js/faker";
 

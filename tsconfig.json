@@ -6,8 +6,8 @@
     "moduleResolution": "node",
     "outDir": "dist",
     "sourceMap": true,
-    "typeRoots": ["./types"],
-    "types": ["jest"]
+    "typeRoots": ["./types", "./node_modules/@types"],
+    "types": ["jest", "node"]
   },
   "exclude": ["node_modules", "dist"],
   "include": ["src/**/*.ts", "tests/**/*.ts", "types/**/*.d.ts"],

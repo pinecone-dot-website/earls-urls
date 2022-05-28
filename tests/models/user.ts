@@ -1,7 +1,8 @@
 import User from "../../src/models/user";
 import db from "../../database/models";
-
 import HTTPError from "../../src/classes/http_error";
+
+import 'jest';
 
 describe("Check User class", () => {
   beforeAll(async () => {

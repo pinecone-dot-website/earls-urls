@@ -3,7 +3,7 @@ import Earl from "../../src/models/earl";
 import User from "../../src/models/user";
 import db from "../../database/models";
 
-import "jest";
+import 'jest';
 import request from "supertest";
 import { faker } from "@faker-js/faker";
 import jwt, { sign } from "jsonwebtoken";
