@@ -6,7 +6,7 @@
     "moduleResolution": "node",
     "outDir": "dist",
     "sourceMap": true,
-    "typeRoots": ["node_modules/@types"],
+    "typeRoots": ["./types"],
     "types": ["jest"]
   },
   "exclude": ["node_modules", "dist"],
