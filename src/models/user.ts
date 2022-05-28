@@ -86,7 +86,7 @@ class User {
    */
   static async create(
     username: string,
-    password: string
+    password: string,
   ): Promise<Express.User> {
     return bcrypt
       .genSalt(10)

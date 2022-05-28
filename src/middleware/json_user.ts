@@ -1,9 +1,9 @@
-import passport from "passport";
-import { Request, Response, NextFunction } from "express";
+import passport from 'passport';
+import { Request, Response, NextFunction } from 'express';
 
 function jsonUser(req: Request, res: Response, next: NextFunction) {
   const auth = passport.authenticate(
-    "jwt",
+    'jwt',
     {
       session: false,
     },
@@ -14,7 +14,7 @@ function jsonUser(req: Request, res: Response, next: NextFunction) {
       };
 
       return next();
-    }
+    },
   );
 
   return auth(req, res, next);

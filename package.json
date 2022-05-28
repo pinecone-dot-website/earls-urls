@@ -8,6 +8,8 @@
         "assets:prod": "sass src/assets/scss:public/css",
         "build:dev": "tsc --watch --preserveWatchOutput",
         "build:prod": "tsc",
+        "lint": "eslint src/**/*.ts",
+        "lint:fix": "eslint --fix src/**/*.ts",
         "serve:dev": "nodemon dist/server.js",
         "test": "DOTENV_CONFIG_PATH=./.env.test jest --coverage"
     },

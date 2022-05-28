@@ -130,10 +130,10 @@ function api_login(req: Request, res: Response) {
     sign({ user_id: user.id }, process.env.JWT_SECRET, { expiresIn: 120 }, cb);
   };
 
-  passport.authenticate("local", verified)(req, res);
+  passport.authenticate('local', verified)(req, res);
 }
 
-apiRouter.post("/auth/login", api_login);
+apiRouter.post('/auth/login', apiLogin);
 
 /**
  * @swagger

@@ -17,15 +17,15 @@ async function userAuth(req: Request, res: Response, next: NextFunction) {
         req.flash("username", req.body.username);
         req.flash("password", req.body.password);
 
-        return res.redirect("/?login-error");
+        return res.redirect('/?login-error');
       }
 
       req.login(user, (err) => {
-        return res.redirect("/?login-success");
+        return res.redirect('/?login-success');
       });
     };
 
-    passport.authenticate("local", verified)(req, res);
+    passport.authenticate('local', verified)(req, res);
   } else if (req.body.register) {
     await User.create(req.body.username, req.body.password)
       .then((user) => {

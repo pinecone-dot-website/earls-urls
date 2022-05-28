@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from "express";
-import git from "git-rev-sync";
+import { Request, Response, NextFunction } from 'express';
+import git from 'git-rev-sync';
 
 // show git tag in footer
 function gitTag(req: Request, res: Response, next: NextFunction) {

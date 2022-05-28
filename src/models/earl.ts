@@ -5,8 +5,8 @@ const models = require("../../database/models"),
   Base = new BaseX();
 
 Base.setBase(
-  "EARLS",
-  "0123456789BCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz_,!=-*(){}[]"
+  'EARLS',
+  '0123456789BCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz_,!=-*(){}[]',
 );
 
 class Earl {
@@ -35,7 +35,7 @@ class Earl {
    * @return
    */
   static get_by_shortid(earl: string) {
-    return Base.convert(earl, "EARLS", "BASE10")
+    return Base.convert(earl, 'EARLS', 'BASE10')
       .then(this.get_by_id)
       .catch((err) => {
         // console.log(
@@ -60,14 +60,14 @@ class Earl {
   static async get_shortlink(
     db_id: number,
     host: string,
-    secure: boolean = true
+    secure: boolean = true,
   ): Promise<ShortEarl> {
-    const short_url = await Base.convert(db_id, "BASE10", "EARLS")
+    const shortUrl = await Base.convert(db_id, 'BASE10', 'EARLS')
       .then((earl: string) => {
-        const protocol = secure ? "https" : "http";
+        const protocol = secure ? 'https' : 'http';
 
         return {
-          short_url: protocol + "://" + host + "/" + earl,
+          short_url: protocol + '://' + host + '/' + earl,
           earl: earl,
         };
       })
@@ -75,7 +75,7 @@ class Earl {
         throw new HTTP_Error(err.message, HttpStatusCode.INTERNAL_SERVER);
       });
 
-    return short_url;
+    return shortUrl;
   }
 
   /**
@@ -103,8 +103,8 @@ class Earl {
       const url = new URL(input_url);
 
       // disallow urls like javascript:void(0)
-      if (url.origin === "null") {
-        reject(new HTTP_Error("URL is not valid", 422));
+      if (url.origin === 'null') {
+        reject(new HTTPError('URL is not valid', 422));
       }
 
       return resolve(url.href);

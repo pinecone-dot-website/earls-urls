@@ -98,7 +98,7 @@ mainRouter.get(
         // illegal charactr / passthru
         next();
       });
-  }
+  },
 );
 
 export default mainRouter;
