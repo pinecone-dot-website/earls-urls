@@ -83,7 +83,7 @@ class Earl {
    * @param user_id integer
    *
    */
-  static insert(user_url: string, user_id: number = 0) {
+  static insert(user_url: string, user_id: number = 0): Promise<EarlRow> {
     return Earl.validate(user_url).then((formatted_url) => {
       return models.Url.create({
         userId: user_id,

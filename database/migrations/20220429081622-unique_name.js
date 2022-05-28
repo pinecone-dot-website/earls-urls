@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     queryInterface.addIndex(
       'Users',
       ['username'],
@@ -12,7 +12,7 @@ module.exports = {
     );
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     queryInterface.removeIndex(
       'Users',
       'username'

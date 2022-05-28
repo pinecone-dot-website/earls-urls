@@ -9,7 +9,7 @@ const mainRouter = express.Router();
 mainRouter.all(
   '/',
   [git_tag, http_user],
-  (req: express.Request, res: express.Response) => {
+  (req: express.Request, res: express.Response, next: NextFunction) => {
     console.log('req.rawHeaders', req.rawHeaders);
     const vars = {
       error: req.flash('error'),
@@ -23,7 +23,8 @@ mainRouter.all(
       vars.toggle = 'show';
     }
 
-    return res.render('home', vars);
+    res.render('home', vars);
+    next();
   },
 );
 
@@ -31,15 +32,17 @@ mainRouter.all(
 mainRouter.post(
   '/shorten',
   [git_tag, http_user],
-  (req: express.Request, res: express.Response) => {
+  (req: express.Request, res: express.Response, next:NextFunction) => {
     Earl.insert(req.body.url, res.locals.user.id)
       .then((row) => {
         Earl.get_shortlink(row.id, req.get('Host'), req.secure).then(
           (earl: ShortEarl) => {
-            return res.render('shorten', {
+            res.render('shorten', {
               input_url: row.url,
               short_url: earl.short_url,
             });
+
+            next();
           },
         );
       })
@@ -86,11 +89,13 @@ mainRouter.get(
 
     Earl.get_by_shortid(short)
       .then(async (row) => {
-        return res.render('info', {
+        res.render('info', {
           short: short,
           earl: await Earl.get_shortlink(row.id, req.get('Host'), req.secure),
           row: row.dataValues,
         });
+
+        next();
       })
       .catch((err: HTTPError | Error) => {
         if (err instanceof HTTPError) {

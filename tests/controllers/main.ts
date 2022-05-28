@@ -1,19 +1,19 @@
-import app from "../../src/app";
+import app from '../../src/app';
 
 import 'jest';
-import request from "supertest";
-import { faker } from "@faker-js/faker";
+import request from 'supertest';
+import { faker } from '@faker-js/faker';
 
-describe("Check Main routes", () => {
-  it("Should post a long url as unauthenticated user", async () => {
+describe('Check Main routes', () => {
+  it('Should post a long url as unauthenticated user', async () => {
     const url = `${faker.internet.url()}/`;
 
     return request(app)
-      .post("/shorten")
+      .post('/shorten')
       .send({ url: url })
-      .expect("Content-Type", /html/)
+      .expect('Content-Type', /html/)
       .expect((res) => {
-        expect(res.text).toContain("has been shortened to");
+        expect(res.text).toContain('has been shortened to');
         expect(res.text).toContain(`<span class="url">${url}</span>`);
       });
   });

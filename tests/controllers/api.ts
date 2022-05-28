@@ -1,12 +1,12 @@
-import app from "../../src/app";
-import Earl from "../../src/models/earl";
-import User from "../../src/models/user";
-import db from "../../database/models";
+import app from '../../src/app';
+import Earl from '../../src/models/earl';
+import User from '../../src/models/user';
+import db from '../../database/models';
 
 import 'jest';
-import request from "supertest";
-import { faker } from "@faker-js/faker";
-import jwt, { sign } from "jsonwebtoken";
+import request from 'supertest';
+import { faker } from '@faker-js/faker';
+import jwt, { sign } from 'jsonwebtoken';
 
 interface UserTest {
   creds: {
@@ -17,13 +17,13 @@ interface UserTest {
   token: string;
 }
 
-describe("Check API Endpoints", () => {
+describe('Check API Endpoints', () => {
   let user: UserTest = {
     creds: {
       username: faker.internet.userName(),
       password: faker.internet.password(),
     },
-    token: "",
+    token: '',
   };
 
   let earl = {
@@ -44,72 +44,74 @@ describe("Check API Endpoints", () => {
 
     await Earl.insert(earl.input_url).then((res) => {
       earl.id = res.id;
-      earl.earl = Earl.get_shortlink(earl.id, "test.earls");
+      earl.earl = Earl.get_shortlink(earl.id, 'test.earls');
     });
   });
 
-  it("Should receive jwt token for user", async () => {
+  it('Should receive jwt token for user', async () => {
     return request(app)
-      .post("/api/auth/login")
+      .post('/api/auth/login')
       .send({ username: user.creds.username, password: user.creds.password })
-      .expect("Content-Type", /json/)
+      .expect('Content-Type', /json/)
       .expect(200)
       .expect((res) => {
-        expect(res.body).toHaveProperty("success", true);
-        expect(res.body).toHaveProperty("token");
+        expect(res.body).toHaveProperty('success', true);
+        expect(res.body).toHaveProperty('token');
 
         let verified = jwt.verify(res.body.token, process.env.JWT_SECRET);
-        expect(verified).toHaveProperty("user_id", user.data.id);
+        expect(verified).toHaveProperty('user_id', user.data.id);
       });
   });
 
-  it("Get a result for a valid short id", async () => {
+  it('Get a result for a valid short id', async () => {
     return request(app)
-      .get("/api/1")
-      .expect("Content-Type", /json/)
+      .get('/api/1')
+      .expect('Content-Type', /json/)
       .expect(200)
       .expect(() => {
         expect.objectContaining({ success: true });
       });
   });
 
-  it("Return not found for a record that does not exist", async () => {
+  it('Return not found for a record that does not exist', async () => {
     return request(app)
-      .get("/api/bcd")
-      .expect("Content-Type", /json/)
+      .get('/api/bcd')
+      .expect('Content-Type', /json/)
       .expect(404)
       .expect(() => {
         expect.objectContaining({ success: false });
       });
   });
 
-  it("Should insert a valid url as unauthenticated user", async () => {
+  it('Should insert a valid url as unauthenticated user', async () => {
     const url = `${faker.internet.url()}/`;
 
     return request(app)
-      .post("/api")
+      .post('/api')
       .send({
         url: url,
       })
-      .expect("Content-Type", /json/)
+      .expect('Content-Type', /json/)
       .expect(201)
-      .expect((res) => {
+      .expect(() => {
+        // res
         expect.objectContaining({ success: true, input_url: url, user_id: 0 });
       });
   });
 
-  it("Should insert a valid url as authenticated user", async () => {
+  it('Should insert a valid url as authenticated user', async () => {
     const url = `${faker.internet.url()}/`;
 
     return request(app)
-      .post("/api")
-      .set("Authorization", `Bearer ${user.token}`)
+      .post('/api')
+      .set('Authorization', `Bearer ${user.token}`)
       .send({
         url: url,
       })
-      .expect("Content-Type", /json/)
+      .expect('Content-Type', /json/)
       .expect(201)
-      .expect((res) => {
+      .expect(() => {
+        // res
         expect.objectContaining({
           success: true,
           input_url: url,
@@ -118,16 +120,17 @@ describe("Check API Endpoints", () => {
       });
   });
 
-  it("Should not insert an invalid url", () => {
+  it('Should not insert an invalid url', () => {
     return request(app)
-      .post("/api")
+      .post('/api')
       .send({
-        url: "abc",
+        url: 'abc',
       })
-      .expect("Content-Type", /json/)
+      .expect('Content-Type', /json/)
       .expect(422)
-      .expect((res) => {
-        expect.objectContaining({ success: false, input_url: "abc" });
+      .expect(() => {
+        // res
+        expect.objectContaining({ success: false, input_url: 'abc' });
       });
   });
 });

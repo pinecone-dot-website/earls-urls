@@ -1,18 +1,18 @@
-import express, { Request, Response } from "express";
-import bodyParser from "body-parser";
-const exp_hbs = require("express-handlebars"),
-  flash = require("@rackandpinecone/express-flash"),
-  passport = require("passport"),
-  session = require("cookie-session"),
+import express from 'express';
+import bodyParser from 'body-parser';
+const expHbs = require('express-handlebars'),
+  flash = require('@rackandpinecone/express-flash'),
+  passport = require('passport'),
+  session = require('cookie-session'),
   app = express(),
-  swaggerJsdoc = require("swagger-jsdoc"),
-  swaggerUi = require("swagger-ui-express");
-import { Strategy as JWTStrategy, ExtractJwt } from "passport-jwt";
-import { Strategy as LocalStrategy } from "passport-local";
+  swaggerJsdoc = require('swagger-jsdoc'),
+  swaggerUi = require('swagger-ui-express');
+import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
+import { Strategy as LocalStrategy } from 'passport-local';
 
-import User from "./models/user";
+import User from './models/user';
 
-require("dotenv").config();
+require('dotenv').config();
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,16 +24,16 @@ app.use(flash());
 // swagger docs
 const options = {
   definition: {
-    openapi: "3.0.0",
+    openapi: '3.0.0',
     info: {
-      title: "Earls Urls",
-      version: "0.6.0",
+      title: 'Earls Urls',
+      version: '0.6.0',
     },
     components: {
       securitySchemes: {
         bearerAuth: {
-          type: "http",
-          scheme: "bearer",
+          type: 'http',
+          scheme: 'bearer',
         },
       },
     },
@@ -43,9 +43,9 @@ const options = {
 const specs = swaggerJsdoc(options);
 
 app.use(
-  "/api/docs",
+  '/api/docs',
   swaggerUi.serve,
-  swaggerUi.setup(specs, { explorer: true })
+  swaggerUi.setup(specs, { explorer: true }),
 );
 
 // use sessions and flash data
@@ -54,7 +54,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
     secret: process.env.SESSION_SECRET,
-  })
+  }),
 );
 
 // passport config
@@ -64,8 +64,8 @@ passport.use(
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: process.env.JWT_SECRET,
     },
-    User.authenticateJWT
-  )
+    User.authenticateJWT,
+  ),
 );
 passport.use(new LocalStrategy(User.authenticateLocal));
 app.use(passport.initialize());
@@ -83,53 +83,53 @@ passport.deserializeUser(function (user_id: number, done) {
     .then((user) => {
       done(null, user.toJSON());
     })
-    .catch((err) => {
-      done(null, { id: 0, username: "" });
+    .catch(() => {  // err
+      done(null, { id: 0, username: '' });
     });
 });
 
 // templates
-app.set("views", __dirname + "/../views/");
+app.set('views', __dirname + '/../views/');
 app.engine(
-  "hbs",
-  exp_hbs.engine({
-    defaultLayout: "main",
-    extname: ".hbs",
+  'hbs',
+  expHbs.engine({
+    defaultLayout: 'main',
+    extname: '.hbs',
     helpers: {
       json: function (context) {
         return JSON.stringify(context);
       },
     },
-  })
+  }),
 );
-app.set("view engine", "hbs");
+app.set('view engine', 'hbs');
 
 // serve assets in /public
-app.use(express.static("public"));
+app.use(express.static('public'));
 
 // recognize ssl from proxy
-app.set("trust proxy", true);
+app.set('trust proxy', true);
 
 // handle undefined values in response json
-app.set("json replacer", (key, value) => {
+app.set('json replacer', (key, value) => {
   // undefined values are set to `null`
-  if (typeof value === "undefined") {
+  if (typeof value === 'undefined') {
     return null;
   }
   return value;
 });
 
 // routes
-import api_router from "./controllers/api";
-import main_controller from "./controllers/main";
-import user_router from "./controllers/user";
+import api_router from './controllers/api';
+import main_controller from './controllers/main';
+import user_router from './controllers/user';
 
-app.use("/", main_controller);
-app.use("/u", user_router);
-app.use("/api", api_router);
+app.use('/', main_controller);
+app.use('/u', user_router);
+app.use('/api', api_router);
 
-app.all("*", (req: Request, res: Response) => {
-  res.status(404).render("404", {});
+app.all('*', (req: express.Request, res: express.Response) => {
+  res.status(404).render('404', {});
 });
 
 export default app;

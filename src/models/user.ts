@@ -100,9 +100,6 @@ class User {
         });
 
         return user;
-      })
-      .then((user) => {
-        return user;
       });
   }
 

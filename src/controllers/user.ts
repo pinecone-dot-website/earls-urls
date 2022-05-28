@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction } from 'express';
 import passport from 'passport';
 
 import git_tag from '../middleware/git_tag';
@@ -56,7 +56,7 @@ function userLogout(req: express.Request, res: express.Response) {
 userRouter.all('/logout', userLogout);
 
 // user stats
-function userStats(req: express.Request, res: express.Response) {
+function userStats(req: express.Request, res: express.Response, next: NextFunction) {
   if (!req.user) {
     return res.redirect('/');
   }
@@ -83,6 +83,8 @@ function userStats(req: express.Request, res: express.Response) {
       res.render('user-stats', {
         earls: rows,
       });
+
+      next();
     })
     .catch((err: Error) => {
       return res.status(500).render('error', {
