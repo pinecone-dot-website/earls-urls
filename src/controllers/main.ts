@@ -1,33 +1,37 @@
 import HTTPError from '../classes/http_error';
-import express, { NextFunction, Request, Response } from 'express';
+import express, { NextFunction } from 'express';
 import git_tag from '../middleware/git_tag';
 import http_user from '../middleware/http_user';
 import Earl from '../models/earl';
 const mainRouter = express.Router();
 
 // index
-mainRouter.all('/', [git_tag, http_user], (req: Request, res: Response) => {
-  console.log('req.rawHeaders', req.rawHeaders);
-  const vars = {
-    error: req.flash('error'),
-    input_url: req.flash('input_url'),
-    username: req.flash('username'),
-    password: req.flash('password'),
-    toggle: '',
-  };
+mainRouter.all(
+  '/',
+  [git_tag, http_user],
+  (req: express.Request, res: express.Response) => {
+    console.log('req.rawHeaders', req.rawHeaders);
+    const vars = {
+      error: req.flash('error'),
+      input_url: req.flash('input_url'),
+      username: req.flash('username'),
+      password: req.flash('password'),
+      toggle: '',
+    };
 
-  if (vars.username.length || vars.password.length) {
-    vars.toggle = 'show';
-  }
+    if (vars.username.length || vars.password.length) {
+      vars.toggle = 'show';
+    }
 
-  return res.render('home', vars);
-});
+    return res.render('home', vars);
+  },
+);
 
 // post to shorten url from index
 mainRouter.post(
   '/shorten',
   [git_tag, http_user],
-  (req: Request, res: Response) => {
+  (req: express.Request, res: express.Response) => {
     Earl.insert(req.body.url, res.locals.user.id)
       .then((row) => {
         Earl.get_shortlink(row.id, req.get('Host'), req.secure).then(
@@ -52,7 +56,7 @@ mainRouter.post(
 mainRouter.get(
   '/:short',
   [git_tag, http_user],
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: express.Request, res: express.Response, next: NextFunction) => {
     const short = req.params.short;
     console.log('short', short);
     Earl.get_by_shortid(short)
@@ -77,7 +81,7 @@ mainRouter.get(
 mainRouter.get(
   '/:short/info',
   [git_tag, http_user],
-  (req: Request, res: Response, next: NextFunction) => {
+  (req: express.Request, res: express.Response, next: NextFunction) => {
     const short = req.params.short;
 
     Earl.get_by_shortid(short)

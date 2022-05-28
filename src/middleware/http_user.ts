@@ -1,6 +1,10 @@
-import { Request, Response, NextFunction } from 'express';
+import express, { NextFunction } from 'express';
 
-async function httpUser(req: Request, res: Response, next: NextFunction) {
+async function httpUser(
+  req: express.Request,
+  res: express.Response,
+  next: NextFunction,
+) {
   res.locals.user = req.user || { id: 0, username: '' };
 
   next();

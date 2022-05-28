@@ -1,7 +1,11 @@
 import passport from 'passport';
-import { Request, Response, NextFunction } from 'express';
+import express, { NextFunction } from 'express';
 
-function jsonUser(req: Request, res: Response, next: NextFunction) {
+function jsonUser(
+  req: express.Request,
+  res: express.Response,
+  next: NextFunction,
+) {
   const auth = passport.authenticate(
     'jwt',
     {

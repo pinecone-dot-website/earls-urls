@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import passport from 'passport';
 
 import git_tag from '../middleware/git_tag';
@@ -9,7 +9,7 @@ import User from '../models/user';
 const userRouter = express.Router();
 
 // process login / register form
-async function userAuth(req: Request, res: Response, next: NextFunction) {
+async function userAuth(req: express.Request, res: express.Response) {
   if (req.body.login) {
     const verified = (err: Error, user, info) => {
       if (!user) {
@@ -20,7 +20,7 @@ async function userAuth(req: Request, res: Response, next: NextFunction) {
         return res.redirect('/?login-error');
       }
 
-      req.login(user, (err) => {
+      req.login(user, (loginErr) => {
         return res.redirect('/?login-success');
       });
     };
@@ -29,12 +29,12 @@ async function userAuth(req: Request, res: Response, next: NextFunction) {
   } else if (req.body.register) {
     await User.create(req.body.username, req.body.password)
       .then((user) => {
-        req.login(user, (err) => {
+        req.login(user, (loginErr) => {
           return res.redirect('/?register-create');
         });
       })
-      .catch((err: Error) => {
-        req.flash('error', err.message);
+      .catch((createErr: Error) => {
+        req.flash('error', createErr.message);
         req.flash('username', req.body.username);
         req.flash('password', req.body.password);
 
@@ -47,14 +47,14 @@ async function userAuth(req: Request, res: Response, next: NextFunction) {
 userRouter.post('/auth', userAuth);
 
 // log user out
-function userLogout(req: Request, res: Response) {
+function userLogout(req: express.Request, res: express.Response) {
   req.logout();
   return res.redirect('/?logout');
 }
 userRouter.all('/logout', userLogout);
 
 // user stats
-function userStats(req: Request, res: Response) {
+function userStats(req: express.Request, res: express.Response) {
   if (!req.user) {
     return res.redirect('/');
   }

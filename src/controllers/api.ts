@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import { sign } from 'jsonwebtoken';
 import passport from 'passport';
 
@@ -23,7 +23,7 @@ const apiRouter = express.Router();
  *        401:
  *          description: Unauthorized
  */
-function apiUser(req: Request, res: Response) {
+function apiUser(req: express.Request, res: express.Response) {
   if (res.locals.user.props) {
     const { id, username, createdAt } = res.locals.user.props;
 
@@ -97,10 +97,10 @@ apiRouter.get('/auth', [json_user], apiUser);
  *                    type: string
  *                    example: "Username not found"
  */
-function apiLogin(req: Request, res: Response) {
+function apiLogin(req: express.Request, res: express.Response) {
   const verified = (err: HTTPError, user, info) => {
-    const cb = (err: Error, encoded: string) => {
-      if (err) {
+    const cb = (verifiedErr: Error, encoded: string) => {
+      if (verifiedErr) {
         return res.json({
           success: false,
           error: err.message,
@@ -179,7 +179,7 @@ apiRouter.post('/auth/login', apiLogin);
  *        500:
  *          description: Integer out of bounds
  */
-async function apiGet(req: Request, res: Response, next: NextFunction) {
+async function apiGet(req: express.Request, res: express.Response) {
   const short = req.params.short;
 
   return Earl.get_by_shortid(short)
@@ -246,7 +246,7 @@ apiRouter.get('/:short', apiGet);
  *        500:
  *          description: Error in convertion
  */
-async function apiPost(req: Request, res: Response) {
+async function apiPost(req: express.Request, res: express.Response) {
   const inputUrl = req.body.url;
   const userID = res.locals.user.props.id;
 
@@ -277,7 +277,7 @@ async function apiPost(req: Request, res: Response) {
 
 apiRouter.post('/', [json_user], apiPost);
 
-apiRouter.all('*', (req: Request, res: Response) => {
+apiRouter.all('*', (req: express.Request, res: express.Response) => {
   res.status(404).json({
     success: false,
   });

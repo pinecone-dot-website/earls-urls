@@ -52,6 +52,7 @@
         "eslint": "^8.16.0",
         "eslint-config-airbnb-typescript": "^17.0.0",
         "jest": "^27.5.1",
+        "openapi-types": "^11.0.1",
         "sqlite3": "^5.0.6",
         "supertest": "^6.2.3",
         "swagger-jsdoc": "^6.2.1",
