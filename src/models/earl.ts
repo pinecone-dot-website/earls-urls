@@ -11,10 +11,10 @@ Base.setBase(
 class Earl {
   /**
    *
-   * @param db_id integer (string when called from get_by_shortid)
+   * @param db_id integer (string when called from getByShortID)
    * @return object db row
    */
-  static async get_by_id(db_id: string | number) {
+  static async get_by_id(db_id: string | number):Promise<EarlRow> {
     return models.Url.findOne({
       where: {
         id: db_id,
@@ -33,15 +33,10 @@ class Earl {
    * @param earl string
    * @return
    */
-  static get_by_shortid(earl: string) {
+  static getByShortID(earl: string):Promise<EarlRow> {
     return Base.convert(earl, 'EARLS', 'BASE10')
       .then(this.get_by_id)
       .catch((err) => {
-        // console.log(
-        //   "get_by_shortid err",
-        //   err instanceof HTTPError,
-        //   err.message
-        // );
         if (err instanceof HTTPError) {
           throw new HTTPError(err.message, err.status);
         }

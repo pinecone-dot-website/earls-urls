@@ -16,7 +16,7 @@ class User {
       },
     })
       .then(User.validateUser)
-      .then((user) => {
+      .then((user: UserRow) => {
         done(false, user);
       })
       .catch(done);
@@ -40,7 +40,7 @@ class User {
     })
       .then(User.validateUser)
       .then(User.validatePassword(password))
-      .then((user) => {
+      .then((user: UserRow) => {
         done(false, user);
       })
       .catch((err: Error) => {
@@ -53,7 +53,7 @@ class User {
    * @param user
    * @returns
    */
-  static validateUser(user) {
+  static validateUser(user: UserRow): UserRow {
     if (!user) {
       throw new HTTPError('Username not found', 401);
     }
@@ -66,8 +66,8 @@ class User {
    * @param password
    * @returns
    */
-  static validatePassword(password: string) {
-    return (user) => {
+  static validatePassword(password: string): Function {
+    return (user: UserRow) => {
       return bcrypt.compare(password, user.password).then((ok: boolean) => {
         if (!ok) {
           throw new HTTPError('Incorrect password', 401);
@@ -121,7 +121,7 @@ class User {
    * @param user_id integer
    * @return
    */
-  static async get_urls_by_user(user_id: number) {
+  static async getUrlsByUser(user_id: number):Promise<Array<EarlRow>> {
     return models.Url.findAll({
       order: [['createdAt', 'DESC']],
       where: {

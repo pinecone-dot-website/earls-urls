@@ -34,7 +34,7 @@ mainRouter.post(
   [git_tag, http_user],
   (req: express.Request, res: express.Response, next:NextFunction) => {
     Earl.insert(req.body.url, res.locals.user.id)
-      .then((row) => {
+      .then((row: EarlRow) => {
         Earl.get_shortlink(row.id, req.get('Host'), req.secure).then(
           (earl: ShortEarl) => {
             res.render('shorten', {
@@ -62,7 +62,7 @@ mainRouter.get(
   async (req: express.Request, res: express.Response, next: NextFunction) => {
     const short = req.params.short;
     console.log('short', short);
-    Earl.get_by_shortid(short)
+    Earl.getByShortID(short)
       .then((row) => {
         return res.redirect(row.url);
       })
@@ -87,12 +87,12 @@ mainRouter.get(
   (req: express.Request, res: express.Response, next: NextFunction) => {
     const short = req.params.short;
 
-    Earl.get_by_shortid(short)
+    Earl.getByShortID(short)
       .then(async (row) => {
         res.render('info', {
           short: short,
           earl: await Earl.get_shortlink(row.id, req.get('Host'), req.secure),
-          row: row.dataValues,
+          row: row,
         });
 
         next();

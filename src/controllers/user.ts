@@ -61,12 +61,12 @@ function userStats(req: express.Request, res: express.Response, next: NextFuncti
     return res.redirect('/');
   }
 
-  User.get_urls_by_user(req.user.id)
+  User.getUrlsByUser(req.user.id)
     .then(async (rows) => {
       rows = await Promise.all(
-        rows.map((row) => {
+        rows.map((row: EarlRow) => {
           return Earl.get_shortlink(row.id, req.get('Host'), req.secure)
-            .then((earl) => {
+            .then((earl: ShortEarl) => {
               return {
                 short: earl.short_url,
                 long: row.url,

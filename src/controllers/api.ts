@@ -182,7 +182,7 @@ apiRouter.post('/auth/login', apiLogin);
 async function apiGet(req: express.Request, res: express.Response) {
   const short = req.params.short;
 
-  return Earl.get_by_shortid(short)
+  return Earl.getByShortID(short)
     .then(async (row) => {
       await Earl.get_shortlink(row.id, req.get('Host'), req.secure).then(
         (earl: ShortEarl) => {
