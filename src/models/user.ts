@@ -94,10 +94,12 @@ class User {
         return bcrypt.hash(password, salt);
       })
       .then(async (hash: string) => {
-        return await models.User.create({
+        const user = await models.User.create({
           username: username,
           password: hash,
         });
+
+        return user;
       })
       .then((user) => {
         return user;

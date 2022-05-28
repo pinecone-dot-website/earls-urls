@@ -21,6 +21,7 @@ async function userAuth(req: express.Request, res: express.Response) {
       }
 
       req.login(user, (loginErr) => {
+        console.log('login loginErr', loginErr);
         return res.redirect('/?login-success');
       });
     };
@@ -30,6 +31,7 @@ async function userAuth(req: express.Request, res: express.Response) {
     await User.create(req.body.username, req.body.password)
       .then((user) => {
         req.login(user, (loginErr) => {
+          console.log('register loginErr', loginErr);
           return res.redirect('/?register-create');
         });
       })
