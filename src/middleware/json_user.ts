@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Request, Response, NextFunction } from "express";
 
-function json_user(req: Request, res: Response, next: NextFunction) {
+function jsonUser(req: Request, res: Response, next: NextFunction) {
   const auth = passport.authenticate(
     "jwt",
     {
@@ -20,4 +20,4 @@ function json_user(req: Request, res: Response, next: NextFunction) {
   return auth(req, res, next);
 }
 
-export default json_user;
+export default jsonUser;
