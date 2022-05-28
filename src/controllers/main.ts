@@ -3,10 +3,10 @@ import express, { NextFunction, Request, Response } from "express";
 import git_tag from "../middleware/git_tag";
 import http_user from "../middleware/http_user";
 import Earl from "../models/earl";
-const main_router = express.Router();
+const mainRouter = express.Router();
 
 // index
-main_router.all("/", [git_tag, http_user], (req: Request, res: Response) => {
+mainRouter.all("/", [git_tag, http_user], (req: Request, res: Response) => {
   console.log("req.rawHeaders", req.rawHeaders);
   const vars = {
     error: req.flash("error"),
@@ -24,28 +24,32 @@ main_router.all("/", [git_tag, http_user], (req: Request, res: Response) => {
 });
 
 // post to shorten url from index
-main_router.post("/shorten", [git_tag, http_user], (req: Request, res: Response) => {
-  Earl.insert(req.body.url, res.locals.user.id)
-    .then((row) => {
-      Earl.get_shortlink(row.id, req.get("Host"), req.secure).then(
-        (earl: ShortEarl) => {
-          return res.render("shorten", {
-            input_url: row.url,
-            short_url: earl.short_url,
-          });
-        }
-      );
-    })
-    .catch((err) => {
-      req.flash("error", err.message);
-      req.flash("input_url", req.body.url);
+mainRouter.post(
+  "/shorten",
+  [git_tag, http_user],
+  (req: Request, res: Response) => {
+    Earl.insert(req.body.url, res.locals.user.id)
+      .then((row) => {
+        Earl.get_shortlink(row.id, req.get("Host"), req.secure).then(
+          (earl: ShortEarl) => {
+            return res.render("shorten", {
+              input_url: row.url,
+              short_url: earl.short_url,
+            });
+          }
+        );
+      })
+      .catch((err) => {
+        req.flash("error", err.message);
+        req.flash("input_url", req.body.url);
 
-      return res.redirect("/?url-error");
-    });
-});
+        return res.redirect("/?url-error");
+      });
+  }
+);
 
 // lookup shortened url and redirect
-main_router.get(
+mainRouter.get(
   "/:short",
   [git_tag, http_user],
   async (req: Request, res: Response, next: NextFunction) => {
@@ -70,7 +74,7 @@ main_router.get(
 );
 
 // lookup shortened url and show info
-main_router.get(
+mainRouter.get(
   "/:short/info",
   [git_tag, http_user],
   (req: Request, res: Response, next: NextFunction) => {
@@ -97,4 +101,4 @@ main_router.get(
   }
 );
 
-export default main_router;
+export default mainRouter;

@@ -9,7 +9,7 @@ import User from "../models/user";
 const user_router = express.Router();
 
 // process login / register form
-async function user_auth(req: Request, res: Response, next: NextFunction) {
+async function userAuth(req: Request, res: Response, next: NextFunction) {
   if (req.body.login) {
     const verified = (err: Error, user, info) => {
       if (!user) {
@@ -44,17 +44,17 @@ async function user_auth(req: Request, res: Response, next: NextFunction) {
     return res.redirect("/?auth-error");
   }
 }
-user_router.post("/auth", user_auth);
+user_router.post("/auth", userAuth);
 
 // log user out
-function user_logout(req: Request, res: Response) {
+function userLogout(req: Request, res: Response) {
   req.logout();
   return res.redirect("/?logout");
 }
-user_router.all("/logout", user_logout);
+user_router.all("/logout", userLogout);
 
 // user stats
-function user_stats(req: Request, res: Response) {
+function userStats(req: Request, res: Response) {
   if (!req.user) {
     return res.redirect("/");
   }
@@ -88,6 +88,6 @@ function user_stats(req: Request, res: Response) {
       });
     });
 }
-user_router.get("/stats", [git_tag, http_user], user_stats);
+user_router.get("/stats", [git_tag, http_user], userStats);
 
 export default user_router;

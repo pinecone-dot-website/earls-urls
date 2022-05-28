@@ -6,7 +6,7 @@ import HTTP_Error from "../classes/http_error";
 import json_user from "../middleware/json_user";
 import Earl from "../models/earl";
 
-const api_router = express.Router();
+const apiRouter = express.Router();
 
 /**
  * @swagger
@@ -23,7 +23,7 @@ const api_router = express.Router();
  *        401:
  *          description: Unauthorized
  */
-function api_user(req: Request, res: Response) {
+function apiUser(req: Request, res: Response) {
   if (res.locals.user.props) {
     const { id, username, createdAt } = res.locals.user.props;
 
@@ -39,7 +39,7 @@ function api_user(req: Request, res: Response) {
   });
 }
 
-api_router.get("/auth", [json_user], api_user);
+apiRouter.get("/auth", [json_user], apiUser);
 
 /**
  * @swagger
@@ -69,7 +69,7 @@ api_router.get("/auth", [json_user], api_user);
  *      responses:
  *        200:
  *          description: Successful login
- *          content: 
+ *          content:
  *            application/json:
  *              schema:
  *                type: object
@@ -85,15 +85,15 @@ api_router.get("/auth", [json_user], api_user);
  *                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE2NTMyNjIxODQsImV4cCI6MTY1MzI2MjMwNH0.CfYv0cvtYPuiBs3e61jYs8m23yaak--n0JMnFrDc3O4"
  *        401:
  *          description: Username or password is incorrect
- *          content: 
+ *          content:
  *            application/json:
-  *              schema:
+ *              schema:
  *                type: object
  *                properties:
  *                  success:
  *                    type: boolean
  *                    example: false
- *                  error: 
+ *                  error:
  *                    type: string
  *                    example: "Username not found"
  */
@@ -133,7 +133,7 @@ function api_login(req: Request, res: Response) {
   passport.authenticate("local", verified)(req, res);
 }
 
-api_router.post("/auth/login", api_login);
+apiRouter.post("/auth/login", api_login);
 
 /**
  * @swagger
@@ -151,7 +151,7 @@ api_router.post("/auth/login", api_login);
  *      responses:
  *        200:
  *          description: Short URL was found
- *          content: 
+ *          content:
  *            application/json:
  *              schema:
  *                type: object
@@ -179,7 +179,7 @@ api_router.post("/auth/login", api_login);
  *        500:
  *          description: Integer out of bounds
  */
-async function api_get(req: Request, res: Response, next: NextFunction) {
+async function apiGet(req: Request, res: Response, next: NextFunction) {
   const short = req.params.short;
 
   return Earl.get_by_shortid(short)
@@ -212,7 +212,7 @@ async function api_get(req: Request, res: Response, next: NextFunction) {
     });
 }
 
-api_router.get("/:short", api_get);
+apiRouter.get("/:short", apiGet);
 
 /**
  * @swagger
@@ -246,18 +246,18 @@ api_router.get("/:short", api_get);
  *        500:
  *          description: Error in convertion
  */
-async function api_post(req: Request, res: Response) {
-  const input_url = req.body.url;
-  const user_id = res.locals.user.props.id;
+async function apiPost(req: Request, res: Response) {
+  const inputUrl = req.body.url;
+  const userID = res.locals.user.props.id;
 
-  await Earl.insert(input_url, user_id)
+  await Earl.insert(inputUrl, userID)
     .then(async (row) => {
       await Earl.get_shortlink(row.id, req.get("Host"), req.secure).then(
         (earl: ShortEarl) => {
           return res.status(201).json({
             success: true,
             id: row.id,
-            input_url: input_url,
+            input_url: inputUrl,
             short_url: earl.short_url,
             created: row.createdAt,
             user_id: row.userId,
@@ -269,18 +269,18 @@ async function api_post(req: Request, res: Response) {
       return res.status(err.status || 422).json({
         success: false,
         error: err.message,
-        input_url: input_url,
-        user_id: user_id,
+        input_url: inputUrl,
+        user_id: userID,
       });
     });
 }
 
-api_router.post("/", [json_user], api_post);
+apiRouter.post("/", [json_user], apiPost);
 
-api_router.all("*", (req: Request, res: Response) => {
+apiRouter.all("*", (req: Request, res: Response) => {
   res.status(404).json({
     success: false,
   });
 });
 
-export default api_router;
+export default apiRouter;
