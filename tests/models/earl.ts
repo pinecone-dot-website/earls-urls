@@ -1,5 +1,5 @@
 import Earl from "../../src/models/earl";
-import HTTP_Error from "../../src/classes/http_error";
+import HTTPError from "../../src/classes/http_error";
 import db from "../../database/models";
 
 import { faker } from "@faker-js/faker";
@@ -20,7 +20,7 @@ describe("Check Earl class", () => {
     const url = "javascript:void(0)";
 
     Earl.validate(url).catch((err) => {
-      expect(err).toBeInstanceOf(HTTP_Error);
+      expect(err).toBeInstanceOf(HTTPError);
       expect(err).toHaveProperty("status", 422);
     });
   });
@@ -54,7 +54,7 @@ describe("Check Earl class", () => {
     expect.assertions(2);
 
     await Earl.get_by_id(100).catch((err) => {
-      expect(err).toBeInstanceOf(HTTP_Error);
+      expect(err).toBeInstanceOf(HTTPError);
       expect(err).toHaveProperty("status", 404);
     });
   });
@@ -77,7 +77,7 @@ describe("Check Earl class", () => {
     expect.assertions(1);
 
     await Earl.get_shortlink(-10, "test.earls").catch((err) => {
-      expect(err).toBeInstanceOf(HTTP_Error);
+      expect(err).toBeInstanceOf(HTTPError);
     });
   });
 });

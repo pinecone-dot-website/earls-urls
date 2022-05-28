@@ -1,7 +1,7 @@
 import User from "../../src/models/user";
 import db from "../../database/models";
 
-import HTTP_Error from "../../src/classes/http_error";
+import HTTPError from "../../src/classes/http_error";
 
 describe("Check User class", () => {
   beforeAll(async () => {
@@ -34,7 +34,7 @@ describe("Check User class", () => {
     expect.assertions(2);
 
     const done = (err: Error) => {
-      expect(err).toBeInstanceOf(HTTP_Error);
+      expect(err).toBeInstanceOf(HTTPError);
       expect(err).toHaveProperty("status", 401);
     };
 
@@ -45,7 +45,7 @@ describe("Check User class", () => {
     expect.assertions(2);
 
     const done = (err: Error) => {
-      expect(err).toBeInstanceOf(HTTP_Error);
+      expect(err).toBeInstanceOf(HTTPError);
       expect(err).toHaveProperty("status", 401);
     };
 

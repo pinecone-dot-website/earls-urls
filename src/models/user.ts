@@ -1,14 +1,14 @@
-import bcrypt from "bcryptjs";
-import { IVerifyOptions } from "passport-local";
+import bcrypt from 'bcryptjs';
+import { IVerifyOptions } from 'passport-local';
 
-import HTTP_Error from "../classes/http_error";
+import HTTPError from '../classes/http_error';
 
-const models = require("../../database/models");
+const models = require('../../database/models');
 
 class User {
   static authenticateJWT(
     jwt_payload,
-    done: (error: any, user?: any, options?: IVerifyOptions) => void
+    done: (error: any, user?: any, options?: IVerifyOptions) => void,
   ) {
     return models.User.findOne({
       where: {
@@ -31,7 +31,7 @@ class User {
   static async authenticateLocal(
     username: string,
     password: string,
-    done: (error: any, user?: any, options?: IVerifyOptions) => void
+    done: (error: any, user?: any, options?: IVerifyOptions) => void,
   ) {
     return models.User.findOne({
       where: {
@@ -44,7 +44,7 @@ class User {
         done(false, user);
       })
       .catch((err: Error) => {
-        done(new HTTP_Error(err.message, 401));
+        done(new HTTPError(err.message, 401));
       });
   }
 
@@ -55,7 +55,7 @@ class User {
    */
   static validateUser(user) {
     if (!user) {
-      throw new HTTP_Error("Username not found", 401);
+      throw new HTTPError('Username not found', 401);
     }
 
     return user;
@@ -70,7 +70,7 @@ class User {
     return (user) => {
       return bcrypt.compare(password, user.password).then((ok: boolean) => {
         if (!ok) {
-          throw new HTTP_Error("Incorrect password", 401);
+          throw new HTTPError('Incorrect password', 401);
         }
 
         return user;
@@ -124,7 +124,7 @@ class User {
    */
   static async get_urls_by_user(user_id: number) {
     return models.Url.findAll({
-      order: [["createdAt", "DESC"]],
+      order: [['createdAt', 'DESC']],
       where: {
         userId: user_id,
       },

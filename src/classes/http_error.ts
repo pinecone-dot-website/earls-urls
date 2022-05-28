@@ -6,7 +6,7 @@ export enum HttpStatusCode {
   INTERNAL_SERVER = 500,
 }
 
-export default class HTTP_Error extends Error {
+export default class HTTPError extends Error {
   status: HttpStatusCode;
 
   constructor(message: string, status: HttpStatusCode) {
@@ -14,6 +14,6 @@ export default class HTTP_Error extends Error {
 
     this.status = status;
 
-    Object.setPrototypeOf(this, HTTP_Error.prototype);
+    Object.setPrototypeOf(this, HTTPError.prototype);
   }
 }

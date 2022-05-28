@@ -1,7 +1,6 @@
-import { Model } from "sequelize/types";
-import HTTP_Error, { HttpStatusCode } from "../classes/http_error";
-import { BaseX } from "@rackandpinecone/base-x";
-const models = require("../../database/models"),
+import HTTPError, { HttpStatusCode } from '../classes/http_error';
+import { BaseX } from '@rackandpinecone/base-x';
+const models = require('../../database/models'),
   Base = new BaseX();
 
 Base.setBase(
@@ -24,7 +23,7 @@ class Earl {
       if (row) {
         return row;
       } else {
-        throw new HTTP_Error(`ID "${db_id}" not found`, 404);
+        throw new HTTPError(`ID "${db_id}" not found`, 404);
       }
     });
   }
@@ -40,11 +39,11 @@ class Earl {
       .catch((err) => {
         // console.log(
         //   "get_by_shortid err",
-        //   err instanceof HTTP_Error,
+        //   err instanceof HTTPError,
         //   err.message
         // );
-        if (err instanceof HTTP_Error) {
-          throw new HTTP_Error(err.message, err.status);
+        if (err instanceof HTTPError) {
+          throw new HTTPError(err.message, err.status);
         }
         throw err;
       });
@@ -72,7 +71,7 @@ class Earl {
         };
       })
       .catch((err: Error) => {
-        throw new HTTP_Error(err.message, HttpStatusCode.INTERNAL_SERVER);
+        throw new HTTPError(err.message, HttpStatusCode.INTERNAL_SERVER);
       });
 
     return shortUrl;

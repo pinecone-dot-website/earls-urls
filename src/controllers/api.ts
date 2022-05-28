@@ -1,10 +1,10 @@
-import express, { NextFunction, Request, Response } from "express";
-import { sign } from "jsonwebtoken";
-import passport from "passport";
+import express, { NextFunction, Request, Response } from 'express';
+import { sign } from 'jsonwebtoken';
+import passport from 'passport';
 
-import HTTP_Error from "../classes/http_error";
-import json_user from "../middleware/json_user";
-import Earl from "../models/earl";
+import HTTPError from '../classes/http_error';
+import json_user from '../middleware/json_user';
+import Earl from '../models/earl';
 
 const apiRouter = express.Router();
 
@@ -39,7 +39,7 @@ function apiUser(req: Request, res: Response) {
   });
 }
 
-apiRouter.get("/auth", [json_user], apiUser);
+apiRouter.get('/auth', [json_user], apiUser);
 
 /**
  * @swagger
@@ -97,8 +97,8 @@ apiRouter.get("/auth", [json_user], apiUser);
  *                    type: string
  *                    example: "Username not found"
  */
-function api_login(req: Request, res: Response) {
-  const verified = (err: HTTP_Error, user, info) => {
+function apiLogin(req: Request, res: Response) {
+  const verified = (err: HTTPError, user, info) => {
     const cb = (err: Error, encoded: string) => {
       if (err) {
         return res.json({
@@ -184,7 +184,7 @@ async function apiGet(req: Request, res: Response, next: NextFunction) {
 
   return Earl.get_by_shortid(short)
     .then(async (row) => {
-      await Earl.get_shortlink(row.id, req.get("Host"), req.secure).then(
+      await Earl.get_shortlink(row.id, req.get('Host'), req.secure).then(
         (earl: ShortEarl) => {
           return res.status(200).json({
             success: true,
@@ -194,11 +194,11 @@ async function apiGet(req: Request, res: Response, next: NextFunction) {
             created: row.createdAt,
             user_id: row.userId,
           });
-        }
+        },
       );
     })
-    .catch((err: HTTP_Error | Error) => {
-      if (err instanceof HTTP_Error) {
+    .catch((err: HTTPError | Error) => {
+      if (err instanceof HTTPError) {
         return res.status(err.status).json({
           success: false,
           message: err.message,
@@ -212,7 +212,7 @@ async function apiGet(req: Request, res: Response, next: NextFunction) {
     });
 }
 
-apiRouter.get("/:short", apiGet);
+apiRouter.get('/:short', apiGet);
 
 /**
  * @swagger
@@ -252,7 +252,7 @@ async function apiPost(req: Request, res: Response) {
 
   await Earl.insert(inputUrl, userID)
     .then(async (row) => {
-      await Earl.get_shortlink(row.id, req.get("Host"), req.secure).then(
+      await Earl.get_shortlink(row.id, req.get('Host'), req.secure).then(
         (earl: ShortEarl) => {
           return res.status(201).json({
             success: true,
@@ -262,7 +262,7 @@ async function apiPost(req: Request, res: Response) {
             created: row.createdAt,
             user_id: row.userId,
           });
-        }
+        },
       );
     })
     .catch((err) => {
@@ -275,9 +275,9 @@ async function apiPost(req: Request, res: Response) {
     });
 }
 
-apiRouter.post("/", [json_user], apiPost);
+apiRouter.post('/', [json_user], apiPost);
 
-apiRouter.all("*", (req: Request, res: Response) => {
+apiRouter.all('*', (req: Request, res: Response) => {
   res.status(404).json({
     success: false,
   });
