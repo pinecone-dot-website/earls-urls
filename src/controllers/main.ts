@@ -100,7 +100,7 @@ mainRouter.get(
           });
         }
 
-        // illegal charactr / passthru
+        // illegal character / passthru
         next();
       });
   },
