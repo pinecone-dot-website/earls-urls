@@ -92,7 +92,7 @@ mainRouter.get(
         res.render('info', {
           short: short,
           earl: await Earl.get_shortlink(row.id, req.get('Host'), req.secure),
-          row: row,
+          row: row.toJSON(),
         });
 
         next();

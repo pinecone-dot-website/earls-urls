@@ -49,6 +49,25 @@ class User {
   }
 
   /**
+   * 
+   * @param userID 
+   * @param params 
+   * @returns 
+   */
+  static async update(userID: number, params: UserUpdate) {
+    if (!params.password.length || (params.password !== params.password_confirm)) {
+      delete params.password;
+    }
+
+    delete params.password_confirm;
+
+    return models.User.update(
+      params,
+      { where: { id: userID } },
+    );
+  }
+  
+  /**
    *
    * @param user
    * @returns
@@ -119,11 +138,11 @@ class User {
    * @param user_id integer
    * @return
    */
-  static async getUrlsByUser(user_id: number):Promise<Array<EarlRow>> {
+  static async getUrlsByUser(userID: number):Promise<Array<EarlRow>> {
     return models.Url.findAll({
       order: [['createdAt', 'DESC']],
       where: {
-        userId: user_id,
+        userId: userID,
       },
     });
   }

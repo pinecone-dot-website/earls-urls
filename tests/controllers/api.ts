@@ -2,6 +2,7 @@ import app from '../../src/app';
 import Earl from '../../src/models/earl';
 import User from '../../src/models/user';
 import db from '../../database/models';
+import '../../types/user.d';
 
 import 'jest';
 import request from 'supertest';

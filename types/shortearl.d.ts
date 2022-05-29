@@ -3,6 +3,8 @@ interface EarlRow {
   createdAt: string;
   userId: number;
   url: string;
+
+  toJSON: Function;
 }
 
 interface ShortEarl {

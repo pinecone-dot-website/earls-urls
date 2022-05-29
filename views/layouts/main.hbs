@@ -36,7 +36,11 @@
           <a class="navbar-brand" href="/">Earls Urls</a>
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link" href="/u/stats">{{user.username}}</a>
+              <a class="nav-link" href="/u/profile">{{user.username}}</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="/u/stats">stats</a>
             </li>
 
             <li class="nav-item">
@@ -122,6 +126,12 @@
         {{#if error}}
           <div class="alert alert-warning" role="alert">
             {{error}}
+          </div>
+        {{/if}}
+
+        {{#if success}}
+          <div class="alert alert-success" role="alert">
+            {{success}}
           </div>
         {{/if}}
 

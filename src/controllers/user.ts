@@ -1,5 +1,6 @@
-import express, { NextFunction } from 'express';
+import express from 'express';
 import passport from 'passport';
+import { ValidationError } from 'sequelize';
 
 import git_tag from '../middleware/git_tag';
 import http_user from '../middleware/http_user';
@@ -56,7 +57,7 @@ function userLogout(req: express.Request, res: express.Response) {
 userRouter.all('/logout', userLogout);
 
 // user stats
-function userStats(req: express.Request, res: express.Response, next: NextFunction) {
+function userStats(req: express.Request, res: express.Response) {
   if (!req.user) {
     return res.redirect('/');
   }
@@ -80,11 +81,9 @@ function userStats(req: express.Request, res: express.Response, next: NextFuncti
         }),
       );
 
-      res.render('user-stats', {
+      res.render('user/stats', {
         earls: renderedRows,
       });
-
-      next();
     })
     .catch((err: Error) => {
       return res.status(500).render('error', {
@@ -93,5 +92,41 @@ function userStats(req: express.Request, res: express.Response, next: NextFuncti
     });
 }
 userRouter.get('/stats', [git_tag, http_user], userStats);
+
+function profile(req: express.Request, res: express.Response) {
+  if (!req.user) {
+    return res.redirect('/');
+  }
+
+  res.render('user/profile', { 
+    user: req.user,
+    error: req.flash('error'),
+    success: req.flash('success'),
+  });
+}
+userRouter.get('/profile', [git_tag, http_user], profile);
+
+async function profileUpdate(req: express.Request, res: express.Response) {
+  if (!req.user) {
+    return res.redirect('/');
+  }
+
+  await User.update(req.user.id, req.body)
+    .then((success) => {
+      console.log('update success', success);
+      req.flash('success', 'Updated');
+    }).catch((err: Error) => {
+      if (err instanceof ValidationError) {
+        console.log('ValidationError', err.errors);
+        req.flash('error', 'bad news');
+      } else {
+        console.log('update error', err);
+        req.flash('error', err.message);
+      }
+    });
+
+  res.redirect('/u/profile');
+}
+userRouter.post('/profile', [git_tag, http_user], profileUpdate);
 
 export default userRouter;
