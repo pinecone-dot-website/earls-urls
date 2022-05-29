@@ -32,7 +32,7 @@ mainRouter.all(
 mainRouter.post(
   '/shorten',
   [git_tag, http_user],
-  (req: express.Request, res: express.Response, next:NextFunction) => {
+  (req: express.Request, res: express.Response) => {
     Earl.insert(req.body.url, res.locals.user.id)
       .then((row: EarlRow) => {
         Earl.get_shortlink(row.id, req.get('Host'), req.secure).then(
@@ -41,8 +41,6 @@ mainRouter.post(
               input_url: row.url,
               short_url: earl.short_url,
             });
-
-            next();
           },
         );
       })
@@ -94,8 +92,6 @@ mainRouter.get(
           earl: await Earl.get_shortlink(row.id, req.get('Host'), req.secure),
           row: row.toJSON(),
         });
-
-        next();
       })
       .catch((err: HTTPError | Error) => {
         if (err instanceof HTTPError) {
