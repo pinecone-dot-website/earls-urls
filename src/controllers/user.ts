@@ -30,7 +30,7 @@ async function userAuth(req: express.Request, res: express.Response) {
   } else if (req.body.register) {
     await User.create(req.body.username, req.body.password)
       .then((user) => {
-        req.login(user, (loginErr) => {
+        req.login(user, (loginErr: Error) => {
           console.log('register loginErr', loginErr);
           return res.redirect('/?register-create');
         });
@@ -63,7 +63,7 @@ function userStats(req: express.Request, res: express.Response, next: NextFuncti
 
   User.getUrlsByUser(req.user.id)
     .then(async (rows) => {
-      rows = await Promise.all(
+      const renderedRows = await Promise.all(
         rows.map((row: EarlRow) => {
           return Earl.get_shortlink(row.id, req.get('Host'), req.secure)
             .then((earl: ShortEarl) => {
@@ -73,15 +73,15 @@ function userStats(req: express.Request, res: express.Response, next: NextFuncti
                 timestamp: new Date(row.createdAt).toLocaleString(),
               };
             })
-            .catch((err) => {
+            .catch((earlErr: Error) => {
               // get_shortlink fails
-              return err;
+              return earlErr;
             });
         }),
       );
 
       res.render('user-stats', {
-        earls: rows,
+        earls: renderedRows,
       });
 
       next();

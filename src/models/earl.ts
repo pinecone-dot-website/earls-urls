@@ -19,7 +19,7 @@ class Earl {
       where: {
         id: db_id,
       },
-    }).then((row) => {
+    }).then((row: EarlRow) => {
       if (row) {
         return row;
       } else {

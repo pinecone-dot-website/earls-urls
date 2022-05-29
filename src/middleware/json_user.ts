@@ -1,4 +1,4 @@
-import passport from 'passport';
+import passport, { AuthenticateOptions } from 'passport';
 import express, { NextFunction } from 'express';
 
 function jsonUser(
@@ -6,11 +6,13 @@ function jsonUser(
   res: express.Response,
   next: NextFunction,
 ) {
+  const options: AuthenticateOptions = {
+    session: false,
+  };
+
   const auth = passport.authenticate(
     'jwt',
-    {
-      session: false,
-    },
+    options,
     (err, user, info) => {
       res.locals.user = {
         error: err || info,

@@ -13,7 +13,7 @@ interface UserTest {
     username: string;
     password: string;
   };
-  data?: Express.User;
+  data?: UserRow;
   token: string;
 }
 

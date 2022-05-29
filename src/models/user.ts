@@ -67,14 +67,12 @@ class User {
    * @returns
    */
   static validatePassword(password: string): Function {
-    return (user: UserRow) => {
-      return bcrypt.compare(password, user.password).then((ok: boolean) => {
-        if (!ok) {
-          throw new HTTPError('Incorrect password', 401);
-        }
-
-        return user;
-      });
+    return async (user: UserRow) => {
+      const ok = await bcrypt.compare(password, user.password);
+      if (!ok) {
+        throw new HTTPError('Incorrect password', 401);
+      }
+      return user;
     };
   }
 
@@ -87,7 +85,7 @@ class User {
   static async create(
     username: string,
     password: string,
-  ): Promise<Express.User> {
+  ): Promise<UserRow> {
     return bcrypt
       .genSalt(10)
       .then((salt: string) => {
@@ -108,7 +106,7 @@ class User {
    * @param user_id
    * @returns
    */
-  static async findByID(user_id: number) {
+  static async findByID(user_id: number):Promise<UserRow> {
     return models.User.findOne({
       where: {
         id: user_id,
