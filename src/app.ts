@@ -124,12 +124,8 @@ import api_router from './controllers/api';
 import main_controller from './controllers/main';
 import user_router from './controllers/user';
 
-app.use('/', main_controller);
 app.use('/u', user_router);
 app.use('/api', api_router);
-
-app.all('*', (req: express.Request, res: express.Response) => {
-  res.status(404).render('404', {});
-});
+app.use('/', main_controller);
 
 export default app;
