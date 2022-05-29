@@ -5,9 +5,13 @@ import http_user from '../middleware/http_user';
 import Earl from '../models/earl';
 const mainRouter = express.Router();
 
-// index
+/**
+ * GET /
+ * @param req 
+ * @param res 
+ */
 function index(req: express.Request, res: express.Response) {
-  console.log('req.rawHeaders', req.rawHeaders);
+  // console.log('req.rawHeaders', req.rawHeaders);
   const vars = {
     error: req.flash('error'),
     input_url: req.flash('input_url'),
@@ -29,7 +33,12 @@ mainRouter.all(
   index,
 );
 
-// post to shorten url from index
+/**
+ * POST /shorten
+ * receive long url from index and create short link
+ * @param req 
+ * @param res 
+ */
 function shorten(req: express.Request, res: express.Response) {
   Earl.insert(req.body.url, res.locals.user.id)
     .then((row: EarlRow) => {
@@ -56,7 +65,13 @@ mainRouter.post(
   shorten,
 );
 
-// lookup shortened url and redirect
+/**
+ * GET /:short
+ * lookup shortened url and redirect
+ * @param req 
+ * @param res 
+ * @param next 
+ */
 async function shortURL(req: express.Request, res: express.Response, next: NextFunction) {
   const short = req.params.short;
   Earl.getByShortID(short)
@@ -82,7 +97,13 @@ mainRouter.get(
   shortURL,
 );
 
-// lookup shortened url and show info
+/**
+ * GET /:short/info
+ * lookup shortened url and show info
+ * @param req 
+ * @param res 
+ * @param next 
+ */
 function shortURLInfo(req: express.Request, res: express.Response, next: NextFunction) {
   const short = req.params.short;
 
@@ -112,6 +133,11 @@ mainRouter.get(
   shortURLInfo,
 );
 
+/**
+ * 
+ * @param req 
+ * @param res 
+ */
 function notFound(req: express.Request, res: express.Response) {
   res.status(404).render('404', {});
 }

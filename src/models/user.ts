@@ -57,14 +57,29 @@ class User {
   static async update(userID: number, params: UserUpdate) {
     if (!params.password.length || (params.password !== params.password_confirm)) {
       delete params.password;
+    } else {
+      params.password = await this.hashPassword(params.password);
     }
-
+    
     delete params.password_confirm;
 
     return models.User.update(
       params,
       { where: { id: userID } },
     );
+  }
+
+  /**
+   * 
+   * @param raw_password 
+   * @returns 
+   */
+  static hashPassword(raw_password: string): Promise<string> {
+    return bcrypt
+      .genSalt(10)
+      .then((salt: string) => {
+        return bcrypt.hash(raw_password, salt);
+      });
   }
   
   /**
@@ -105,11 +120,7 @@ class User {
     username: string,
     password: string,
   ): Promise<UserRow> {
-    return bcrypt
-      .genSalt(10)
-      .then((salt: string) => {
-        return bcrypt.hash(password, salt);
-      })
+    return this.hashPassword(password)
       .then(async (hash: string) => {
         const user = await models.User.create({
           username: username,

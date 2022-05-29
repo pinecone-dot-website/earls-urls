@@ -9,7 +9,14 @@ import User from '../models/user';
 
 const userRouter = express.Router();
 
-// process login / register form
+
+/**
+ * POST /u/auth
+ * process login / register form
+ * @param req 
+ * @param res 
+ * @returns 
+ */
 async function userAuth(req: express.Request, res: express.Response) {
   if (req.body.login) {
     const verified = (err: Error, user, info) => {
@@ -56,7 +63,13 @@ function userLogout(req: express.Request, res: express.Response) {
 }
 userRouter.all('/logout', userLogout);
 
-// user stats
+
+/**
+ * GET /u/stats
+ * @param req 
+ * @param res 
+ * @returns 
+ */
 function userStats(req: express.Request, res: express.Response) {
   if (!req.user) {
     return res.redirect('/');
@@ -93,6 +106,12 @@ function userStats(req: express.Request, res: express.Response) {
 }
 userRouter.get('/stats', [git_tag, http_user], userStats);
 
+/**
+ * GET /u/profile
+ * @param req 
+ * @param res 
+ * @returns 
+ */
 function profile(req: express.Request, res: express.Response) {
   if (!req.user) {
     return res.redirect('/');
@@ -106,6 +125,12 @@ function profile(req: express.Request, res: express.Response) {
 }
 userRouter.get('/profile', [git_tag, http_user], profile);
 
+/**
+ * POST /u/profile
+ * @param req 
+ * @param res 
+ * @returns 
+ */
 async function profileUpdate(req: express.Request, res: express.Response) {
   if (!req.user) {
     return res.redirect('/');
