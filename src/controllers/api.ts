@@ -2,7 +2,7 @@ import express from 'express';
 import { sign } from 'jsonwebtoken';
 import passport from 'passport';
 
-import HTTPError from '../classes/http_error';
+import HTTPError from '../classes/httpError';
 import json_user from '../middleware/json_user';
 import Earl from '../models/earl';
 

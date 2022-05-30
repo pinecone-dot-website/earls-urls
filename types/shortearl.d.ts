@@ -4,6 +4,7 @@ interface EarlRow {
   userId: number;
   url: string;
 
+  get: Function;
   toJSON: Function;
 }
 

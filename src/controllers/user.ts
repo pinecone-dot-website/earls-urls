@@ -84,7 +84,7 @@ function userStats(req: express.Request, res: express.Response) {
               return {
                 short: earl.short_url,
                 long: row.url,
-                timestamp: new Date(row.createdAt).toLocaleString(),
+                timestamp: row.createdAt,
               };
             })
             .catch((earlErr: Error) => {

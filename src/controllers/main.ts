@@ -1,4 +1,4 @@
-import HTTPError from '../classes/http_error';
+import HTTPError from '../classes/httpError';
 import express, { NextFunction } from 'express';
 import git_tag from '../middleware/git_tag';
 import http_user from '../middleware/http_user';
@@ -123,7 +123,8 @@ function shortURLInfo(req: express.Request, res: express.Response, next: NextFun
       }
 
       // illegal character / passthru
-      next();
+      // next();
+      console.log('err', err);
     });
 }
 
