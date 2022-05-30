@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Url.init({
+    createdAt: {
+      type: DataTypes.DATE,
+    },
     userId: DataTypes.INTEGER,
     url: DataTypes.STRING
   }, {

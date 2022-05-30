@@ -190,10 +190,20 @@
     </div>
 
     <script>
-      const toggler = document.querySelector('.navbar-toggler'); if(toggler){
+      const toggler = document.querySelector('.navbar-toggler'); 
       function displayMenu(event) {
-      document.getElementById("toggle").classList.toggle("show"); }
-      toggler.addEventListener('click', displayMenu); }
+        document.getElementById("toggle").classList.toggle("show"); 
+      }
+
+      if(toggler){
+        toggler.addEventListener('click', displayMenu); 
+      }
+
+      var timeEls = document.querySelectorAll('time');
+      timeEls.forEach((time)=>{
+        var dt = time.getAttribute('datetime');
+        time.innerHTML = (new Date(dt)).toLocaleString();
+      });
     </script>
   </body>
 </html>
