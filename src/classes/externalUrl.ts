@@ -78,12 +78,14 @@ class ExternalURL {
     // console.log('parseHTML', html);
 
     const doc = parse(html);
-    const meta = doc.querySelectorAll('meta');
+    const metas = doc.querySelectorAll('meta');
+    const title = doc.querySelector('title');
+
     const response: ExternalURLData = {
-      title: doc.querySelector('title').textContent,
+      title: title?.textContent,
     };
 
-    meta.map((tag)=>{
+    metas.map((tag)=>{
       console.log(
         'tag', 
         tag.getAttribute('property') || tag.getAttribute('name') || tag.getAttribute('itemprop'),
