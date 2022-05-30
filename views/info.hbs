@@ -1,8 +1,32 @@
-<h2><a href="{{short_url}}">{{short_url}}</a></h2>
+<div class="card w-75 mx-auto">
+  <div class="row g-0">
+    <div class="card-header">
+      <a href="{{earl.short_url}}">{{row.url}}</a>
+    </div>
 
-<pre>
-  short: {{earl.short_url}}
-  id: {{row.id}}
-  url: {{row.url}}
-  created: {{row.createdAt}}
-</pre>        <p class="card-text text-end"><small class="text-muted">created: {{{time row.createdAt}}}</small></p>
+    {{#if tags.img}}
+    <div class="col-md-4" style="background-image:url('{{tags.img}}'); background-size:cover; background-repeat:no-repeat"></div>
+      <div class="col-md-8">
+    {{/if}}
+
+      <div class="card-body text-start">
+        {{#if tags.title}}
+        <h5 class="card-title">{{tags.title}}</h5>
+        {{/if}}
+
+        {{#if tags.description}}
+        <p class="card-text">{{tags.description}}</p>
+        {{/if}}
+
+        <p class="card-text text-end"><small class="text-muted">created: {{{time row.createdAt}}}</small></p>
+      </div>
+
+    {{#if tags.img}}
+    </div>
+    {{/if}}
+
+    <div class="card-footer">
+      id: {{row.id}}
+      </div>
+  </div>
+</div>

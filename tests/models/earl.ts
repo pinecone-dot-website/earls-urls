@@ -1,5 +1,5 @@
 import Earl from '../../src/models/earl';
-import HTTPError from '../../src/classes/http_error';
+import HTTPError from '../../src/classes/httpError';
 import db from '../../database/models';
 
 import 'jest';

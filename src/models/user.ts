@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { IVerifyOptions } from 'passport-local';
 
-import HTTPError from '../classes/http_error';
+import HTTPError from '../classes/httpError';
 
 const models = require('../../database/models');
 

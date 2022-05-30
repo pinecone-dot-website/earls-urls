@@ -1,3 +1,4 @@
+import ExternalURL from '../classes/externalUrl';
 import HTTPError from '../classes/httpError';
 import express, { NextFunction } from 'express';
 import git_tag from '../middleware/git_tag';
@@ -104,15 +105,24 @@ mainRouter.get(
  * @param res 
  * @param next 
  */
-function shortURLInfo(req: express.Request, res: express.Response, next: NextFunction) {
+async function shortURLInfo(req: express.Request, res: express.Response) {
   const short = req.params.short;
 
   Earl.getByShortID(short)
     .then(async (row) => {
+      console.log('createdAt', row.createdAt);
+      const tags = await ExternalURL.getSiteTags(row.url)
+        .catch((err)=>{
+          return {
+            error: err.message,
+          };
+        });
+      console.log('tags', tags);
+
       res.render('info', {
-        short: short,
         earl: await Earl.get_shortlink(row.id, req.get('Host'), req.secure),
-        row: row.toJSON(),
+        row: row.get(),
+        tags: tags,
       });
     })
     .catch((err: HTTPError | Error) => {

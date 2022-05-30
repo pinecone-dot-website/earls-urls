@@ -1,4 +1,4 @@
-import HTTPError, { HttpStatusCode } from '../classes/http_error';
+import HTTPError, { HttpStatusCode } from '../classes/httpError';
 import { BaseX } from '@rackandpinecone/base-x';
 const models = require('../../database/models'),
   Base = new BaseX();
@@ -14,7 +14,7 @@ class Earl {
    * @param db_id integer (string when called from getByShortID)
    * @return object db row
    */
-  static async get_by_id(db_id: string | number):Promise<EarlRow> {
+  static async getByID(db_id: string | number):Promise<EarlRow> {
     return models.Url.findOne({
       where: {
         id: db_id,
@@ -35,7 +35,7 @@ class Earl {
    */
   static getByShortID(earl: string):Promise<EarlRow> {
     return Base.convert(earl, 'EARLS', 'BASE10')
-      .then(this.get_by_id)
+      .then(this.getByID)
       .catch((err) => {
         if (err instanceof HTTPError) {
           throw new HTTPError(err.message, err.status);

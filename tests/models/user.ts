@@ -1,6 +1,6 @@
 import User from '../../src/models/user';
 import db from '../../database/models';
-import HTTPError from '../../src/classes/http_error';
+import HTTPError from '../../src/classes/httpError';
 
 import 'jest';
 
