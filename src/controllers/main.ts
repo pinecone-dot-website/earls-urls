@@ -75,12 +75,12 @@ mainRouter.post(
  */
 async function shortURL(req: express.Request, res: express.Response, next: NextFunction) {
   const short = req.params.short;
+  
   Earl.getByShortID(short)
     .then((row) => {
       return res.redirect(row.url);
     })
     .catch((err: HTTPError | Error) => {
-      // console.log("err", err instanceof HTTPError);
       if (err instanceof HTTPError) {
         return res.status(err.status).render('error', {
           message: err.message,
@@ -110,19 +110,16 @@ async function shortURLInfo(req: express.Request, res: express.Response) {
 
   Earl.getByShortID(short)
     .then(async (row) => {
-      console.log('createdAt', row.createdAt);
-      const tags = await ExternalURL.getSiteTags(row.url)
-        .catch((err)=>{
-          return {
-            error: err.message,
-          };
-        });
-      console.log('tags', tags);
-
+      const siteData = await new ExternalURL(row.url).getSiteData();
+      console.log('siteData', siteData);
+      
       res.render('info', {
+        display:{
+          redirects: siteData.request.redirects.length > 1,
+        },
         earl: await Earl.get_shortlink(row.id, req.get('Host'), req.secure),
         row: row.get(),
-        tags: tags,
+        siteData,
       });
     })
     .catch((err: HTTPError | Error) => {

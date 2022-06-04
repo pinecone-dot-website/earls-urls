@@ -3,17 +3,46 @@ import https from 'https';
 import { parse } from 'node-html-parser';
 
 class ExternalURL {
+  url: string;
+ 
+  redirects: Array<ExternalURLRequest> = [];
+
+  html: string = '';
+
   /**
    * 
-   * @param externalUrl 
+   * @param url 
+   */
+  constructor(url:string) {
+    this.url = url;
+  }
+
+  /**
+   * 
    * @returns 
    */
-  static getSiteTags(externalUrl: string) {
-    const data = new Promise((resolve, reject) => ExternalURL.getHTML(externalUrl, resolve, reject))
-      .then(({ body, origin }) => {
-        console.log('then', origin);
-        return ExternalURL.parseHTML(body, origin);
-      });
+  getSiteData(): Promise<ExternalURLData> {
+    const data = new Promise((resolve: ExternalURLResolve, reject: ExternalURLReject) => {
+      // console.log('getSiteData');
+
+      return this.getHTML(this.url, resolve, reject);
+    }).then((origin) => {
+      return this.parseHTML(origin);
+    }).then((meta)=>{
+      return {
+        meta,
+        request:{
+          redirects: this.redirects,
+        },
+      };
+    }).catch((err)=>{
+      return {
+        error: err,
+        request:{
+          redirects: this.redirects,
+        },
+      };
+    });
 
     return data;
   }
@@ -23,31 +52,43 @@ class ExternalURL {
    * @param externalUrl 
    * @returns 
    */
-  static getHTML(externalUrl: string, resolve, reject) {
+  getHTML(externalUrl: string, resolve: ExternalURLResolve, reject: ExternalURLReject) {
     const adapter = ExternalURL.getAdapter(externalUrl);
-    console.log('getHTML', externalUrl);
     
     adapter.get(externalUrl, (res) => {
-      console.log('res.statusCode', res.statusCode, res.headers.location);
-      if (res.headers.location) {
-        return ExternalURL.getHTML(res.headers.location, resolve, reject);
+      // console.log('get');
+      
+      this.redirects.push({
+        status: res.statusCode,
+        url: externalUrl,
+      });
+    
+      const redirectTo = res.headers.location;
+      // console.log('res.statusCode, redirect ', res.statusCode, this.redirects.length);
+
+      if (redirectTo) {
+        return this.redirects.length < 5 ? 
+          this.getHTML(redirectTo, resolve, reject) : 
+          reject(new Error('too many redirects'));
       }
 
-      let body = '';
-
       return new Promise(() => {
-        res.on('data', chunk => {
-        //   console.log('getExternalURL data', chunk);
-          body += chunk;
+        res.on('data', (chunk: string) => {
+          this.html += chunk;
         });
         
-        res.on('end', ()=>{
+        res.on('end', () => {
           const origin = new URL(externalUrl).origin;
-          console.log('getExternalURL end', origin);
-          resolve({ body, origin });
+          
+          resolve(origin);
+        });
+
+        res.on('error', (e)=>{
+          reject(e);
         });
       });
-      
+    }).on('error', (e) => {
+      reject(e);
     });
   }
 
@@ -55,7 +96,7 @@ class ExternalURL {
    * 
    * @param externalUrl 
    */
-  static getAdapter(externalUrl: string) {
+  static getAdapter(externalUrl: string):(typeof http | typeof https) {
     const adapters = {
       'http:': http, 
       'https:': https,
@@ -63,33 +104,32 @@ class ExternalURL {
     const protocol = new URL(externalUrl).protocol;
     
     if (protocol in adapters) {
-      // console.log('type', typeof adapters[protocol]);
       return adapters[protocol];
     }
 
-    return false;
+    throw new Error('protocol not supported: ' + protocol);
   }
 
   /**
-   * 
-   * @param html 
+   * @param url
    */
-  static parseHTML(html: string, url: string): ExternalURLData {
-    // console.log('parseHTML', html);
-
-    const doc = parse(html);
+  parseHTML(url: URL['origin']): ExternalURLMeta {
+    const doc = parse(this.html);
     const metas = doc.querySelectorAll('meta');
+    // const links = doc.querySelectorAll('link');
     const title = doc.querySelector('title');
 
-    const response: ExternalURLData = {
+    // console.log('links', links);
+    
+    const response: ExternalURLMeta = {
       title: title?.textContent,
     };
 
     metas.map((tag)=>{
-      console.log(
-        'tag', 
-        tag.getAttribute('property') || tag.getAttribute('name') || tag.getAttribute('itemprop'),
-      );
+      // console.log(
+      //   'tag', 
+      //   tag.getAttribute('property') || tag.getAttribute('name') || tag.getAttribute('itemprop'),
+      // );
         
       switch (tag.getAttribute('property') || tag.getAttribute('name') || tag.getAttribute('itemprop') ) {
         case 'description':
@@ -99,6 +139,7 @@ class ExternalURL {
 
         case 'image':
         case 'og:image':
+        case 'msapplication-TileImage':
           response.img = new URL(tag.getAttribute('content'), url).href;
           console.log('response.img', response.img);
           break; 

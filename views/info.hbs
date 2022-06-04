@@ -4,24 +4,24 @@
       <a href="{{earl.short_url}}">{{row.url}}</a>
     </div>
 
-    {{#if tags.img}}
-    <div class="col-md-4" style="background-image:url('{{tags.img}}'); background-size:cover; background-repeat:no-repeat"></div>
+    {{#if siteData.meta.img}}
+    <div class="col-md-4" style="background-image:url('{{siteData.meta.img}}'); background-size:cover; background-repeat:no-repeat"></div>
       <div class="col-md-8">
     {{/if}}
 
       <div class="card-body text-start">
-        {{#if tags.title}}
-        <h5 class="card-title">{{tags.title}}</h5>
+        {{#if siteData.meta.title}}
+        <h5 class="card-title">{{siteData.meta.title}}</h5>
         {{/if}}
 
-        {{#if tags.description}}
-        <p class="card-text">{{tags.description}}</p>
+        {{#if siteData.meta.description}}
+        <p class="card-text">{{siteData.meta.description}}</p>
         {{/if}}
 
         <p class="card-text text-end"><small class="text-muted">created: {{{time row.createdAt}}}</small></p>
       </div>
 
-    {{#if tags.img}}
+    {{#if siteData.meta.img}}
     </div>
     {{/if}}
 
@@ -30,3 +30,23 @@
       </div>
   </div>
 </div>
+
+{{#if siteData.error}}
+<div class="container mt-4">
+  <div class="alert alert-warning" role="alert">
+    {{ siteData.error.message}}
+  </div>
+</div>
+{{/if}}
+
+{{#if display.redirects}}
+<div class="container mt-4">
+  <ol class="list-group list-group-flush">
+    <li class="nav-header disabled list-group-item">Redirects</li>
+
+    {{#each siteData.request.redirects}}
+      <li class="list-group-item text-start" value="{{inc @index}}">{{url}} - {{status}}</li>
+    {{/each}}
+  </ol>
+</div>
+{{/if}}

@@ -96,10 +96,13 @@ app.engine(
     defaultLayout: 'main',
     extname: '.hbs',
     helpers: {
-      json: (context) => {
+      'inc': (number: number) => {
+        return number + 1;
+      },
+      'json': (context: any) => {
         return JSON.stringify(context);
       },
-      time: (context) => {
+      'time': (context: Date) => {
         return `<time datetime="${context.toISOString()}">${context.toISOString()}</time>`;
       },
     },

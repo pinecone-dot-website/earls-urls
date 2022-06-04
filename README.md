@@ -17,7 +17,13 @@ SESSION_SECRET="def"
 npx sequelize-cli db:migrate
 ```
 
-## Start locally
+## Build and serve for development
+```
+yarn run build:dev
+yarn run serve:dev
+```
+
+## Start local database
 ```
 pg_ctl -D /usr/local/var/postgres start
 ```
