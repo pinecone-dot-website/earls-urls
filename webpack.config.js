@@ -1,9 +1,7 @@
-const path = require('path');
+import { resolve } from 'path';
 
-module.exports = {
-  entry: path.resolve(__dirname, './src/index.js'),
-  output: {
-    path: path.resolve(__dirname, './public/js'),
-    filename: 'bundle.js',
-  },
+export const entry = resolve(__dirname, './src/index.js');
+export const output = {
+  path: resolve(__dirname, './public/js'),
+  filename: 'bundle.js',
 };

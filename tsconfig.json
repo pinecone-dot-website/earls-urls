@@ -12,7 +12,14 @@
     ],
     "types": ["jest", "node"]
   },
-  "exclude": ["node_modules", "build-server"],
+  "exclude": [
+    "node_modules", 
+    "build-server", 
+    "database",
+    "src",
+    "tests",
+    "webpack.config.js"
+  ],
   "include": [
     "server/**/*.ts", 
     "src/**/*.js", 
