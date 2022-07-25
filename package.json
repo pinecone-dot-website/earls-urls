@@ -9,6 +9,7 @@
         "build-server:dev": "tsc --watch --preserveWatchOutput",
         "build-server:prod": "tsc",
         "frontend:dev": "webpack --config ./webpack.config.js --mode development",
+        "frontend:prod": "webpack --config ./webpack.config.js",
         "lint-server": "eslint server/**/*.ts",
         "lint-server:fix": "eslint --fix server/**/*.ts tests/**/*.ts",
         "server:dev": "nodemon build-server/server.js",

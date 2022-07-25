@@ -1,7 +1,10 @@
-import { resolve } from 'path';
+const path = require('path');
 
-export const entry = resolve(__dirname, './src/index.js');
-export const output = {
-  path: resolve(__dirname, './public/js'),
-  filename: 'bundle.js',
+module.exports = {
+  entry: path.resolve(__dirname, './src/index.js'),
+  output:{
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, './public/js'),
+  }
+  // watch: argv.mode === 'development',
 };
