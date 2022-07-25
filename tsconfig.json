@@ -15,8 +15,10 @@
   "exclude": ["node_modules", "build-server"],
   "include": [
     "server/**/*.ts", 
+    "src/**/*.js", 
     "tests/**/*.ts", 
-    "types/**/*.d.ts"
+    "types/**/*.d.ts",
+    "webpack.config.js"
   ],
   "files": ["server/app.ts"]
 }
