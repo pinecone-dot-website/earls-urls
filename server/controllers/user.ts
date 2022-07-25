@@ -58,7 +58,9 @@ userRouter.post('/auth', userAuth);
 
 // log user out
 function userLogout(req: express.Request, res: express.Response) {
-  req.logout();
+  req.logout((err) =>{
+    console.log('logged out', err);
+  });
   return res.redirect('/?logout');
 }
 userRouter.all('/logout', userLogout);

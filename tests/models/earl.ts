@@ -1,5 +1,5 @@
-import Earl from '../../src/models/earl';
-import HTTPError from '../../src/classes/httpError';
+import Earl from '../../server/models/earl';
+import HTTPError from '../../server/classes/httpError';
 import db from '../../database/models';
 
 import 'jest';
@@ -46,7 +46,7 @@ describe('Check Earl class', () => {
   });
 
   it('Gets a database record by id', async () => {
-    const res = await Earl.get_by_id(1);
+    const res = await Earl.getByID(1);
 
     expect(res).toHaveProperty('id', 1);
   });
@@ -54,7 +54,7 @@ describe('Check Earl class', () => {
   it('Errors when getting a database record that does not exist', async () => {
     expect.assertions(2);
 
-    await Earl.get_by_id(100).catch((err) => {
+    await Earl.getByID(100).catch((err) => {
       expect(err).toBeInstanceOf(HTTPError);
       expect(err).toHaveProperty('status', 404);
     });
@@ -63,7 +63,7 @@ describe('Check Earl class', () => {
   it('Errors when getting a database record with invalid id', async () => {
     expect.assertions(1);
 
-    await Earl.get_by_id('abc').catch((err) => {
+    await Earl.getByID('abc').catch((err) => {
       expect(err).toBeInstanceOf(Error);
     });
   });

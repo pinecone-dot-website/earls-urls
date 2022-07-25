@@ -1,6 +1,6 @@
-import app from '../../src/app';
-import Earl from '../../src/models/earl';
-import User from '../../src/models/user';
+import app from '../../server/app';
+import Earl from '../../server/models/earl';
+import User from '../../server/models/user';
 import db from '../../database/models';
 import '../../types/user.d';
 
