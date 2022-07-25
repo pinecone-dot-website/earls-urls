@@ -12,7 +12,7 @@
     ],
     "types": ["jest", "node"]
   },
-  "exclude": ["node_modules", "dist"],
+  "exclude": ["node_modules", "build-server"],
   "include": [
     "server/**/*.ts", 
     "tests/**/*.ts", 

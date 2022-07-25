@@ -1,6 +1,6 @@
 {
     "name": "earls-urls",
-    "version": "0.7.1",
+    "version": "0.7.2",
     "description": "earl shortener",
     "main": "index.js",
     "scripts": {
@@ -10,7 +10,7 @@
         "build:prod": "tsc",
         "lint": "eslint server/**/*.ts",
         "lint:fix": "eslint --fix server/**/*.ts tests/**/*.ts",
-        "serve:dev": "nodemon dist/server.js",
+        "serve:dev": "nodemon build-server/server.js",
         "test": "DOTENV_CONFIG_PATH=./.env.test jest --coverage"
     },
     "author": "",
@@ -33,6 +33,7 @@
         "passport-jwt": "^4.0.0",
         "passport-local": "^1.0.0",
         "pg": "^8.7.3",
+        "react": "^18.2.0",
         "sass": "^1.50.0",
         "sequelize": "^6.19.0",
         "swagger-jsdoc": "^6.2.1",
