@@ -41,7 +41,7 @@ mainRouter.all(
  * @param res 
  */
 function shorten(req: express.Request, res: express.Response) {
-  Earl.insert(req.body.url, res.locals.user.id)
+  Earl.insert(req.body.url, res.locals.user.props.id)
     .then((row: EarlRow) => {
       Earl.get_shortlink(row.id, req.get('Host'), req.secure).then(
         (earl: ShortEarl) => {

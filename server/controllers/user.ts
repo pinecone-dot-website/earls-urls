@@ -73,11 +73,11 @@ userRouter.all('/logout', userLogout);
  * @returns 
  */
 function userStats(req: express.Request, res: express.Response) {
-  if (!req.user) {
+  if (!res.locals.user.props.id) {
     return res.redirect('/');
   }
 
-  User.getUrlsByUser(req.user.id)
+  User.getUrlsByUser(res.locals.user.props.id)
     .then(async (rows) => {
       const renderedRows = await Promise.all(
         rows.map((row: EarlRow) => {
@@ -115,12 +115,12 @@ userRouter.get('/stats', [git_tag, http_user], userStats);
  * @returns 
  */
 function profile(req: express.Request, res: express.Response) {
-  if (!req.user) {
+  if (!res.locals.user.props.id) {
     return res.redirect('/');
   }
 
   res.render('user/profile', { 
-    user: req.user,
+    user: res.locals.user,
     error: req.flash('error'),
     success: req.flash('success'),
   });
