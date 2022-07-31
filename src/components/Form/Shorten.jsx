@@ -3,64 +3,64 @@ import Cookies from 'js-cookie';
 import Alert from '../Alert.jsx';
 
 class Shorten extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            response: false,
-            sending: false,
-        }
+    this.state = {
+      response: false,
+      sending: false,
+    };
 
-        // window.c = Cookies;
-        console.log('session', Cookies.get('session'));
-    }
+    // window.c = Cookies;
+    console.log('Cookies', Cookies.get('session'));
+  }
 
-    /**
+  /**
      * 
      * @param {*} target
      */
-    postData = (target) => {
-        fetch('/api/shorten', {   // e.target.action
-            body: JSON.stringify({ url: target.url.value }),
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            method: target.method
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log('data', data);
+  postData = (target) => {
+    fetch('/api/shorten', {   // e.target.action
+      body: JSON.stringify({ url: target.url.value }),
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: target.method,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('data', data);
 
-                this.setState({
-                    response: data,
-                    sending: false
-                });
-            }).catch((err) => {
-                console.log('err', err);
+        this.setState({
+          response: data,
+          sending: false,
+        });
+      }).catch((err) => {
+        console.log('err', err);
 
-                this.setState({
-                    sending: false
-                });
-            });
-    }
+        this.setState({
+          sending: false,
+        });
+      });
+  };
 
-    /**
+  /**
      * 
      * @param {React.FormEventHandler} e 
      */
-    onSubmit = (e) => {
-        e.preventDefault();
+  onSubmit = (e) => {
+    e.preventDefault();
 
-        this.setState({ sending: true }, () => {
-            this.postData(e.target);
-        });
-    }
+    this.setState({ sending: true }, () => {
+      this.postData(e.target);
+    });
+  };
 
-    render() {
-        const { response, sending } = this.state;
+  render() {
+    const { response, sending } = this.state;
 
-        return <>
+    return <>
             {
                 response && !response.success &&
                 <Alert
@@ -114,7 +114,7 @@ class Shorten extends React.Component {
                 </>
             }
         </>;
-    }
+  }
 }
 
 export default Shorten;
