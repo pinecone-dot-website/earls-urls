@@ -3,8 +3,10 @@ import { sign } from 'jsonwebtoken';
 import passport from 'passport';
 
 import HTTPError from '../classes/httpError';
+import http_user from '../middleware/http_user';
 import json_user from '../middleware/json_user';
 import Earl from '../models/earl';
+import { sleep } from '../helpers/sleep';
 
 const apiRouter = express.Router();
 
@@ -216,7 +218,7 @@ apiRouter.get('/:short', apiGet);
 
 /**
  * @swagger
- *  /api/:
+ *  /api/shorten/:
  *    post:
  *      security:
  *        - bearerAuth: []
@@ -247,8 +249,13 @@ apiRouter.get('/:short', apiGet);
  *          description: Error in convertion
  */
 async function apiPost(req: express.Request, res: express.Response) {
+  console.log('apiPost', res.locals.user);
   const inputUrl = req.body.url;
   const userID = res.locals.user.props.id;
+  
+  if (process.env.ENV === 'development') {
+    await sleep(2000);
+  }
 
   await Earl.insert(inputUrl, userID)
     .then(async (row) => {
@@ -275,7 +282,7 @@ async function apiPost(req: express.Request, res: express.Response) {
     });
 }
 
-apiRouter.post('/', [json_user], apiPost);
+apiRouter.post('/shorten', [http_user, json_user], apiPost);
 
 apiRouter.all('*', (req: express.Request, res: express.Response) => {
   res.status(404).json({

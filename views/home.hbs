@@ -1,21 +1,23 @@
-<form class="" method="post" action="/shorten">
-  <div class="mb-3">
-    <input
-      aria-label="Long URL"
-      type="text"
-      class="form-control"
-      id="url"
-      name="url"
-      placeholder="https://"
-      tabindex="3"
-      value="{{input_url}}"
-    />
-  </div>
-  <div class="mb-3">
-    <button
-      type="submit"
-      class="btn btn-lg btn-primary btn-block"
-      tabindex="4"
-    >Shorten</button>
-  </div>
-</form>
+<div id="shorten">
+  <form method="post" action="/shorten">
+    <div class="mb-3">
+      <input
+        aria-label="Long URL"
+        type="text"
+        class="form-control"
+        id="url"
+        name="url"
+        placeholder="https://"
+        tabindex="3"
+        value="{{input_url}}"
+      />
+    </div>
+    <div class="mb-3">
+      <button
+        type="submit"
+        class="btn btn-lg btn-primary btn-block"
+        tabindex="4"
+      >Shorten</button>
+    </div>
+  </form>
+</div>

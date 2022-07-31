@@ -5,8 +5,10 @@ async function httpUser(
   res: express.Response,
   next: NextFunction,
 ) {
-  res.locals.user = req.user || { id: 0, username: '' };
-
+  res.locals.user = {
+    props: req.user || { id: 0 },
+  };
+  
   next();
 }
 

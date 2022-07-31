@@ -9,21 +9,27 @@ function jsonUser(
   const options: AuthenticateOptions = {
     session: false,
   };
-
-  const auth = passport.authenticate(
-    'jwt',
-    options,
-    (err, user, info) => {
-      res.locals.user = {
-        error: err || info,
-        props: user,
-      };
-
-      return next();
-    },
-  );
-
-  return auth(req, res, next);
+  
+  if (res.locals.user.props.id) {
+    // is using cookie
+    return next();
+  } else {
+    // is using token
+    const auth = passport.authenticate(
+      'jwt',
+      options,
+      (err, user, info) => {
+        res.locals.user = {
+          error: err || info,
+          props: user,
+        };
+  
+        return next();
+      },
+    );
+  
+    return auth(req, res, next);
+  }
 }
 
 export default jsonUser;

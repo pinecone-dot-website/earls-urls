@@ -1,4 +1,5 @@
 import React from 'react';
+import Cookies from 'js-cookie';
 import Alert from '../Alert.jsx';
 
 class Shorten extends React.Component {
@@ -9,6 +10,9 @@ class Shorten extends React.Component {
             response: false,
             sending: false,
         }
+
+        // window.c = Cookies;
+        console.log('session', Cookies.get('session'));
     }
 
     /**
@@ -16,9 +20,9 @@ class Shorten extends React.Component {
      * @param {*} target
      */
     postData = (target) => {
-        fetch('/api', {   // e.target.action
+        fetch('/api/shorten', {   // e.target.action
             body: JSON.stringify({ url: target.url.value }),
-            credentials: 'same-origin',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
             },
