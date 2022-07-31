@@ -132,6 +132,10 @@ function apiLogin(req: express.Request, res: express.Response) {
     sign({ user_id: user.id }, process.env.JWT_SECRET, { expiresIn: 120 }, cb);
   };
 
+  if (process.env.ENV === 'development') {
+    await sleep(2000);
+  }
+
   passport.authenticate('local', verified)(req, res);
 }
 

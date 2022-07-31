@@ -3,7 +3,6 @@ import bodyParser from 'body-parser';
 const expHbs = require('express-handlebars'),
   flash = require('@rackandpinecone/express-flash'),
   session = require('cookie-session'),
-  app = express(),
   swaggerJsdoc = require('swagger-jsdoc'),
   swaggerUi = require('swagger-ui-express');
 import passport from 'passport';
@@ -11,6 +10,8 @@ import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as LocalStrategy } from 'passport-local';
 
 import User from './models/user';
+
+const app = express();
 
 require('dotenv').config();
 

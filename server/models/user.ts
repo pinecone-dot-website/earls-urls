@@ -91,7 +91,6 @@ class User {
     if (!user) {
       throw new HTTPError('Username not found', 401);
     }
-
     return user;
   }
 

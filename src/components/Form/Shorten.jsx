@@ -16,9 +16,9 @@ class Shorten extends React.Component {
   }
 
   /**
-     * 
-     * @param {*} target
-     */
+   * 
+   * @param {*} target
+   */
   postData = (target) => {
     fetch('/api/shorten', {   // e.target.action
       body: JSON.stringify({ url: target.url.value }),
