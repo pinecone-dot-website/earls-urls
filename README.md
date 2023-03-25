@@ -7,8 +7,8 @@ Define your postgres db connection string, server port, and session secret.
 
 ```sh
 DATABASE_URL="postgres://user@host/dbname"
-PORT=5000
 JWT_SECRET="abc"
+PORT=5000
 SESSION_SECRET="def"
 ```
 
@@ -19,8 +19,8 @@ npx sequelize-cli db:migrate
 
 ## Build and serve for development
 ```
-yarn run build:dev
-yarn run serve:dev
+yarn run build-server:dev
+yarn run run-server:dev
 ```
 
 ## Start local database

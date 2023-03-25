@@ -11,7 +11,7 @@
         "frontend:dev": "webpack --config ./webpack.config.js --mode development",
         "lint-server": "eslint server/**/*.ts",
         "lint-server:fix": "eslint --fix server/**/*.ts tests/**/*.ts",
-        "server:dev": "nodemon build-server/server.js",
+        "run-server:dev": "nodemon build-server/server.js",
         "test": "DOTENV_CONFIG_PATH=./.env.test jest --coverage"
     },
     "author": "",
@@ -61,6 +61,7 @@
         "eslint-config-airbnb-typescript": "^17.0.0",
         "eslint-plugin-import": "^2.26.0",
         "jest": "^27.5.1",
+        "nodemon": "^2.0.22",
         "openapi-types": "^11.0.1",
         "react-dom": "^18.2.0",
         "sqlite3": "^5.0.6",
