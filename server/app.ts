@@ -27,7 +27,7 @@ const options = {
     openapi: '3.0.0',
     info: {
       title: 'Earls Urls',
-      version: '0.7.2',
+      version: '0.7.5',
     },
     components: {
       securitySchemes: {
@@ -96,6 +96,7 @@ app.engine(
     defaultLayout: 'main',
     extname: '.hbs',
     helpers: {
+      'eq': (v1: any, v2: any) => v1 === v2,
       'inc': (number: number) => {
         return number + 1;
       },

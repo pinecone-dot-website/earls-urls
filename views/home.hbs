@@ -1,21 +1,41 @@
 <form class="" method="post" action="/shorten">
   <div class="mb-3">
-    <input
-      aria-label="Long URL"
-      type="text"
-      class="form-control"
-      id="url"
-      name="url"
-      placeholder="https://"
-      tabindex="3"
-      value="{{input_url}}"
-    />
+    <ul class="nav nav-tabs" id="shortenTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <a aria-controls="url-tab-pane" aria-current="page" aria-selected="true" 
+        class="nav-link {{#if (eq tab "url")}}active{{/if}}"
+          data-bs-target="#url-tab-pane" data-bs-toggle="tab" href="?tab=url" id="url-tab">URL</a>
+      </li>
+
+      <li class="nav-item" role="presentation">
+        <a aria-controls="text-tab-pane" aria-current="page" aria-selected="false" 
+        class="nav-link {{#if (eq tab "text")}}active{{/if}}"
+          data-bs-target="#text-tab-pane" data-bs-toggle="tab" href="?tab=text">Text</a>
+      </li>
+
+      <li class="nav-item" role="presentation">
+        <a class="nav-link disabled">JSON</a>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="shortenTabsContent">
+      <div class="tab-pane fade {{#if (eq tab "url")}}show active{{/if}}" id="url-tab-pane" role="tabpanel" aria-labelledby="url-tab" tabindex="0">
+        <input aria-label="Long URL" type="text" class="form-control" id="url" name="url" placeholder="https://"
+          tabindex="3" value="{{input_url}}" />
+      </div>
+
+      <div class="tab-pane fade {{#if (eq tab "text")}}show active{{/if}}" id="text-tab-pane" role="tabpanel" aria-labelledby="text-tab" tabindex="0">
+        <textarea name="text"></textarea>
+      </div>
+
+      <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">
+        JSON here
+      </div>
+    </div>
+
+      <div class="mb-3">
+        <button type="submit" class="btn btn-lg btn-primary btn-block" tabindex="4">Shorten</button>
+      </div>
   </div>
-  <div class="mb-3">
-    <button
-      type="submit"
-      class="btn btn-lg btn-primary btn-block"
-      tabindex="4"
-    >Shorten</button>
-  </div>
+
 </form>
