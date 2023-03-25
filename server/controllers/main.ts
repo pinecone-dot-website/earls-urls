@@ -4,6 +4,7 @@ import express, { NextFunction } from 'express';
 import git_tag from '../middleware/git_tag';
 import http_user from '../middleware/http_user';
 import Earl from '../models/earl';
+
 const mainRouter = express.Router();
 
 /**
@@ -16,9 +17,10 @@ function index(req: express.Request, res: express.Response) {
   const vars = {
     error: req.flash('error'),
     input_url: req.flash('input_url'),
-    username: req.flash('username'),
     password: req.flash('password'),
+    tab: req.query.tab,
     toggle: '',
+    username: req.flash('username'),
   };
 
   if (vars.username.length || vars.password.length) {
@@ -75,7 +77,7 @@ mainRouter.post(
  */
 async function shortURL(req: express.Request, res: express.Response, next: NextFunction) {
   const short = req.params.short;
-  
+
   Earl.getByShortID(short)
     .then((row) => {
       return res.redirect(row.url);
@@ -112,9 +114,9 @@ async function shortURLInfo(req: express.Request, res: express.Response) {
     .then(async (row) => {
       const siteData = await new ExternalURL(row.url).getSiteData();
       console.log('siteData', siteData);
-      
+
       res.render('info', {
-        display:{
+        display: {
           redirects: siteData.request.redirects.length > 1,
         },
         earl: await Earl.get_shortlink(row.id, req.get('Host'), req.secure),

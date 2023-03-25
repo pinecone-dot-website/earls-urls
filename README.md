@@ -19,6 +19,7 @@ npx sequelize-cli db:migrate
 
 ## Build and serve for development
 ```
+yarn run build-assets:dev
 yarn run build-server:dev
 yarn run run-server:dev
 ```
