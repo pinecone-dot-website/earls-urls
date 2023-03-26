@@ -13,21 +13,21 @@ describe('Check Earl class', () => {
   });
 
   it('Validates a url', () => {
-    expect(Earl.validate(url)).resolves.toEqual(url);
+    expect(Earl.validateURL(url)).resolves.toEqual(url);
   });
 
   it('Rejects a javascript url', async () => {
     expect.assertions(2);
     const jsUrl = 'javascript:void(0)';
 
-    Earl.validate(jsUrl).catch((err) => {
+    Earl.validateURL(jsUrl).catch((err) => {
       expect(err).toBeInstanceOf(HTTPError);
       expect(err).toHaveProperty('status', 422);
     });
   });
 
   it('Inserts a valid url into the database with no associated user', async () => {
-    const res = await Earl.insert(url, 0);
+    const res = await Earl.insertURL(url, 0);
 
     expect(res).toHaveProperty('url', url);
     expect(res).toHaveProperty('userId', 0);
@@ -40,7 +40,7 @@ describe('Check Earl class', () => {
     }
 
     const longUrl = `${url}?${qs.toString()}`;
-    const res = await Earl.insert(longUrl, 0);
+    const res = await Earl.insertURL(longUrl, 0);
 
     expect(res).toHaveProperty('url', longUrl);
   });

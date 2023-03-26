@@ -43,23 +43,43 @@ mainRouter.all(
  * @param res 
  */
 function shorten(req: express.Request, res: express.Response) {
-  Earl.insert(req.body.url, res.locals.user.id)
-    .then((row: EarlRow) => {
-      Earl.get_shortlink(row.id, req.get('Host'), req.secure).then(
-        (earl: ShortEarl) => {
-          res.render('shorten', {
-            input_url: row.url,
-            short_url: earl.short_url,
-          });
-        },
-      );
-    })
-    .catch((err) => {
-      req.flash('error', err.message);
-      req.flash('input_url', req.body.url);
+  if (req.body.url) {
+    Earl.insertURL(req.body.url, res.locals.user.id)
+      .then((row: EarlRow) => {
+        Earl.get_shortlink(row.id, req.get('Host'), req.secure).then(
+          (earl: ShortEarl) => {
+            res.render('shorten', {
+              input_url: row.url,
+              short_url: earl.short_url,
+            });
+          },
+        );
+      })
+      .catch((err) => {
+        req.flash('error', err.message);
+        req.flash('input_url', req.body.url);
 
-      return res.redirect('/?url-error');
-    });
+        return res.redirect('/?tab=url&error=' + err.message);
+      });
+  } else {
+    Earl.insertText(req.body.text)
+      .then((row: EarlRow) => {
+        Earl.get_shortlink(row.id, req.get('Host'), req.secure).then(
+          (earl: ShortEarl) => {
+            res.render('shorten', {
+              input_url: row.url,
+              short_url: earl.short_url,
+            });
+          },
+        );
+      })
+      .catch((err: Error) => {
+        req.flash('error', err.message);
+        req.flash('input_text', req.body.text);
+
+        return res.redirect('/?tab=text&error=' + err.message);
+      });
+  }
 }
 
 mainRouter.post(

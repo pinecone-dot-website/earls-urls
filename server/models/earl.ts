@@ -14,7 +14,7 @@ class Earl {
    * @param db_id integer (string when called from getByShortID)
    * @return object db row
    */
-  static async getByID(db_id: string | number):Promise<EarlRow> {
+  static async getByID(db_id: string | number): Promise<EarlRow> {
     return models.Url.findOne({
       where: {
         id: db_id,
@@ -33,7 +33,7 @@ class Earl {
    * @param earl string
    * @return
    */
-  static getByShortID(earl: string):Promise<EarlRow> {
+  static getByShortID(earl: string): Promise<EarlRow> {
     return Base.convert(earl, 'EARLS', 'BASE10')
       .then(this.getByID)
       .catch((err) => {
@@ -73,13 +73,25 @@ class Earl {
   }
 
   /**
+   * 
+   */
+  static insertText(user_text: string, user_id: number = 0) {
+    return Earl.validateText(user_text).then((formatted_text) => {
+      return models.Url.create({
+        userId: user_id,
+        // url: formatted_url,
+      });
+    });
+  }
+
+  /**
    * insert a url into the db with or without user id
    * @param user_url string
    * @param user_id integer
    *
    */
-  static insert(user_url: string, user_id: number = 0): Promise<EarlRow> {
-    return Earl.validate(user_url).then((formatted_url) => {
+  static insertURL(user_url: string, user_id: number = 0): Promise<EarlRow> {
+    return Earl.validateURL(user_url).then((formatted_url) => {
       return models.Url.create({
         userId: user_id,
         url: formatted_url,
@@ -88,11 +100,26 @@ class Earl {
   }
 
   /**
+   * 
+   * @param input_string string
+   * @return
+   */
+  static validateText(input_string: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      if (input_string.length < 1 || input_string.length > 2047) {
+        reject(new HTTPError('Text is incorrect length', 422));
+      }
+
+      return resolve(input_string);
+    });
+  }
+
+  /**
    * ensure proper url
    * @param input_url string user supplied url
    * @return string | false
    */
-  static validate(input_url: string): Promise<string> {
+  static validateURL(input_url: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const url = new URL(input_url);
 

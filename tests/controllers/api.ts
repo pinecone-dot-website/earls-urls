@@ -43,7 +43,7 @@ describe('Check API Endpoints', () => {
       });
     });
 
-    await Earl.insert(earl.input_url).then((res) => {
+    await Earl.insertURL(earl.input_url).then((res) => {
       earl.id = res.id;
       earl.earl = Earl.get_shortlink(earl.id, 'test.earls');
     });

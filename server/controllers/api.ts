@@ -250,7 +250,7 @@ async function apiPost(req: express.Request, res: express.Response) {
   const inputUrl = req.body.url;
   const userID = res.locals.user.props.id;
 
-  await Earl.insert(inputUrl, userID)
+  await Earl.insertURL(inputUrl, userID)
     .then(async (row) => {
       await Earl.get_shortlink(row.id, req.get('Host'), req.secure).then(
         (earl: ShortEarl) => {
