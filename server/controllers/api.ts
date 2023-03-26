@@ -184,7 +184,7 @@ async function apiGet(req: express.Request, res: express.Response) {
 
   return Earl.getByShortID(short)
     .then(async (row) => {
-      await Earl.get_shortlink(row.id, req.get('Host'), req.secure).then(
+      await Earl.getShortlink(row.id, req.get('Host'), req.secure).then(
         (earl: ShortEarl) => {
           return res.status(200).json({
             success: true,
@@ -252,14 +252,14 @@ async function apiPost(req: express.Request, res: express.Response) {
 
   await Earl.insertURL(inputUrl, userID)
     .then(async (row) => {
-      await Earl.get_shortlink(row.id, req.get('Host'), req.secure).then(
+      await Earl.getShortlink(row.id, req.get('Host'), req.secure).then(
         (earl: ShortEarl) => {
           return res.status(201).json({
-            success: true,
+            created: row.createdAt,
             id: row.id,
             input_url: inputUrl,
             short_url: earl.short_url,
-            created: row.createdAt,
+            success: true,
             user_id: row.userId,
           });
         },

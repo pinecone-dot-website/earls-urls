@@ -51,7 +51,7 @@ class Earl {
    * @param secure boolean
    * @return string
    */
-  static async get_shortlink(
+  static async getShortlink(
     db_id: number,
     host: string,
     secure: boolean = true,
@@ -78,8 +78,8 @@ class Earl {
   static insertText(user_text: string, user_id: number = 0) {
     return Earl.validateText(user_text).then((formatted_text) => {
       return models.Url.create({
+        text: formatted_text,
         userId: user_id,
-        // url: formatted_url,
       });
     });
   }
