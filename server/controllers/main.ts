@@ -18,13 +18,17 @@ function index(req: express.Request, res: express.Response) {
     error: req.flash('error'),
     input_url: req.flash('input_url'),
     password: req.flash('password'),
-    tab: req.query.tab,
+    tab: 'url', // req.query.tab,
     toggle: '',
     username: req.flash('username'),
   };
 
   if (vars.username.length || vars.password.length) {
     vars.toggle = 'show';
+  }
+
+  if (req.query.tab) {
+    vars.tab = req.query.tab;
   }
 
   res.render('home', vars);
