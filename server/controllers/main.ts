@@ -4,6 +4,7 @@ import express, { NextFunction } from 'express';
 import git_tag from '../middleware/git_tag';
 import http_user from '../middleware/http_user';
 import Earl from '../models/earl';
+
 const mainRouter = express.Router();
 
 /**
@@ -16,13 +17,18 @@ function index(req: express.Request, res: express.Response) {
   const vars = {
     error: req.flash('error'),
     input_url: req.flash('input_url'),
-    username: req.flash('username'),
     password: req.flash('password'),
+    tab: 'url', // req.query.tab,
     toggle: '',
+    username: req.flash('username'),
   };
 
   if (vars.username.length || vars.password.length) {
     vars.toggle = 'show';
+  }
+
+  if (req.query.tab) {
+    vars.tab = req.query.tab;
   }
 
   res.render('home', vars);
@@ -41,23 +47,43 @@ mainRouter.all(
  * @param res 
  */
 function shorten(req: express.Request, res: express.Response) {
-  Earl.insert(req.body.url, res.locals.user.id)
-    .then((row: EarlRow) => {
-      Earl.get_shortlink(row.id, req.get('Host'), req.secure).then(
-        (earl: ShortEarl) => {
-          res.render('shorten', {
-            input_url: row.url,
-            short_url: earl.short_url,
-          });
-        },
-      );
-    })
-    .catch((err) => {
-      req.flash('error', err.message);
-      req.flash('input_url', req.body.url);
+  if (req.body.url?.length) {
+    Earl.insertURL(req.body.url, res.locals.user.id)
+      .then((row: EarlRow) => {
+        Earl.getShortlink(row.id, req.get('Host'), req.secure).then(
+          (earl: ShortEarl) => {
+            res.render('shorten', {
+              input_url: row.url,
+              short_url: earl.short_url,
+            });
+          },
+        );
+      })
+      .catch((err) => {
+        req.flash('error', err.message);
+        req.flash('input_url', req.body.url);
 
-      return res.redirect('/?url-error');
-    });
+        return res.redirect('/?tab=url&error=' + err.message);
+      });
+  } else {
+    Earl.insertText(req.body.text, res.locals.user.id)
+      .then((row: EarlRow) => {
+        Earl.getShortlink(row.id, req.get('Host'), req.secure).then(
+          (earl: ShortEarl) => {
+            res.render('shorten', {
+              input_url: row.url,
+              short_url: earl.short_url,
+            });
+          },
+        );
+      })
+      .catch((err: Error) => {
+        req.flash('error', err.message);
+        req.flash('input_text', req.body.text);
+
+        return res.redirect('/?tab=text&error=' + err.message);
+      });
+  }
 }
 
 mainRouter.post(
@@ -75,10 +101,14 @@ mainRouter.post(
  */
 async function shortURL(req: express.Request, res: express.Response, next: NextFunction) {
   const short = req.params.short;
-  
+
   Earl.getByShortID(short)
     .then((row) => {
-      return res.redirect(row.url);
+      if (row.url.length > 0) {
+        return res.redirect(row.url);
+      }
+
+      res.send("WOW!");
     })
     .catch((err: HTTPError | Error) => {
       if (err instanceof HTTPError) {
@@ -87,7 +117,7 @@ async function shortURL(req: express.Request, res: express.Response, next: NextF
         });
       }
 
-      // illegal charactr / passthru
+      // illegal character / pass thru
       next();
     });
 }
@@ -111,13 +141,13 @@ async function shortURLInfo(req: express.Request, res: express.Response) {
   Earl.getByShortID(short)
     .then(async (row) => {
       const siteData = await new ExternalURL(row.url).getSiteData();
-      console.log('siteData', siteData);
-      
+      // console.log('siteData', siteData);
+
       res.render('info', {
-        display:{
+        display: {
           redirects: siteData.request.redirects.length > 1,
         },
-        earl: await Earl.get_shortlink(row.id, req.get('Host'), req.secure),
+        earl: await Earl.getShortlink(row.id, req.get('Host'), req.secure),
         row: row.get(),
         siteData,
       });
@@ -131,7 +161,7 @@ async function shortURLInfo(req: express.Request, res: express.Response) {
 
       // illegal character / passthru
       // next();
-      console.log('err', err);
+      // console.log('err', err);
     });
 }
 
