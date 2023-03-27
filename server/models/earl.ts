@@ -75,6 +75,18 @@ class Earl {
   /**
    * 
    */
+  static insertJSON(user_json: string, user_id: number = 0) {
+    return Earl.validateJSON(user_json).then((formatted_json) => {
+      return models.Url.create({
+        json: formatted_json,
+        userId: user_id,
+      });
+    });
+  }
+
+  /**
+   * 
+   */
   static insertText(user_text: string, user_id: number = 0) {
     return Earl.validateText(user_text).then((formatted_text) => {
       return models.Url.create({
@@ -101,12 +113,25 @@ class Earl {
 
   /**
    * 
-   * @param input_string string
-   * @return
+   * @param {string} input_json
+   * @return {object}
+   */
+  static validateJSON(input_json: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const parsed_json = JSON.parse(input_json);
+
+      return resolve(parsed_json);
+    });
+  }
+
+  /**
+   * 
+   * @param {string} input_string
+   * @return {string}
    */
   static validateText(input_string: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      if (input_string.length < 1 || input_string.length > 2047) {
+      if (input_string.length < 1 || input_string.length > 2048) {
         reject(new HTTPError('Text is incorrect length', 422));
       }
 
@@ -116,7 +141,7 @@ class Earl {
 
   /**
    * ensure proper url
-   * @param input_url string user supplied url
+   * @param {string} input_url user supplied url
    * @return string | false
    */
   static validateURL(input_url: string): Promise<string> {

@@ -247,32 +247,59 @@ apiRouter.get('/:short', apiGet);
  *          description: Error in convertion
  */
 async function apiPost(req: express.Request, res: express.Response) {
-  const inputUrl = req.body.url;
+  let func;
+  let input: string;
+  let response: object;
   const userID = res.locals.user.props.id;
 
-  await Earl.insertURL(inputUrl, userID)
-    .then(async (row) => {
-      await Earl.getShortlink(row.id, req.get('Host'), req.secure).then(
-        (earl: ShortEarl) => {
-          return res.status(201).json({
-            created: row.createdAt,
-            id: row.id,
-            input_url: inputUrl,
-            short_url: earl.short_url,
-            success: true,
-            user_id: row.userId,
-          });
-        },
-      );
-    })
-    .catch((err) => {
-      return res.status(err.status || 422).json({
-        success: false,
-        error: err.message,
-        input_url: inputUrl,
-        user_id: userID,
-      });
+  switch (true) {
+    case req.body.json?.length:
+      input = req.body.json;
+      func = await Earl.insertJSON(input, userID);
+      response = { input_json: input, };
+
+      break;
+
+    case req.body.text?.length:
+      input = req.body.text;
+      func = await Earl.insertText(input, userID);
+      response = { input_text: input, };
+
+      break;
+
+    case req.body.url?.length:
+      input = req.body.url;
+      func = await Earl.insertURL(input, userID);
+      response = { input_url: input, };
+
+      break;
+
+    default:
+      throw new Error('bad!');
+      break;
+  }
+
+  func.then(async (row) => {
+    await Earl.getShortlink(row.id, req.get('Host'), req.secure).then(
+      (earl: ShortEarl) => {
+        return res.status(201).json({
+          ...response,
+          created: row.createdAt,
+          id: row.id,
+          short_url: earl.short_url,
+          success: true,
+          user_id: row.userId,
+        });
+      },
+    );
+  }).catch((err) => {
+    return res.status(err.status || 422).json({
+      ...response,
+      error: err.message,
+      success: false,
+      user_id: userID,
     });
+  });
 }
 
 apiRouter.post('/', [json_user], apiPost);

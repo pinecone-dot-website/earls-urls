@@ -47,7 +47,7 @@ mainRouter.all(
  * @param res 
  */
 function shorten(req: express.Request, res: express.Response) {
-  if (req.body.url) {
+  if (req.body.url?.length) {
     Earl.insertURL(req.body.url, res.locals.user.id)
       .then((row: EarlRow) => {
         Earl.getShortlink(row.id, req.get('Host'), req.secure).then(
@@ -66,7 +66,7 @@ function shorten(req: express.Request, res: express.Response) {
         return res.redirect('/?tab=url&error=' + err.message);
       });
   } else {
-    Earl.insertText(req.body.text)
+    Earl.insertText(req.body.text, res.locals.user.id)
       .then((row: EarlRow) => {
         Earl.getShortlink(row.id, req.get('Host'), req.secure).then(
           (earl: ShortEarl) => {

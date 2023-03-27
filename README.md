@@ -27,4 +27,5 @@ yarn run run-server:dev
 ## Start local database
 ```
 pg_ctl -D /usr/local/var/postgres start
+sudo pg_ctlcluster 13 main reload
 ```
