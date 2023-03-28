@@ -18,7 +18,7 @@ function index(req: express.Request, res: express.Response) {
     error: req.flash('error'),
     input_url: req.flash('input_url'),
     password: req.flash('password'),
-    tab: 'url', // req.query.tab,
+    tab: null, //'url', // req.query.tab,
     toggle: '',
     username: req.flash('username'),
   };
@@ -29,6 +29,8 @@ function index(req: express.Request, res: express.Response) {
 
   if (req.query.tab) {
     vars.tab = req.query.tab;
+  } else {
+    vars.tab = 'url';
   }
 
   res.render('home', vars);
