@@ -104,11 +104,11 @@ async function shortURL(req: express.Request, res: express.Response, next: NextF
 
   Earl.getByShortID(short)
     .then((row) => {
-      if (row.url.length > 0) {
+      if (row.url?.length > 0) {
         return res.redirect(row.url);
       }
 
-      res.send("WOW!");
+      res.send(row.toJSON());
     })
     .catch((err: HTTPError | Error) => {
       if (err instanceof HTTPError) {
@@ -140,17 +140,25 @@ async function shortURLInfo(req: express.Request, res: express.Response) {
 
   Earl.getByShortID(short)
     .then(async (row) => {
-      const siteData = await new ExternalURL(row.url).getSiteData();
-      // console.log('siteData', siteData);
+      
+      console.log('row', row);
 
-      res.render('info', {
+      const vars = {
         display: {
-          redirects: siteData.request.redirects.length > 1,
+          redirects: null,
         },
         earl: await Earl.getShortlink(row.id, req.get('Host'), req.secure),
         row: row.get(),
-        siteData,
-      });
+        siteData: null,
+      };
+
+      if (row.url) {
+        const siteData = await new ExternalURL(row.url).getSiteData();
+        vars.display.redirects = siteData.request.redirects.length > 1;
+        vars.siteData = siteData;
+      }
+
+      res.render('info', vars);
     })
     .catch((err: HTTPError | Error) => {
       if (err instanceof HTTPError) {
