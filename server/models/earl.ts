@@ -14,7 +14,7 @@ class Earl {
    * @param db_id integer (string when called from getByShortID)
    * @return object db row
    */
-  static async getByID(db_id: string | number):Promise<EarlRow> {
+  static async getByID(db_id: string | number): Promise<EarlRow> {
     return models.Url.findOne({
       where: {
         id: db_id,
@@ -33,7 +33,7 @@ class Earl {
    * @param earl string
    * @return
    */
-  static getByShortID(earl: string):Promise<EarlRow> {
+  static getByShortID(earl: string): Promise<EarlRow> {
     return Base.convert(earl, 'EARLS', 'BASE10')
       .then(this.getByID)
       .catch((err) => {
@@ -46,12 +46,12 @@ class Earl {
 
   /**
    *
-   * @param db_id integer
+   * @param db_id integer database row id
    * @param host string
    * @param secure boolean
    * @return string
    */
-  static async get_shortlink(
+  static async getShortlink(
     db_id: number,
     host: string,
     secure: boolean = true,
@@ -73,13 +73,37 @@ class Earl {
   }
 
   /**
+   * 
+   */
+  static insertJSON(user_json: string, user_id: number = 0) {
+    return Earl.validateJSON(user_json).then((formatted_json) => {
+      return models.Url.create({
+        json: formatted_json,
+        userId: user_id,
+      });
+    });
+  }
+
+  /**
+   * 
+   */
+  static insertText(user_text: string, user_id: number = 0) {
+    return Earl.validateText(user_text).then((formatted_text) => {
+      return models.Url.create({
+        text: formatted_text,
+        userId: user_id,
+      });
+    });
+  }
+
+  /**
    * insert a url into the db with or without user id
    * @param user_url string
    * @param user_id integer
    *
    */
-  static insert(user_url: string, user_id: number = 0): Promise<EarlRow> {
-    return Earl.validate(user_url).then((formatted_url) => {
+  static insertURL(user_url: string, user_id: number = 0): Promise<EarlRow> {
+    return Earl.validateURL(user_url).then((formatted_url) => {
       return models.Url.create({
         userId: user_id,
         url: formatted_url,
@@ -88,11 +112,39 @@ class Earl {
   }
 
   /**
+   * 
+   * @param {string} input_json
+   * @return {object}
+   */
+  static validateJSON(input_json: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const parsed_json = JSON.parse(input_json);
+
+      return resolve(parsed_json);
+    });
+  }
+
+  /**
+   * 
+   * @param {string} input_string
+   * @return {string}
+   */
+  static validateText(input_string: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      if (input_string.length < 1 || input_string.length > 2048) {
+        reject(new HTTPError('Text is incorrect length', 422));
+      }
+
+      return resolve(input_string);
+    });
+  }
+
+  /**
    * ensure proper url
-   * @param input_url string user supplied url
+   * @param {string} input_url user supplied url
    * @return string | false
    */
-  static validate(input_url: string): Promise<string> {
+  static validateURL(input_url: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const url = new URL(input_url);
 

@@ -43,9 +43,9 @@ describe('Check API Endpoints', () => {
       });
     });
 
-    await Earl.insert(earl.input_url).then((res) => {
+    await Earl.insertURL(earl.input_url).then((res) => {
       earl.id = res.id;
-      earl.earl = Earl.get_shortlink(earl.id, 'test.earls');
+      earl.earl = Earl.getShortlink(earl.id, 'test.earls');
     });
   });
 
@@ -60,7 +60,7 @@ describe('Check API Endpoints', () => {
         expect(res.body).toHaveProperty('token');
 
         let verified = jwt.verify(res.body.token, process.env.JWT_SECRET);
-        expect(verified).toHaveProperty('user_id', user.data.id);
+        expect(verified).toHaveProperty('user_id', user.data?.id);
       });
   });
 
@@ -116,7 +116,7 @@ describe('Check API Endpoints', () => {
         expect.objectContaining({
           success: true,
           input_url: url,
-          user_id: user.data.id,
+          user_id: user.data?.id,
         });
       });
   });

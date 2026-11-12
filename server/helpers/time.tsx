@@ -9,13 +9,14 @@ const Time = (props) => {
   const [date, setDate] = useState(props.date);
 
   useEffect(() => {
-    console.log('new Date(props.date)', props.date);
+    // console.log('new Date(props.date)', props.date);
+
     if (typeof props.date === 'string') {
       setDate(new Date(props.date));
     }
   }, [props.date]);
 
-  console.log('date', date);
+  // console.log('date', date);
 
   return date ? <time dateTime={date.toISOString()}>{date.toISOString()}</time> : <>loading</>;
 };

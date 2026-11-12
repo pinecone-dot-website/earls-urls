@@ -29,7 +29,8 @@ async function userAuth(req: express.Request, res: express.Response) {
       }
 
       req.login(user, (loginErr) => {
-        console.log('login loginErr', loginErr);
+        // console.log('login loginErr', loginErr);
+
         return res.redirect('/?login-success');
       });
     };
@@ -39,7 +40,8 @@ async function userAuth(req: express.Request, res: express.Response) {
     await User.create(req.body.username, req.body.password)
       .then((user) => {
         req.login(user, (loginErr: Error) => {
-          console.log('register loginErr', loginErr);
+          // console.log('register loginErr', loginErr);
+
           return res.redirect('/?register-create');
         });
       })
@@ -58,8 +60,8 @@ userRouter.post('/auth', userAuth);
 
 // log user out
 function userLogout(req: express.Request, res: express.Response) {
-  req.logout((err) =>{
-    console.log('logged out', err);
+  req.logout((err) => {
+    // console.log('logged out', err);
   });
   return res.redirect('/?logout');
 }
@@ -81,7 +83,7 @@ function userStats(req: express.Request, res: express.Response) {
     .then(async (rows) => {
       const renderedRows = await Promise.all(
         rows.map((row: EarlRow) => {
-          return Earl.get_shortlink(row.id, req.get('Host'), req.secure)
+          return Earl.getShortlink(row.id, req.get('Host'), req.secure)
             .then((earl: ShortEarl) => {
               return {
                 short: earl.short_url,
@@ -90,7 +92,7 @@ function userStats(req: express.Request, res: express.Response) {
               };
             })
             .catch((earlErr: Error) => {
-              // get_shortlink fails
+              // getShortlink fails
               return earlErr;
             });
         }),
@@ -119,7 +121,7 @@ function profile(req: express.Request, res: express.Response) {
     return res.redirect('/');
   }
 
-  res.render('user/profile', { 
+  res.render('user/profile', {
     user: req.user,
     error: req.flash('error'),
     success: req.flash('success'),
@@ -140,14 +142,17 @@ async function profileUpdate(req: express.Request, res: express.Response) {
 
   await User.update(req.user.id, req.body)
     .then((success) => {
-      console.log('update success', success);
+      // console.log('update success', success);
+
       req.flash('success', 'Updated');
     }).catch((err: Error) => {
       if (err instanceof ValidationError) {
-        console.log('ValidationError', err.errors);
+        // console.log('ValidationError', err.errors);
+
         req.flash('error', 'bad news');
       } else {
-        console.log('update error', err);
+        // console.log('update error', err);
+
         req.flash('error', err.message);
       }
     });
